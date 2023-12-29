@@ -71,3 +71,15 @@ export const PASSWORD_RESET_REQUEST_SUBJECT = 'Password Reset Request';
 export const PASSWORD_RESET_SUCCESS_SUBJECT = 'Password Reset Successfully';
 
 export const PASSWORD_REGEX = '^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$';
+
+export const VIDEO_SUBSCRIPTION_TYPE = 'video';
+
+export const ISSUE_SUBSCRIPTION_TYPE = 'issue';
+
+export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss';
+
+export const SUBSCRIPTION_TYPES = ['issue', 'video'];
+
+export const RECURRING_TYPES = ['one-time', 'monthly', 'yearly'];
+
+export const SUBSCRIPTION_MAX_LIMIT = 6;

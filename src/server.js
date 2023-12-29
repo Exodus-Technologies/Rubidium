@@ -9,7 +9,12 @@ import cors from 'cors';
 import responseTime from 'response-time';
 
 import { requestResponse, errorHandler, rateLimiter } from './middlewares';
-import { appRouter, authRouter, userRouter } from './routers';
+import {
+  appRouter,
+  authRouter,
+  userRouter,
+  subscriptionRouter
+} from './routers';
 
 // Create the Express application object
 const server = express();
@@ -62,5 +67,8 @@ console.log('Loaded auth routes middleware.');
 //User middleware
 server.use(rateLimiter, userRouter);
 console.log('Loaded user routes middleware.');
+
+server.use(rateLimiter, subscriptionRouter);
+console.log('Loaded subscription routes middleware.');
 
 export default http.createServer(server);
