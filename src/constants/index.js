@@ -1,5 +1,7 @@
 'use strict';
 
+export const NUM_OF_PROXIES = 1;
+
 export const STATES = [
   'AL',
   'AK',
@@ -64,13 +66,18 @@ export const STATES = [
 
 export const windowMs = 15 * 60 * 1000; // 15 minutes
 
-export const TOKEN_EXPIRY = 15;
+export const TOKEN_EXPIRY = 60;
 
 export const PASSWORD_RESET_REQUEST_SUBJECT = 'Password Reset Request';
 
 export const PASSWORD_RESET_SUCCESS_SUBJECT = 'Password Reset Successfully';
 
-export const PASSWORD_REGEX = '^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$';
+export const STRONG_PASSWORD_VALIDATIONS = {
+  minLength: 8,
+  minLowercase: 1,
+  minUppercase: 1,
+  minSymbols: 1
+};
 
 export const VIDEO_SUBSCRIPTION_TYPE = 'video';
 
@@ -94,7 +101,7 @@ export const VIDEO_MIME_TYPE = 'video/mp4';
 
 export const THUMBNAIL_MIME_TYPE = 'image/jpeg';
 
-export const MAX_FILE_SIZE_VIDEO = 2 * 1024 * 1024 * 1024;
+export const MAX_FILE_SIZE_VIDEO = 2 * 1024 * 1024 * 1024; //2 GB
 
 export const AUTHOR = 'Sheen Magazine';
 

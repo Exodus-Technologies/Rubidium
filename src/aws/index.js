@@ -39,6 +39,9 @@ const s3Client = new S3Client({
   }
 });
 
+/**
+ * Video helper functions
+ */
 const getVideoObjectKey = key => {
   return `${key}.${DEFAULT_VIDEO_FILE_EXTENTION}`;
 };
@@ -118,7 +121,7 @@ export const doesVideoS3BucketExist = () => {
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
       console.log({
-        message: 'doesS3BucketExist',
+        message: 'doesVideoS3BucketExist',
         requestId,
         cfId,
         bucketName: s3IssueBucketName,
@@ -140,7 +143,7 @@ export const doesThumbnailS3BucketExist = () => {
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
       console.log({
-        message: 'doesS3BucketExist',
+        message: 'doesThumbnailS3BucketExist',
         requestId,
         cfId,
         bucketName: s3CoverImageBucketName,
@@ -354,6 +357,35 @@ export const uploadThumbnailToS3 = (fileContent, key) => {
   });
 };
 
+export const uploadVideoArchiveToS3Location = async archive => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { videoPath, thumbnailPath, key } = archive;
+      const duration = await getVideoDurationInSeconds(videoPath);
+      const thumbnailFile = await getThumbnailContentFromPath(thumbnailPath);
+      await uploadVideoToS3(videoPath, key);
+      await uploadThumbnailToS3(thumbnailFile, key);
+      const videoLocation = getVideoDistributionURI(key);
+      const thumbNailLocation = getThumbnailDistributionURI(key);
+      resolve({ thumbNailLocation, videoLocation, duration });
+    } catch (err) {
+      console.log(`Error uploading video and content to s3 buckets`, err);
+      reject(err);
+    }
+  });
+};
+
+/**
+ * Issue helper functions
+ */
+const getIssueObjectKey = key => {
+  return `${key}.${DEFAULT_PDF_FILE_EXTENTION}`;
+};
+
+const getCoverImageObjectKey = key => {
+  return `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
+};
+
 export const createIssueS3Bucket = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -407,7 +439,7 @@ export const doesIssueS3BucketExist = () => {
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
       console.log({
-        message: 'doesS3BucketExist',
+        message: 'doesIssueS3BucketExist',
         requestId,
         cfId,
         bucketName: s3IssueBucketName,
@@ -429,7 +461,7 @@ export const doesCoverImageS3BucketExist = () => {
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
       console.log({
-        message: 'doesS3BucketExist',
+        message: 'doesCoverImageS3BucketExist',
         requestId,
         cfId,
         bucketName: s3CoverImageBucketName,
@@ -440,19 +472,19 @@ export const doesCoverImageS3BucketExist = () => {
   });
 };
 
-export const doesS3ObjectExist = key => {
+export const doesIssueObjectExist = key => {
   return new Promise(async (resolve, reject) => {
     try {
       const params = {
         Bucket: s3IssueBucketName,
-        Key: `${key}.${DEFAULT_PDF_FILE_EXTENTION}`
+        Key: getIssueObjectKey(key)
       };
       const s3Object = await s3Client.send(new HeadObjectCommand(params));
       resolve(s3Object);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
       console.log({
-        message: 'doesS3ObjectExist',
+        message: 'doesIssueObjectExist',
         requestId,
         cfId,
         extendedRequestId
@@ -462,13 +494,35 @@ export const doesS3ObjectExist = key => {
   });
 };
 
-export const copyS3Object = (oldKey, newKey) => {
+export const doesCoverImageObjectExist = key => {
   return new Promise(async (resolve, reject) => {
     try {
       const params = {
         Bucket: s3IssueBucketName,
-        CopySource: `${s3IssueBucketName}/${oldKey}.${DEFAULT_PDF_FILE_EXTENTION}`,
-        Key: `${newKey}.${DEFAULT_PDF_FILE_EXTENTION}`
+        Key: getCoverImageObjectKey(key)
+      };
+      const s3Object = await s3Client.send(new HeadObjectCommand(params));
+      resolve(s3Object);
+    } catch (err) {
+      const { requestId, cfId, extendedRequestId } = err.$metadata;
+      console.log({
+        message: 'doesCoverImageObjectExist',
+        requestId,
+        cfId,
+        extendedRequestId
+      });
+      reject(err);
+    }
+  });
+};
+
+export const copyIssueObject = (oldKey, newKey) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const params = {
+        Bucket: s3IssueBucketName,
+        CopySource: `${s3IssueBucketName}/${getIssueObjectKey(oldKey)}`,
+        Key: getIssueObjectKey(newKey)
       };
       await s3Client.send(new CopyObjectCommand(params));
       resolve();
@@ -485,12 +539,39 @@ export const copyS3Object = (oldKey, newKey) => {
   });
 };
 
-export const getCoverImageUrlFromS3 = fileName => {
-  return `https://${s3CoverImageBucketName}.s3.amazonaws.com/${fileName}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
+export const copyCoverImageObject = (oldKey, newKey) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const params = {
+        Bucket: s3IssueBucketName,
+        CopySource: `${s3IssueBucketName}/${getCoverImageObjectKey(oldKey)}`,
+        Key: getCoverImageObjectKey(newKey)
+      };
+      await s3Client.send(new CopyObjectCommand(params));
+      resolve();
+    } catch (err) {
+      const { requestId, cfId, extendedRequestId } = err.$metadata;
+      console.log({
+        message: 'copyS3Object',
+        requestId,
+        cfId,
+        extendedRequestId
+      });
+      reject(err);
+    }
+  });
 };
 
-export const getIssueUrlFromS3 = fileName => {
-  return `https://${s3IssueBucketName}.s3.amazonaws.com/${fileName}.${DEFAULT_PDF_FILE_EXTENTION}`;
+export const getCoverImageUrlFromS3 = key => {
+  return `https://${s3CoverImageBucketName}.s3.amazonaws.com/${getCoverImageObjectKey(
+    key
+  )}`;
+};
+
+export const getIssueUrlFromS3 = key => {
+  return `https://${s3IssueBucketName}.s3.amazonaws.com/${getIssueObjectKey(
+    key
+  )}`;
 };
 
 export const deleteIssueByKey = key => {
@@ -498,7 +579,7 @@ export const deleteIssueByKey = key => {
     try {
       const params = {
         Bucket: s3IssueBucketName,
-        Key: `${key}.${DEFAULT_PDF_FILE_EXTENTION}`
+        Key: getIssueObjectKey(key)
       };
       await s3Client.send(new DeleteObjectCommand(params));
       resolve();
@@ -521,7 +602,7 @@ export const deleteCoverImageByKey = key => {
     try {
       const params = {
         Bucket: s3CoverImageBucketName,
-        Key: `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`
+        Key: getCoverImageObjectKey(key)
       };
       await s3Client.send(new DeleteObjectCommand(params));
       resolve();
@@ -544,7 +625,7 @@ const uploadIssueToS3 = (fileContent, key) => {
     // Setting up S3 upload parameters
     const params = {
       Bucket: s3IssueBucketName,
-      Key: `${key}.${DEFAULT_PDF_FILE_EXTENTION}`, // File name you want to save as in S3
+      Key: getIssueObjectKey(key), // File name you want to save as in S3
       Body: fileContent
     };
     try {
@@ -565,7 +646,7 @@ const uploadCoverImageToS3 = (fileContent, key) => {
     // Setting up S3 upload parameters
     const params = {
       Bucket: s3CoverImageBucketName,
-      Key: `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`, // File name you want to save as in S3
+      Key: getCoverImageObjectKey(key), // File name you want to save as in S3
       Body: fileContent
     };
     try {
@@ -597,24 +678,6 @@ export const uploadPdfArchiveToS3Location = async archive => {
       resolve({ issueLocation, coverImageLocation });
     } catch (err) {
       console.log(`Error uploading pdf and content to s3 bucket:`, err);
-      reject(err);
-    }
-  });
-};
-
-export const uploadVideoArchiveToS3Location = async archive => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { videoPath, thumbnailPath, key } = archive;
-      const duration = await getVideoDurationInSeconds(videoPath);
-      const thumbnailFile = await getThumbnailContentFromPath(thumbnailPath);
-      await uploadVideoToS3(videoPath, key);
-      await uploadThumbnailToS3(thumbnailFile, key);
-      const videoLocation = getVideoDistributionURI(key);
-      const thumbNailLocation = getThumbnailDistributionURI(key);
-      resolve({ thumbNailLocation, videoLocation, duration });
-    } catch (err) {
-      console.log(`Error uploading video and content to s3 buckets`, err);
       reject(err);
     }
   });

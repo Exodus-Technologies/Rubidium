@@ -45,9 +45,7 @@ exports.validateLogin = async (email, password) => {
           }
         ];
       }
-      return badRequest(
-        'Username and password combination was incorrect for user.'
-      );
+      return badRequest('Username and password combination was incorrect.');
     }
     return badRequest(error.message);
   } catch (err) {
@@ -60,7 +58,7 @@ exports.requestPasswordReset = async email => {
   try {
     const transactionId = generateTransactionId();
     const [error, user] = await getUserByEmail(email);
-    if (!user) {
+    if (error || !user) {
       const transaction = {
         transactionId,
         response: 'ERROR',
@@ -138,7 +136,7 @@ exports.changePassword = async (email, token, password) => {
     const transactionId = generateTransactionId();
     const [error, user] = await getUserByEmail(email);
 
-    if (!user) {
+    if (error || !user) {
       const transaction = {
         transactionId,
         response: 'ERROR',

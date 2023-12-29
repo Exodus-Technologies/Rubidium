@@ -1,7 +1,8 @@
 'use strict';
 
 import express from 'express';
-import { apiCache } from '../middlewares';
+import config from '../config';
+import { apiCache, validateToken } from '../middlewares';
 import { fancyTimeFormat } from '../utilities/time';
 
 const { Router } = express;
@@ -22,6 +23,12 @@ router.get('/sheen-service/probeCheck', (_, res) => {
     message: 'Rubidium Service Manager service up and running!',
     appVersion: version
   });
+});
+
+router.get('/sheen-service/ip', validateToken, (req, res) => res.send(req.ip));
+
+router.get('/sheen-service/getConfiguration', validateToken, (_, res) => {
+  res.status(200).send(config);
 });
 
 export default router;

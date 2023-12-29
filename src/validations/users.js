@@ -5,7 +5,7 @@
  */
 import { query, body, param } from 'express-validator';
 
-import { STATES, PASSWORD_REGEX } from '../constants';
+import { STATES, STRONG_PASSWORD_VALIDATIONS } from '../constants';
 
 const userQueryValidation = [
   query('page')
@@ -31,7 +31,7 @@ const userCreationValidation = [
   body('password')
     .isString()
     .isLength({ min: 8 })
-    .matches(PASSWORD_REGEX)
+    .isStrongPassword(STRONG_PASSWORD_VALIDATIONS)
     .withMessage(
       'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
     ),
@@ -68,7 +68,7 @@ const userUpdateValidation = [
   body('password')
     .isString()
     .isLength({ min: 8 })
-    .matches(PASSWORD_REGEX)
+    .isStrongPassword(STRONG_PASSWORD_VALIDATIONS)
     .withMessage(
       'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
     )
@@ -108,7 +108,7 @@ const loginValidation = [
   body('password')
     .isString()
     .isLength({ min: 8 })
-    .matches(PASSWORD_REGEX)
+    .isStrongPassword(STRONG_PASSWORD_VALIDATIONS)
     .withMessage(
       'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
     )
@@ -124,7 +124,7 @@ const changePasswordValidation = [
   body('password')
     .isString()
     .isLength({ min: 8 })
-    .matches(PASSWORD_REGEX)
+    .isStrongPassword(STRONG_PASSWORD_VALIDATIONS)
     .withMessage(
       'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
     )
@@ -150,10 +150,6 @@ const otpBodyValidation = [
 const platfromQueryValidation = [
   query('platform').isString().withMessage('Must provide a device platform.')
 ];
-
-const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
-  return `${location}[${param}]: ${msg}`;
-};
 
 export {
   userCreationValidation,

@@ -21,11 +21,13 @@ import {
   videoRouter
 } from './routers';
 
+import { NUM_OF_PROXIES } from './constants';
+
 // Create the Express application object
 const server = express();
 
 // specify a single subnet
-server.set('trust proxy', true);
+server.set('trust proxy', NUM_OF_PROXIES);
 
 //Cors middleware
 server.use(cors());

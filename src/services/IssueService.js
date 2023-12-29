@@ -3,7 +3,6 @@
 import formidable from 'formidable';
 import {
   uploadArchiveToS3Location,
-  doesS3ObjectExist,
   deleteIssueByKey,
   copyS3Object,
   doesIssueS3BucketExist,
@@ -11,7 +10,9 @@ import {
   createIssueS3Bucket,
   doesCoverImageS3BucketExist,
   deleteCoverImageByKey,
-  getIssueUrlFromS3
+  getIssueUrlFromS3,
+  doesIssueObjectExist,
+  doesCoverImageObjectExist
 } from '../aws';
 import {
   COVERIMAGE_MIME_TYPES,
@@ -30,14 +31,8 @@ import {
   getNextIssueOrder
 } from '../queries/issues';
 import { badImplementationRequest, badRequest } from '../response-codes';
-
-function isEmpty(obj) {
-  return Object.keys(obj).length === 0;
-}
-
-function removeSpaces(str) {
-  return str && str.replace(/\s+/g, '');
-}
+import { isEmpty } from '../utilities/objects';
+import { removeSpaces } from '../utilities/strings';
 
 exports.getPayloadFromRequest = async req => {
   const form = formidable({ multiples: true, maxFileSize: MAX_FILE_SIZE_PDF });
@@ -255,7 +250,7 @@ exports.updateIssue = async archive => {
         }
         const isIssueBucketAvaiable = await doesIssueS3BucketExist();
         if (isIssueBucketAvaiable) {
-          const s3Object = await doesS3ObjectExist(newKey);
+          const s3Object = await doesIssueObjectExist(newKey);
           if (s3Object) {
             deleteIssueByKey(newKey);
           }
@@ -287,7 +282,7 @@ exports.updateIssue = async archive => {
         }
         const isCoverImageBucketAvaiable = await doesCoverImageS3BucketExist();
         if (isCoverImageBucketAvaiable) {
-          const s3Object = await doesS3ObjectExist(newKey);
+          const s3Object = await doesCoverImageObjectExist(newKey);
           if (s3Object) {
             deleteIssueByKey(newKey);
           }

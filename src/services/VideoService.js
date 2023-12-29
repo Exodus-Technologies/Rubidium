@@ -33,23 +33,9 @@ import {
 } from '../queries/videos';
 import { badImplementationRequest, badRequest } from '../response-codes';
 import { fancyTimeFormat } from '../utilities/time';
-
-function isEmpty(obj) {
-  for (const prop in obj) {
-    if (obj.hasOwnProperty(prop)) return false;
-  }
-  return (
-    JSON.stringify(obj) === JSON.stringify({}) || Object.keys(obj).length === 0
-  );
-}
-
-function removeSpaces(str) {
-  return str.replace(/\s+/g, '');
-}
-
-function convertCheckBoxValue(val) {
-  return val === 'on';
-}
+import { stringToBoolean } from '../utilities/boolean';
+import { isEmpty } from '../utilities/objects';
+import { removeSpaces } from '../utilities/strings';
 
 exports.getPayloadFromRequest = async req => {
   const form = formidable({
@@ -65,7 +51,7 @@ exports.getPayloadFromRequest = async req => {
       if (isEmpty(fields)) reject('Form is empty.');
       const file = {
         ...fields,
-        isAvailableForSale: convertCheckBoxValue(fields.isAvailableForSale),
+        isAvailableForSale: stringToBoolean(fields.isAvailableForSale),
         key: removeSpaces(fields.title)
       };
       if (!isEmpty(files)) {

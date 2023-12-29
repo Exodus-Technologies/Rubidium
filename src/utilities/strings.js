@@ -13,3 +13,7 @@ export const createVideoSubId = () => {
 export const createIssueSubId = () => {
   return `issue-${uuidv4()}`;
 };
+
+export const removeSpaces = str => {
+  return str.replace(/\s+/g, '');
+};
