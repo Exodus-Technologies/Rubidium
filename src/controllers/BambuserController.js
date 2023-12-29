@@ -21,12 +21,12 @@ exports.webHookCallback = async (req, res, next) => {
     if (eventId) {
       if (action !== 'remove') {
         const [statusCode] = await BambuserService.webHookCallback(req.body);
-        if (statusCode === 200) {
-          res.status(200).end();
+        if (statusCode === StatusCodes.OK) {
+          res.status(StatusCodes.OK).end();
         }
       }
     }
-    res.status(200).end();
+    res.status(StatusCodes.OK).end();
   } catch (err) {
     console.log(`Error with invoking webhook for broadcast details: `, err);
     next(err);

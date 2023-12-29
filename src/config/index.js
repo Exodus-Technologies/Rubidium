@@ -43,10 +43,8 @@ const config = {
       dbName: process.env.DB_NAME,
       dbUser: process.env.DB_USER,
       dbPass: process.env.DB_PASS,
-      options: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      }
+      //https://mongodb.github.io/node-mongodb-native/3.1/api/MongoClient.html for options
+      options: {}
     },
     twilio: {
       sendGridAPIKey: process.env.SENDGRID_API_KEY,

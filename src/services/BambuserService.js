@@ -1,7 +1,8 @@
 'use strict';
 
+import { StatusCodes } from 'http-status-codes';
 import config from '../config';
-import { badImplementationRequest, badRequest } from '../response-codes';
+import { internalServerErrorRequest, badRequest } from '../response-codes';
 import {
   createBroadcast,
   updateBroadcast,
@@ -19,7 +20,7 @@ exports.getApplicationId = async query => {
     const applicationId = platforms[platform];
     if (applicationId) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Retrieved application id with success.',
           applicationId
@@ -29,7 +30,7 @@ exports.getApplicationId = async query => {
     return badRequest(`No application id found with platform: '${platform}.'`);
   } catch (err) {
     console.log('Error getting applicationId: ', err);
-    return badImplementationRequest('Error getting applicationId.');
+    return internalServerErrorRequest('Error getting applicationId.');
   }
 };
 
@@ -39,7 +40,7 @@ exports.webHookCallback = async payload => {
     if (!broadcast) {
       const savedBroadcast = await createBroadcast(payload);
       if (savedBroadcast) {
-        return [200];
+        return [StatusCodes.OK];
       }
     }
     const { broadcastId } = broadcast;
@@ -51,7 +52,7 @@ exports.webHookCallback = async payload => {
           await deleteBroadCastById(broadcastId);
           await deleteBroadcast(broadcastId);
           return [
-            200,
+            StatusCodes.OK,
             {
               message: 'Livestream data was uploaded to s3 with success',
               livestream
@@ -62,9 +63,9 @@ exports.webHookCallback = async payload => {
         }
       }
     }
-    return [200];
+    return [StatusCodes.OK];
   } catch (err) {
     console.log(`Error executing webhook callback: `, err);
-    return [200];
+    return [StatusCodes.OK];
   }
 };

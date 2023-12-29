@@ -1,8 +1,9 @@
 'use strict';
 
+import { StatusCodes } from 'http-status-codes';
 import config from '../config';
 import SubscriptionService from './SubscriptionService';
-import { badRequest, badImplementationRequest } from '../response-codes';
+import { badRequest, internalServerErrorRequest } from '../response-codes';
 import {
   getUsers,
   createUser,
@@ -16,7 +17,7 @@ exports.getUsers = async query => {
     const [_, users] = await getUsers(query);
     if (users) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Fetcing of users action was successful.',
           users
@@ -27,7 +28,7 @@ exports.getUsers = async query => {
     }
   } catch (err) {
     console.log('Error getting all users: ', err);
-    return badImplementationRequest('Error getting users.');
+    return internalServerErrorRequest('Error getting users.');
   }
 };
 
@@ -36,7 +37,7 @@ exports.getUser = async userId => {
     const [error, user] = await getUserById(userId);
     if (user) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'User was successfully fetched.',
           user
@@ -46,7 +47,7 @@ exports.getUser = async userId => {
     return badRequest(error.message);
   } catch (err) {
     console.log('Error getting user: ', err);
-    return badImplementationRequest('Error getting user.');
+    return internalServerErrorRequest('Error getting user.');
   }
 };
 
@@ -55,7 +56,7 @@ exports.createUser = async payload => {
     const [error, user] = await createUser(payload);
     if (user) {
       return [
-        201,
+        StatusCodes.CREATED,
         {
           message: 'User created with success.',
           user
@@ -66,7 +67,7 @@ exports.createUser = async payload => {
     }
   } catch (err) {
     console.log(`Error creating user: `, err);
-    return badImplementationRequest('Error creating user.');
+    return internalServerErrorRequest('Error creating user.');
   }
 };
 
@@ -75,14 +76,14 @@ exports.updateUser = async (userId, payload) => {
     const [error, updatedUser] = await updateUser(userId, payload);
     if (updatedUser) {
       return [
-        200,
+        StatusCodes.OK,
         { message: 'User was successfully updated.', user: updatedUser }
       ];
     }
     return badRequest(error.message);
   } catch (err) {
     console.log('Error updating user: ', err);
-    return badImplementationRequest('Error updating user.');
+    return internalServerErrorRequest('Error updating user.');
   }
 };
 
@@ -96,13 +97,13 @@ exports.deleteUser = async userId => {
       }
       const [error, deletedUser] = await deleteUserById(userId);
       if (deletedUser) {
-        return [204];
+        return [StatusCodes.NO_CONTENT];
       }
       return badRequest(error.message);
     }
     return badRequest(error.message);
   } catch (err) {
     console.log('Error deleting user by id: ', err);
-    return badImplementationRequest('Error deleting user by id.');
+    return internalServerErrorRequest('Error deleting user by id.');
   }
 };

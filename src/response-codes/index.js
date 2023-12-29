@@ -1,12 +1,14 @@
 'use strict';
 
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+
 export const badRequest = message => {
   return [
-    400,
+    StatusCodes.BAD_REQUEST,
     {
       errors: [
         {
-          value: 'Bad Request',
+          value: ReasonPhrases.BAD_REQUEST,
           msg: message
         }
       ]
@@ -16,11 +18,11 @@ export const badRequest = message => {
 
 export const unauthorizedRequest = message => {
   return [
-    401,
+    StatusCodes.UNAUTHORIZED,
     {
       errors: [
         {
-          value: 'Unauthorized Request',
+          value: ReasonPhrases.UNAUTHORIZED,
           msg: message
         }
       ]
@@ -30,11 +32,11 @@ export const unauthorizedRequest = message => {
 
 export const forbiddenRequest = message => {
   return [
-    403,
+    StatusCodes.FORBIDDEN,
     {
       errors: [
         {
-          value: 'Forbidden Request',
+          value: ReasonPhrases.FORBIDDEN,
           msg: message
         }
       ]
@@ -44,11 +46,11 @@ export const forbiddenRequest = message => {
 
 export const notFoundRequest = message => {
   return [
-    404,
+    StatusCodes.NOT_FOUND,
     {
       errors: [
         {
-          value: 'Not Found',
+          value: ReasonPhrases.NOT_FOUND,
           msg: message
         }
       ]
@@ -56,55 +58,13 @@ export const notFoundRequest = message => {
   ];
 };
 
-export const badImplementationRequest = message => {
+export const internalServerErrorRequest = message => {
   return [
-    500,
+    StatusCodes.INTERNAL_SERVER_ERROR,
     {
       errors: [
         {
-          value: 'Bad Implementation Request',
-          msg: message
-        }
-      ]
-    }
-  ];
-};
-
-export const badGatewaynRequest = message => {
-  return [
-    502,
-    {
-      errors: [
-        {
-          value: 'Bad Gateway Request',
-          msg: message
-        }
-      ]
-    }
-  ];
-};
-
-export const serverUnavailableRequest = message => {
-  return [
-    503,
-    {
-      errors: [
-        {
-          value: 'Server Unavailable Request',
-          msg: message
-        }
-      ]
-    }
-  ];
-};
-
-export const gatewayTimeoutRequest = message => {
-  return [
-    504,
-    {
-      errors: [
-        {
-          value: 'Gateway Timeout Request',
+          value: ReasonPhrases.INTERNAL_SERVER_ERROR,
           msg: message
         }
       ]

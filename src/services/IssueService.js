@@ -1,6 +1,7 @@
 'use strict';
 
 import formidable from 'formidable';
+import { StatusCodes } from 'http-status-codes';
 import {
   uploadArchiveToS3Location,
   deleteIssueByKey,
@@ -30,7 +31,7 @@ import {
   getTotal,
   getNextIssueOrder
 } from '../queries/issues';
-import { badImplementationRequest, badRequest } from '../response-codes';
+import { internalServerErrorRequest, badRequest } from '../response-codes';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
 
@@ -81,7 +82,7 @@ exports.getIssues = async query => {
     const issues = await getIssues(query);
     if (issues) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Successful fetch for issue with query params.',
           issues
@@ -91,7 +92,7 @@ exports.getIssues = async query => {
     return badRequest(`No issues found with selected query params.`);
   } catch (err) {
     console.log('Error getting all issues: ', err);
-    return badImplementationRequest('Error getting issues.');
+    return internalServerErrorRequest('Error getting issues.');
   }
 };
 
@@ -100,14 +101,14 @@ exports.getIssueById = async issueId => {
     const issue = await getIssueById(issueId);
     if (issue) {
       return [
-        200,
+        StatusCodes.OK,
         { message: `Successful fetch for issue ${issueId}.`, issue }
       ];
     }
     return badRequest(`No issue found with id provided.`);
   } catch (err) {
     console.log('Error getting issue by id ', err);
-    return badImplementationRequest('Error getting issue by id.');
+    return internalServerErrorRequest('Error getting issue by id.');
   }
 };
 
@@ -175,14 +176,14 @@ exports.createIssue = async archive => {
         };
         await createIssue(body);
         return [
-          200,
+          StatusCodes.CREATED,
           { message: 'Issue uploaded to s3 with success', issue: { ...body } }
         ];
       }
     }
   } catch (err) {
     console.log(`Error uploading issue to s3: `, err);
-    return badImplementationRequest('Error uploading issue to s3.');
+    return internalServerErrorRequest('Error uploading issue to s3.');
   }
 };
 
@@ -235,7 +236,7 @@ exports.updateIssue = async archive => {
         await updateIssue(body);
         deleteIssueByKey(issue.key);
         return [
-          200,
+          StatusCodes.OK,
           {
             message: 'Issue updated in s3 with success',
             issue: {
@@ -266,7 +267,7 @@ exports.updateIssue = async archive => {
           };
           await updateIssue(body);
           return [
-            200,
+            StatusCodes.OK,
             {
               message: 'Issue uploaded to s3 with success',
               issue: {
@@ -301,7 +302,7 @@ exports.updateIssue = async archive => {
           };
           await updateIssue(body);
           return [
-            200,
+            StatusCodes.OK,
             {
               message: 'Cover image uploaded to s3 with success',
               issue: {
@@ -322,7 +323,7 @@ exports.updateIssue = async archive => {
         };
         await updateIssue(body);
         return [
-          200,
+          StatusCodes.OK,
           {
             message: 'Issue updated with success.',
             issue: {
@@ -336,7 +337,7 @@ exports.updateIssue = async archive => {
     }
   } catch (err) {
     console.log(`Error updating issue metadata: `, err);
-    return badImplementationRequest('Error updating issue metadata.');
+    return internalServerErrorRequest('Error updating issue metadata.');
   }
 };
 
@@ -345,7 +346,7 @@ exports.updateViews = async issueId => {
     const issueViews = await updateIssueViews(issueId);
     if (issueViews) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: `issueId: ${issueId} has ${issueViews} views.`,
           views: issueViews
@@ -355,7 +356,7 @@ exports.updateViews = async issueId => {
     return badRequest(`No issues found to update clicks.`);
   } catch (err) {
     console.log('Error updating views on issue: ', err);
-    return badImplementationRequest('Error updating views.');
+    return internalServerErrorRequest('Error updating views.');
   }
 };
 
@@ -368,13 +369,13 @@ exports.deleteIssueById = async issueId => {
       deleteCoverImageByKey(key);
       const deletedIssue = await deleteIssueById(issueId);
       if (deletedIssue) {
-        return [204];
+        return [StatusCodes.NO_CONTENT];
       }
     }
     return badRequest(`No issue found with id provided.`);
   } catch (err) {
     console.log('Error deleting issue by id: ', err);
-    return badImplementationRequest('Error deleting issue by id.');
+    return internalServerErrorRequest('Error deleting issue by id.');
   }
 };
 
@@ -383,7 +384,7 @@ exports.getTotal = async query => {
     const issues = await getTotal(query);
     if (issues) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Successful fetch for get total video with query params.',
           total_issue: issues
@@ -393,7 +394,7 @@ exports.getTotal = async query => {
     return badRequest(`No issue found with selected query params.`);
   } catch (err) {
     console.log('Error getting all issues: ', err);
-    return badImplementationRequest('Error getting issues.');
+    return internalServerErrorRequest('Error getting issues.');
   }
 };
 
@@ -402,7 +403,7 @@ exports.getNextIssueOrder = async () => {
     const nextIssueOrder = await getNextIssueOrder();
     if (nextIssueOrder) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Successful fetch of next issue order number.',
           nextIssueOrder
@@ -412,7 +413,7 @@ exports.getNextIssueOrder = async () => {
     return badRequest(`Unable to compute next largest issue order number.`);
   } catch (err) {
     console.log('Error computing next largest issue order number: ', err);
-    return badImplementationRequest(
+    return internalServerErrorRequest(
       'Error computing next largest issue order number.'
     );
   }

@@ -1,5 +1,6 @@
 'use strict';
 
+import { StatusCodes } from 'http-status-codes';
 import {
   getSubscriptions,
   getSubscriptionStatus,
@@ -10,14 +11,14 @@ import {
   deleteSubscription,
   deleteSubscriptions
 } from '../queries/subscriptions';
-import { badImplementationRequest, badRequest } from '../response-codes';
+import { internalServerErrorRequest, badRequest } from '../response-codes';
 
 exports.getSubscriptions = async query => {
   try {
     const subscriptions = await getSubscriptions(query);
     if (subscriptions) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Successful fetch for subscription with query params.',
           subscriptions
@@ -27,7 +28,7 @@ exports.getSubscriptions = async query => {
     return badRequest(`No subscriptions found with selected query params.`);
   } catch (err) {
     console.log('Error getting all subscriptions: ', err);
-    return badImplementationRequest('Error getting subscriptions.');
+    return internalServerErrorRequest('Error getting subscriptions.');
   }
 };
 
@@ -36,7 +37,7 @@ exports.getUserSubscriptions = async userId => {
     const subscription = await getUserSubscriptions(userId);
     if (subscription) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Successful fetch for subscriptions with user id.',
           subscription
@@ -46,7 +47,7 @@ exports.getUserSubscriptions = async userId => {
     return badRequest(`No subscriptions found with user id: ${userId}.`);
   } catch (err) {
     console.log('Error getting remaining time on subscription: ', err);
-    return badImplementationRequest(
+    return internalServerErrorRequest(
       'Error getting remaining time on subscription.'
     );
   }
@@ -57,7 +58,7 @@ exports.getSubscription = async subscriptionId => {
     const subscription = await getSubscription(subscriptionId);
     if (subscription) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Successful fetch for subscription with id.',
           subscription
@@ -67,7 +68,7 @@ exports.getSubscription = async subscriptionId => {
     return badRequest(`No subscriptions found with id: ${subscriptionId}.`);
   } catch (err) {
     console.log('Error getting remaining time on subscription: ', err);
-    return badImplementationRequest(
+    return internalServerErrorRequest(
       'Error getting remaining time on subscription.'
     );
   }
@@ -78,7 +79,7 @@ exports.getSubscriptionStatus = async query => {
     const [message] = await getSubscriptionStatus(query);
     if (message) {
       return [
-        200,
+        StatusCodes.OK,
         {
           subscriptionStatus: message
         }
@@ -87,7 +88,7 @@ exports.getSubscriptionStatus = async query => {
     return badRequest(`No subscriptions found with query.`);
   } catch (err) {
     console.log('Error getting remaining time on subscription: ', err);
-    return badImplementationRequest(
+    return internalServerErrorRequest(
       'Error getting remaining time on subscription.'
     );
   }
@@ -98,7 +99,7 @@ exports.createSubscription = async payload => {
     const [error, subscription] = await createSubscription(payload);
     if (subscription) {
       return [
-        200,
+        StatusCodes.CREATED,
         {
           message: 'Successful creation of subscription.',
           subscription
@@ -108,7 +109,7 @@ exports.createSubscription = async payload => {
     return badRequest(error.message);
   } catch (err) {
     console.log('Error creating subscription: ', err);
-    return badImplementationRequest('Error creating subscription.');
+    return internalServerErrorRequest('Error creating subscription.');
   }
 };
 
@@ -120,7 +121,7 @@ exports.updateSubscription = async (subscriptionId, payload) => {
     );
     if (updatedSubscription) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Successful update of subscription.',
           updatedSubscription
@@ -130,7 +131,7 @@ exports.updateSubscription = async (subscriptionId, payload) => {
     return badRequest(error.message);
   } catch (err) {
     console.log('Error updating subscription: ', err);
-    return badImplementationRequest('Error updating subscription.');
+    return internalServerErrorRequest('Error updating subscription.');
   }
 };
 
@@ -140,12 +141,12 @@ exports.deleteSubscription = async subscriptionId => {
       subscriptionId
     );
     if (deletedSubscription) {
-      return [204];
+      return [StatusCodes.NO_CONTENT];
     }
     return badRequest(error.message);
   } catch (err) {
     console.log('Error deleting subscription: ', err);
-    return badImplementationRequest('Error deleting subscription.');
+    return internalServerErrorRequest('Error deleting subscription.');
   }
 };
 
@@ -153,11 +154,11 @@ exports.deleteSubscriptions = async userId => {
   try {
     const [error, deletedSubscriptions] = await deleteSubscriptions(userId);
     if (deletedSubscriptions) {
-      return [204];
+      return [StatusCodes.NO_CONTENT];
     }
     return badRequest(error.message);
   } catch (err) {
     console.log('Error deleting subscriptions by user: ', err);
-    return badImplementationRequest('Error deleting subscriptions by user.');
+    return internalServerErrorRequest('Error deleting subscriptions by user.');
   }
 };

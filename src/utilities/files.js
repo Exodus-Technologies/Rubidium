@@ -28,7 +28,7 @@ export const getContentFromURL = url => {
     }
 
     const request = client.get(url, resp => {
-      if (resp.statusCode === 200) {
+      if (resp.statusCode === StatusCodes.OK) {
         const chunks = [];
         resp.on('data', chunk => {
           chunks.push(chunk);

@@ -44,7 +44,7 @@ export const generateAuthJwtToken = user => {
   }
 };
 
-export const verifyJwtToken = token => {
+export const verifyJWTToken = token => {
   try {
     const decoded = verify(token, jwtSecret);
     if (decoded) {
@@ -52,6 +52,7 @@ export const verifyJwtToken = token => {
     }
     return false;
   } catch (err) {
+    console.error(err);
     return false;
   }
 };

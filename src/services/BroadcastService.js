@@ -1,23 +1,24 @@
 'use strict';
 
+import { StatusCodes } from 'http-status-codes';
 import {
   getActiveBroadcast,
   deleteBroadcast,
   getBroadcasts
 } from '../queries/broadcasts';
-import { badImplementationRequest, badRequest } from '../response-codes';
+import { internalServerErrorRequest, badRequest } from '../response-codes';
 
 exports.getActiveBroadcast = async () => {
   try {
     const broadcast = await getActiveBroadcast();
     if (broadcast) {
-      return [200, broadcast];
+      return [StatusCodes.OK, broadcast];
     } else {
       return badRequest(`No active broadcast avaiable.`);
     }
   } catch (err) {
     console.log('Error getting active broadcast: ', err);
-    return badImplementationRequest('Error getting active broadcast.');
+    return internalServerErrorRequest('Error getting active broadcast.');
   }
 };
 
@@ -26,7 +27,7 @@ exports.getBroadcasts = async query => {
     const broadcasts = await getBroadcasts(query);
     if (broadcasts) {
       return [
-        200,
+        StatusCodes.OK,
         { message: 'Broadcasts fetched from db with success', broadcasts }
       ];
     } else {
@@ -34,7 +35,7 @@ exports.getBroadcasts = async query => {
     }
   } catch (err) {
     console.log('Error getting all broadcasts: ', err);
-    return badImplementationRequest('Error getting broadcasts.');
+    return internalServerErrorRequest('Error getting broadcasts.');
   }
 };
 
@@ -42,11 +43,11 @@ exports.deleteBroadcast = async broadcastId => {
   try {
     const [error, deletedBroadcast] = await deleteBroadcast(broadcastId);
     if (deletedBroadcast) {
-      return [204];
+      return [StatusCodes.NO_CONTENT];
     }
     return badRequest(error.message);
   } catch (err) {
     console.log('Error deleting broadcast: ', err);
-    return badImplementationRequest('Error deleting broadcast.');
+    return internalServerErrorRequest('Error deleting broadcast.');
   }
 };

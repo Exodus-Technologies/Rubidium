@@ -1,5 +1,6 @@
 'use strict';
 
+import { StatusCodes } from 'http-status-codes';
 import formidable from 'formidable';
 import {
   uploadVideoArchiveToS3Location,
@@ -31,7 +32,7 @@ import {
   getVideos,
   getTotal
 } from '../queries/videos';
-import { badImplementationRequest, badRequest } from '../response-codes';
+import { internalServerErrorRequest, badRequest } from '../response-codes';
 import { fancyTimeFormat } from '../utilities/time';
 import { stringToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
@@ -171,7 +172,10 @@ exports.uploadVideo = async archive => {
 
         const video = await createVideo(body);
         if (video) {
-          return [200, { message: 'Video uploaded to s3 with success', video }];
+          return [
+            StatusCodes.CREATED,
+            { message: 'Video uploaded to s3 with success', video }
+          ];
         } else {
           return badRequest('Unable to save video with metadata.');
         }
@@ -179,7 +183,7 @@ exports.uploadVideo = async archive => {
     }
   } catch (err) {
     console.log(`Error uploading video to s3: `, err);
-    return badImplementationRequest('Error uploading video to s3.');
+    return internalServerErrorRequest('Error uploading video to s3.');
   }
 };
 
@@ -216,7 +220,7 @@ exports.manualUpload = async upload => {
     const video = await createVideo(body);
     if (video) {
       return [
-        200,
+        StatusCodes.OK,
         { message: 'Video manual uploaded to s3 with success', video }
       ];
     } else {
@@ -224,7 +228,7 @@ exports.manualUpload = async upload => {
     }
   } catch (err) {
     console.log(`Error manually uploading video to s3: `, err);
-    return badImplementationRequest('Error manually uploading video to s3.');
+    return internalServerErrorRequest('Error manually uploading video to s3.');
   }
 };
 
@@ -232,13 +236,16 @@ exports.getVideos = async query => {
   try {
     const videos = await getVideos(query);
     if (videos) {
-      return [200, { message: 'Videos fetched from db with success', videos }];
+      return [
+        StatusCodes.OK,
+        { message: 'Videos fetched from db with success', videos }
+      ];
     } else {
       return badRequest(`No videos found with selected query params.`);
     }
   } catch (err) {
     console.log('Error getting all videos: ', err);
-    return badImplementationRequest('Error getting videos.');
+    return internalServerErrorRequest('Error getting videos.');
   }
 };
 
@@ -246,13 +253,16 @@ exports.getVideo = async videoId => {
   try {
     const video = await getVideoById(videoId);
     if (video) {
-      return [200, { message: 'Video fetched from db with success', video }];
+      return [
+        StatusCodes.OK,
+        { message: 'Video fetched from db with success', video }
+      ];
     } else {
       return badRequest(`No video found with id provided.`);
     }
   } catch (err) {
     console.log('Error getting video by id ', err);
-    return badImplementationRequest('Error getting video by id.');
+    return internalServerErrorRequest('Error getting video by id.');
   }
 };
 
@@ -262,7 +272,7 @@ exports.updateViews = async videoId => {
     if (video) {
       const { totalViews, title } = video;
       return [
-        200,
+        StatusCodes.OK,
         {
           message: `Video with title '${title.trim()}' has ${totalViews} views.`,
           views: totalViews
@@ -272,7 +282,7 @@ exports.updateViews = async videoId => {
     return badRequest(`No videos found to update clicks.`);
   } catch (err) {
     console.log('Error updating views on video: ', err);
-    return badImplementationRequest('Error updating views.');
+    return internalServerErrorRequest('Error updating views.');
   }
 };
 
@@ -327,7 +337,7 @@ exports.updateVideo = async archive => {
         deleteVideoByKey(video.key);
         deleteThumbnailByKey(video.key);
         return [
-          200,
+          StatusCodes.OK,
           {
             message: 'Video updated to s3 with success',
             video: {
@@ -363,7 +373,7 @@ exports.updateVideo = async archive => {
           };
           await updateVideo(body);
           return [
-            200,
+            StatusCodes.OK,
             {
               message: 'Video updated and uploaded to s3 with success',
               video: {
@@ -399,7 +409,7 @@ exports.updateVideo = async archive => {
           };
           await updateVideo(body);
           return [
-            200,
+            StatusCodes.OK,
             {
               message:
                 'Video thumbnail updated and uploaded to s3 with success',
@@ -425,7 +435,7 @@ exports.updateVideo = async archive => {
         };
         await updateVideo(body);
         return [
-          200,
+          StatusCodes.OK,
           {
             message: 'Video updated with success.',
             video: {
@@ -439,7 +449,7 @@ exports.updateVideo = async archive => {
     }
   } catch (err) {
     console.log(`Error updating video metadata: `, err);
-    return badImplementationRequest('Error updating video metadata.');
+    return internalServerErrorRequest('Error updating video metadata.');
   }
 };
 
@@ -452,13 +462,13 @@ exports.deleteVideoById = async videoId => {
       deleteThumbnailByKey(key);
       const deletedVideo = await deleteVideoById(videoId);
       if (deletedVideo) {
-        return [204];
+        return [StatusCodes.NO_CONTENT];
       }
     }
     return badRequest(`No video found with id provided.`);
   } catch (err) {
     console.log('Error deleting video by id: ', err);
-    return badImplementationRequest('Error deleting video by id.');
+    return internalServerErrorRequest('Error deleting video by id.');
   }
 };
 
@@ -467,7 +477,7 @@ exports.getTotal = async query => {
     const total = await getTotal(query);
     if (total) {
       return [
-        200,
+        StatusCodes.OK,
         {
           message: 'Successful fetch for get total video with query params.',
           videoCount: total
@@ -477,6 +487,6 @@ exports.getTotal = async query => {
     return badRequest(`No video total found with selected query params.`);
   } catch (err) {
     console.log('Error getting total for all videos: ', err);
-    return badImplementationRequest('Error getting total for all videos.');
+    return internalServerErrorRequest('Error getting total for all videos.');
   }
 };

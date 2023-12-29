@@ -1,11 +1,12 @@
 'use strict';
 
-import { badImplementationRequest, badRequest } from '../response-codes';
+import { StatusCodes } from 'http-status-codes';
+import { internalServerErrorRequest, badRequest } from '../response-codes';
 import {
   generateAuthJwtToken,
   generateTransactionId,
   generateOTPCode,
-  verifyJwtToken
+  verifyJWTToken
 } from '../utilities/token';
 import { EmailService } from '../services';
 import {
@@ -30,7 +31,7 @@ exports.validateLogin = async (email, password) => {
         const { email, fullName, city, state, isAdmin, userId } = user;
         const token = generateAuthJwtToken(user);
         return [
-          200,
+          StatusCodes.OK,
           {
             message: 'Successful login',
             user: {
@@ -50,7 +51,7 @@ exports.validateLogin = async (email, password) => {
     return badRequest(error.message);
   } catch (err) {
     console.log(`Error logging with credentials: `, err);
-    return badImplementationRequest('Error logging with credentials.');
+    return internalServerErrorRequest('Error logging with credentials.');
   }
 };
 
@@ -99,7 +100,7 @@ exports.requestPasswordReset = async email => {
     };
     saveTransaction(transaction);
     return [
-      200,
+      StatusCodes.OK,
       {
         message: `Password reset success! An email with instructions has been sent to your email.`
       }
@@ -112,7 +113,7 @@ exports.requestPasswordReset = async email => {
       reason: `Email was not sent to user successfully due to: ${err.message}`
     };
     saveTransaction(transaction);
-    return badImplementationRequest('Error password reset requesting.');
+    return internalServerErrorRequest('Error password reset requesting.');
   }
 };
 
@@ -122,12 +123,15 @@ exports.verifyOTP = async (email, otpCode) => {
     if (isVerified) {
       const [_, user] = await getUserByEmail(email);
       const token = generateAuthJwtToken(user);
-      return [200, { message: 'Code was verified successfully.', token }];
+      return [
+        StatusCodes.OK,
+        { message: 'Code was verified successfully.', token }
+      ];
     }
     return badRequest(error.message);
   } catch (err) {
     console.log('Error verifing code: ', err);
-    return badImplementationRequest('Error verifing code.');
+    return internalServerErrorRequest('Error verifing code.');
   }
 };
 
@@ -147,7 +151,7 @@ exports.changePassword = async (email, token, password) => {
       return badRequest(error.message);
     }
 
-    const isVerified = verifyJwtToken(token);
+    const isVerified = verifyJWTToken(token);
     if (isVerified) {
       user.password = password;
       const updatedUser = await user.save();
@@ -166,7 +170,7 @@ exports.changePassword = async (email, token, password) => {
         saveTransaction(transaction);
         await deleteCode(userId);
         return [
-          200,
+          StatusCodes.OK,
           {
             message: 'Password reset successful.'
           }
@@ -182,6 +186,6 @@ exports.changePassword = async (email, token, password) => {
       reason: `Email was not sent to user successfully due to: ${err.message}`
     };
     saveTransaction(transaction);
-    return badImplementationRequest('Error updating password.');
+    return internalServerErrorRequest('Error updating password.');
   }
 };
