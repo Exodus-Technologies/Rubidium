@@ -3,10 +3,10 @@
 import server from './server';
 import config from './config';
 import models from './models';
-import { getDBUri } from './queries';
+import { generateDBUri } from './queries';
 
 /**
- * Start web server
+ * Starts web server
  */
 const initServer = async () => {
   const { PORT, HOST } = config;
@@ -20,14 +20,13 @@ const initServer = async () => {
 };
 
 /**
- * Connect to mongodb database
+ * Connects to database
  */
 const initDB = async () => {
   const { options } = config.sources.database;
   const { source } = models;
-  const uri = getDBUri();
   try {
-    await source.connect(uri, options);
+    await source.connect(generateDBUri(), options);
   } catch (e) {
     console.log(`Error connecting to db: ${e}`);
     throw e;
@@ -57,8 +56,13 @@ process
      * Close connection to db
      */
     const { source } = models;
-    source.disconnect().catch(err => {
-      process.exit(err ? 1 : 0);
-    });
+    source
+      .disconnect()
+      .then(() => {
+        process.exit(0);
+      })
+      .catch(() => {
+        process.exit(1);
+      });
     console.log('Disconnecting from database and shutting down application.');
   });

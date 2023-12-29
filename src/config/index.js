@@ -13,12 +13,28 @@ const config = {
   HASH_SALT: +process.env.HASH_SALT,
   jwtSecret: process.env.JWT_SECRET,
   purgeSubscriptions: stringToBoolean(process.env.PURGE_SUBSCRIPTIONS),
-  subscriptionURI: process.env.SUBSCRIPTIONS_URI,
   defaultCacheTtl: +process.env.DEFAULT_CACHE_TTL,
   sources: {
-    twilio: {
-      sendGridAPIKey: process.env.SENDGRID_API_KEY,
-      noReplyEmail: process.env.NO_REPLY_EMAIL
+    aws: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.AWS_REGION,
+      s3ThumbnailBucketName: process.env.S3_THUMBNAIL_BUCKET_NAME,
+      s3VideoBucketName: process.env.S3_VIDEO_BUCKET_NAME,
+      videoDistributionURI: process.env.AWS_CLOUDFRONT_VIDEOS_DISTRIBUTION_URI,
+      thumbnailDistributionURI:
+        process.env.AWS_CLOUDFRONT_THUMBNAILS_DISTRIBUTION_URI
+    },
+    bambuser: {
+      apiKey: process.env.BAMBUSER_API_KEY,
+      daId: process.env.BAMBUSER_DAID,
+      daSecret: process.env.BAMBUSER_DASECRET,
+      broadcastURL: process.env.BAMBUSER_BROADCAST_URL,
+      platforms: {
+        ios: process.env.BAMBUSER_APP_KEY_IOS,
+        android: process.env.BAMBUSER_APP_KEY_ANDROID,
+        web: process.env.BAMBUSER_APP_KEY_WEB
+      }
     },
     database: {
       clusterDomain: process.env.CLUSTER_DOMAIN,
@@ -29,6 +45,10 @@ const config = {
         useNewUrlParser: true,
         useUnifiedTopology: true
       }
+    },
+    twilio: {
+      sendGridAPIKey: process.env.SENDGRID_API_KEY,
+      noReplyEmail: process.env.NO_REPLY_EMAIL
     }
   }
 };

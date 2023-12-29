@@ -13,7 +13,11 @@ import {
   appRouter,
   authRouter,
   userRouter,
-  subscriptionRouter
+  subscriptionRouter,
+  bambuserRouter,
+  broadcastRouter,
+  categoryRouter,
+  videoRouter
 } from './routers';
 
 // Create the Express application object
@@ -68,7 +72,24 @@ console.log('Loaded auth routes middleware.');
 server.use(rateLimiter, userRouter);
 console.log('Loaded user routes middleware.');
 
+//Subscription middleware
 server.use(rateLimiter, subscriptionRouter);
 console.log('Loaded subscription routes middleware.');
+
+//Bambuser middleware
+server.use(rateLimiter, bambuserRouter);
+console.log('Loaded bambuser routes middleware.');
+
+//Broadcasts middleware
+server.use(rateLimiter, broadcastRouter);
+console.log('Loaded broadcast routes middleware.');
+
+//Category middleware
+server.use(rateLimiter, categoryRouter);
+console.log('Loaded category routes middleware.');
+
+//Video middleware
+server.use(rateLimiter, videoRouter);
+console.log('Loaded video routes middleware.');
 
 export default http.createServer(server);

@@ -1,7 +1,19 @@
 'use strict';
 
-import UserController from './UserContoller';
 import AuthController from './AuthController';
+import BambuserController from './BambuserController';
+import BroadcastController from './BroadcastController';
+import CategoryController from './CategoryController';
 import SubscriptionController from './SubscriptionController';
+import UserController from './UserContoller';
+import VideoController from './VideoController';
 
-export { UserController, AuthController, SubscriptionController };
+export {
+  AuthController,
+  BambuserController,
+  BroadcastController,
+  CategoryController,
+  SubscriptionController,
+  UserController,
+  VideoController
+};
