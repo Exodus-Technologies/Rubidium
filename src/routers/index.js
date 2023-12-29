@@ -8,6 +8,7 @@ import bambuserRouter from './bambuserRouter';
 import broadcastRouter from './broadcastRouter';
 import categoryRouter from './categoryRouter';
 import videoRouter from './videoRouter';
+import issueRouter from './issueRouter';
 
 export {
   appRouter,
@@ -15,6 +16,7 @@ export {
   bambuserRouter,
   broadcastRouter,
   categoryRouter,
+  issueRouter,
   subscriptionRouter,
   userRouter,
   videoRouter

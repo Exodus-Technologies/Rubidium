@@ -94,7 +94,7 @@ export const VIDEO_MIME_TYPE = 'video/mp4';
 
 export const THUMBNAIL_MIME_TYPE = 'image/jpeg';
 
-export const MAX_FILE_SIZE = 200 * 1024 * 1024 * 1024;
+export const MAX_FILE_SIZE_VIDEO = 2 * 1024 * 1024 * 1024;
 
 export const AUTHOR = 'Sheen Magazine';
 
@@ -113,3 +113,15 @@ export const BAMBUSER_API_VERSION_ONE = 'v1';
 export const BAMBUSER_API_VERSION_TWO = 'v2';
 
 export const BAMBUSER_API_TIMEOUT = 600000; //10 mins
+
+export const DEFAULT_PDF_FILE_EXTENTION = 'pdf';
+
+export const ISSUE_MIME_TYPE = 'application/pdf';
+
+export const ISSUE_MIME_TYPES = ['application/pdf', 'application/octet-stream'];
+
+export const DEFAULT_COVERIMAGE_FILE_EXTENTION = 'jpeg';
+
+export const COVERIMAGE_MIME_TYPES = ['image/jpeg', 'image/png'];
+
+export const MAX_FILE_SIZE_PDF = 1000 * 1024 * 1024; //1000 MB

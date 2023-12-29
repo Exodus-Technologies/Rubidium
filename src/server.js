@@ -16,6 +16,7 @@ import {
   subscriptionRouter,
   bambuserRouter,
   broadcastRouter,
+  issueRouter,
   categoryRouter,
   videoRouter
 } from './routers';
@@ -91,5 +92,9 @@ console.log('Loaded category routes middleware.');
 //Video middleware
 server.use(rateLimiter, videoRouter);
 console.log('Loaded video routes middleware.');
+
+//Issue middleware
+server.use(rateLimiter, issueRouter);
+console.log('Loaded issue routes middleware.');
 
 export default http.createServer(server);

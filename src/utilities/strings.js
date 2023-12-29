@@ -6,6 +6,10 @@ export const createSubscriptionId = () => {
   return `subscription-${uuidv4()}`;
 };
 
-export const createSubId = () => {
+export const createVideoSubId = () => {
   return `video-${uuidv4()}`;
+};
+
+export const createIssueSubId = () => {
+  return `issue-${uuidv4()}`;
 };

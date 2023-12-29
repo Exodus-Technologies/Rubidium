@@ -2,7 +2,7 @@
 
 import formidable from 'formidable';
 import {
-  uploadArchiveToS3Location,
+  uploadVideoArchiveToS3Location,
   doesVideoS3BucketExist,
   doesThumbnailS3BucketExist,
   doesVideoObjectExist,
@@ -19,7 +19,7 @@ import {
 import {
   VIDEO_MIME_TYPE,
   THUMBNAIL_MIME_TYPE,
-  MAX_FILE_SIZE
+  MAX_FILE_SIZE_VIDEO
 } from '../constants';
 import {
   createVideo,
@@ -54,7 +54,7 @@ function convertCheckBoxValue(val) {
 exports.getPayloadFromRequest = async req => {
   const form = formidable({
     multiples: true,
-    maxFileSize: MAX_FILE_SIZE
+    maxFileSize: MAX_FILE_SIZE_VIDEO
   });
 
   return new Promise((resolve, reject) => {
@@ -168,7 +168,7 @@ exports.uploadVideo = async archive => {
         await createThumbnailS3Bucket();
       } else {
         const { thumbNailLocation, videoLocation, duration } =
-          await uploadArchiveToS3Location(archive);
+          await uploadVideoArchiveToS3Location(archive);
 
         const body = {
           title,
@@ -360,9 +360,8 @@ exports.updateVideo = async archive => {
           if (s3Object) {
             await deleteVideoByKey(newKey);
           }
-          const { videoLocation, duration } = await uploadArchiveToS3Location(
-            archive
-          );
+          const { videoLocation, duration } =
+            await uploadVideoArchiveToS3Location(archive);
           const body = {
             title,
             videoId,
@@ -397,7 +396,7 @@ exports.updateVideo = async archive => {
           if (s3Object) {
             await deleteThumbnailByKey(newKey);
           }
-          const { thumbNailLocation } = await uploadArchiveToS3Location(
+          const { thumbNailLocation } = await uploadVideoArchiveToS3Location(
             archive
           );
           const body = {
