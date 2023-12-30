@@ -1,13 +1,12 @@
 'use strict';
 
 import mongoose from 'mongoose';
-import config from '../config';
 import { createSubscriptionId } from '../utilities/strings';
 
 const { Schema, model } = mongoose;
-const { NODE_ENV } = config;
 
 import { SUBSCRIPTION_TYPES, RECURRING_TYPES } from '../constants';
+import { isProduction } from '../utilities/boolean';
 
 //SUBSCRIPTION SCHEMA
 //  ============================================
@@ -29,7 +28,7 @@ const subscriptionSchema = new Schema({
 /**
  * Set the autoCreate option on models if not on production
  */
-subscriptionSchema.set('autoCreate', NODE_ENV !== 'production');
+subscriptionSchema.set('autoCreate', !isProduction());
 
 /**
  * Create Subscription model out of subscriptionSchema

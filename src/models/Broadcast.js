@@ -1,12 +1,11 @@
 'use strict';
 
 import mongoose from 'mongoose';
-import config from '../config';
 import mongooseSequence from 'mongoose-sequence';
+import { isProduction } from '../utilities/boolean';
 
 const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
-const { NODE_ENV } = config;
 
 const stringSchema = { type: String };
 const numberSchema = { type: Number };
@@ -81,7 +80,7 @@ const broadcastSchema = new Schema(
 /**
  * Set the autoCreate option on models if not on production
  */
-broadcastSchema.set('autoCreate', NODE_ENV !== 'production');
+broadcastSchema.set('autoCreate', !isProduction());
 
 /**
  * Increments videoId everytime an instances is created

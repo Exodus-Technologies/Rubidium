@@ -20,3 +20,7 @@ export const stringToBoolean = str => {
       return JSON.parse(str);
   }
 };
+
+export const isProduction = () => {
+  return process.env.NODE_ENV === 'production';
+};

@@ -1,12 +1,11 @@
 'use strict';
 
 import mongoose from 'mongoose';
-import config from '../config';
 import mongooseSequence from 'mongoose-sequence';
+import { isProduction } from '../utilities/boolean';
 
 const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
-const { NODE_ENV } = config;
 
 //CATEGORY SCHEMA
 //  ============================================
@@ -20,7 +19,7 @@ const categorySchema = new Schema(
 /**
  * Set the autoCreate option on models if not on production
  */
-categorySchema.set('autoCreate', NODE_ENV !== 'production');
+categorySchema.set('autoCreate', !isProduction());
 
 /**
  * Increments categoryId everytime an instances is created

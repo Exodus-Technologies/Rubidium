@@ -3,32 +3,60 @@
 import winston from 'winston';
 import WinstonCloudWatch from 'winston-cloudwatch';
 import config from '../config';
+import { isProduction } from '../utilities/boolean';
 
 const { NODE_ENV, sources } = config;
 const { cloudWatchLogGroup, accessKeyId, secretAccessKey, region } =
   sources.aws;
 
-const logger = new winston.createLogger({
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.Console({
+const loggerTransports = [
+  {
+    type: 'console',
+    options: {
       timestamp: true,
       colorize: true
-    })
-  ]
-});
+    }
+  }
+];
 
-if (NODE_ENV === 'production') {
-  logger.add(
-    new WinstonCloudWatch({
+if (isProduction()) {
+  loggerTransports.push({
+    type: 'cloud-watch',
+    options: {
       logGroupName: cloudWatchLogGroup,
       logStreamName: `${cloudWatchLogGroup}-${NODE_ENV}`,
       awsAccessKeyId: accessKeyId,
       awsSecretKey: secretAccessKey,
       awsRegion: region,
       messageFormatter: ({ level, message }) => `[${level}] : ${message}`
-    })
-  );
+    }
+  });
 }
 
-export default logger;
+const createConsoleTransport = options => {
+  return new winston.transports.Console(options);
+};
+
+const createWinstonTransport = options => {
+  return new WinstonCloudWatch(options);
+};
+
+const getLoggerTransports = transports => {
+  return transports.map(transport => {
+    const { type, options } = transport;
+    switch (type) {
+      case 'console':
+        return createConsoleTransport(options);
+      case 'cloud-watch':
+        return createWinstonTransport(options);
+    }
+  });
+};
+
+const createLoggerFactory = transports => {
+  return winston.createLogger({
+    transports: getLoggerTransports(transports)
+  });
+};
+
+export default createLoggerFactory(loggerTransports);

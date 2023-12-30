@@ -2,14 +2,12 @@
 
 import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
-import config from '../config';
 import { AUTHOR, VIDEO_PUBLISHED_STATUS } from '../constants';
 import { createVideoSubId } from '../utilities/strings';
+import { isProduction } from '../utilities/boolean';
 
 const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
-
-const { NODE_ENV } = config;
 
 //VIDEO SCHEMA
 //  ============================================
@@ -35,7 +33,7 @@ const videoSchema = new Schema(
 /**
  * Set the autoCreate option on models if not on production
  */
-videoSchema.set('autoCreate', NODE_ENV !== 'production');
+videoSchema.set('autoCreate', !isProduction());
 
 /**
  * Increments videoId everytime an instances is created

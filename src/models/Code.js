@@ -2,11 +2,10 @@
 
 import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
-import config from '../config';
+import { isProduction } from '../utilities/boolean';
 
 const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
-const { NODE_ENV } = config;
 
 //TOKEN SCHEMA
 //  ============================================
@@ -36,7 +35,7 @@ const optCodeSchema = new Schema({
 /**
  * Set the autoCreate option on models if not on production
  */
-optCodeSchema.set('autoCreate', NODE_ENV !== 'production');
+optCodeSchema.set('autoCreate', !isProduction());
 
 /**
  * Increments optId everytime an instances is created
