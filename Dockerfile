@@ -1,4 +1,4 @@
-FROM node:16.14.2-alpine
+FROM node:20.10-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -13,7 +13,7 @@ RUN npm run refresh
 COPY . .
 
 # Expose PORT
-EXPOSE 8081
+EXPOSE 9000
 
 # Start application
 CMD [ "npm", "start" ]
