@@ -37,7 +37,7 @@ const createConsoleTransport = options => {
   return new winston.transports.Console(options);
 };
 
-const createWinstonTransport = options => {
+const createWinstonCloudWatchTransport = options => {
   return new WinstonCloudWatch(options);
 };
 
@@ -48,7 +48,7 @@ const getLoggerTransports = transports => {
       case 'console':
         return createConsoleTransport(options);
       case 'cloud-watch':
-        return createWinstonTransport(options);
+        return createWinstonCloudWatchTransport(options);
     }
   });
 };
