@@ -11,6 +11,7 @@ import {
 } from '../queries/broadcasts';
 import { deleteBroadCastById, uploadLivestream } from '../bambuser';
 import { BAMBUSER_BROADCAST_ARCHIVED_STATUS } from '../constants';
+import logger from '../logger';
 
 const { platforms } = config.sources.bambuser;
 
@@ -29,7 +30,7 @@ exports.getApplicationId = async query => {
     }
     return badRequest(`No application id found with platform: '${platform}.'`);
   } catch (err) {
-    console.log('Error getting applicationId: ', err);
+    logger.error('Error getting applicationId: ', err);
     return internalServerErrorRequest('Error getting applicationId.');
   }
 };
@@ -65,7 +66,7 @@ exports.webHookCallback = async payload => {
     }
     return [StatusCodes.OK];
   } catch (err) {
-    console.log(`Error executing webhook callback: `, err);
+    logger.error(`Error executing webhook callback: `, err);
     return [StatusCodes.OK];
   }
 };

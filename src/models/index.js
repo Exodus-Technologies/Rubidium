@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import mongoose from 'mongoose';
 import config from '../config';
+import logger from '../logger';
 
 const basename = path.basename(__filename);
 
@@ -18,14 +19,14 @@ const { clusterDomain } = config.sources.database;
  * Set event listener to mongoose.connection on error
  */
 mongoose.connection.on('error', error => {
-  console.log(error);
+  logger.error(error);
 });
 
 /**
  * Set event listener to mongoose.connection on open
  */
 mongoose.connection.on('open', () => {
-  console.log(`Connected to ${clusterDomain}....`);
+  logger.info(`Connected to ${clusterDomain}....`);
 });
 
 /**

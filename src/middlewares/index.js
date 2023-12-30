@@ -8,14 +8,15 @@ import { errorFormatter, validationResult } from '../validations';
 import { windowMs } from '../constants';
 import { verifyJWTToken } from '../utilities/token';
 import { getUserByEmail } from '../queries/users';
+import logger from '../logger';
 
 const nodeCache = new NodeCache();
 const { defaultCacheTtl } = config;
 
 const requestResponse = (req, res, next) => {
-  console.info(`${req.method} ${req.originalUrl}`);
+  logger.info(`${req.method} ${req.originalUrl}`);
   res.on('finish', () => {
-    console.info(
+    logger.info(
       `${res.statusCode} ${res.statusMessage}; ${res.get('X-Response-Time')} ${
         res.get('Content-Length') || 0
       }b sent`
@@ -25,7 +26,7 @@ const requestResponse = (req, res, next) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-  err && console.error('Error: ', err);
+  err && logger.error('Error: ', err);
   res.status(err.status || StatusCodes.INTERNAL_SERVER_ERROR).send(err.message);
 };
 

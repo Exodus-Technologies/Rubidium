@@ -1,6 +1,7 @@
 'use strict';
 
 import { BambuserService } from '../services';
+import logger from '../logger';
 
 exports.getApplicationId = async (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ exports.getApplicationId = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with retrieving application id: `, err);
+    logger.error(`Error with retrieving application id: `, err);
     next(err);
   }
 };
@@ -28,7 +29,7 @@ exports.webHookCallback = async (req, res, next) => {
     }
     res.status(StatusCodes.OK).end();
   } catch (err) {
-    console.log(`Error with invoking webhook for broadcast details: `, err);
+    logger.error(`Error with invoking webhook for broadcast details: `, err);
     next(err);
   }
 };

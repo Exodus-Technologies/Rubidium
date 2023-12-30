@@ -1,6 +1,7 @@
 'use strict';
 
 import { CategoryService } from '../services';
+import logger from '../logger';
 
 exports.getCategories = async (req, res, next) => {
   try {
@@ -8,7 +9,7 @@ exports.getCategories = async (req, res, next) => {
     const [statusCode, payload] = await CategoryService.getCategories(query);
     res.status(statusCode).send(payload);
   } catch (err) {
-    console.log(`Error with getting categories: `, err);
+    logger.error(`Error with getting categories: `, err);
     next(err);
   }
 };
@@ -21,7 +22,7 @@ exports.getCategory = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(
+    logger.error(
       `Error with getting category metadata by id: ${categoryId}: `,
       err
     );
@@ -35,7 +36,7 @@ exports.createCategory = async (req, res, next) => {
     const [statusCode, payload] = await CategoryService.createCategory(body);
     res.status(statusCode).send(payload);
   } catch (err) {
-    console.log(`Error with creating new category: `, err);
+    logger.error(`Error with creating new category: `, err);
     next(err);
   }
 };
@@ -50,7 +51,7 @@ exports.updateCategory = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with updating category: `, err);
+    logger.error(`Error with updating category: `, err);
     next(err);
   }
 };
@@ -63,7 +64,7 @@ exports.deleteCategoryById = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with deleting category by id: ${categoryId}: `, err);
+    logger.error(`Error with deleting category by id: ${categoryId}: `, err);
     next(err);
   }
 };

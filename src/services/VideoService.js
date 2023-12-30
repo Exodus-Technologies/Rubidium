@@ -37,6 +37,7 @@ import { fancyTimeFormat } from '../utilities/time';
 import { stringToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
+import logger from '../logger';
 
 exports.getPayloadFromFormRequest = async req => {
   const form = formidable({
@@ -80,10 +81,10 @@ exports.getPayloadFromFormRequest = async req => {
       }
     });
     form.on('error', err => {
-      console.log('Error on form parse: ', err);
+      logger.info('Error on form parse: ', err);
     });
     form.on('end', () => {
-      console.log('Form is finished processing.');
+      logger.info('Form is finished processing.');
     });
   });
 };
@@ -182,7 +183,7 @@ exports.uploadVideo = async archive => {
       }
     }
   } catch (err) {
-    console.log(`Error uploading video to s3: `, err);
+    logger.error(`Error uploading video to s3: `, err);
     return internalServerErrorRequest('Error uploading video to s3.');
   }
 };
@@ -227,7 +228,7 @@ exports.manualUpload = async upload => {
       return badRequest('Unable to save manual upload video with metadata.');
     }
   } catch (err) {
-    console.log(`Error manually uploading video to s3: `, err);
+    logger.error(`Error manually uploading video to s3: `, err);
     return internalServerErrorRequest('Error manually uploading video to s3.');
   }
 };
@@ -244,7 +245,7 @@ exports.getVideos = async query => {
       return badRequest(`No videos found with selected query params.`);
     }
   } catch (err) {
-    console.log('Error getting all videos: ', err);
+    logger.error('Error getting all videos: ', err);
     return internalServerErrorRequest('Error getting videos.');
   }
 };
@@ -261,7 +262,7 @@ exports.getVideo = async videoId => {
       return badRequest(`No video found with id provided.`);
     }
   } catch (err) {
-    console.log('Error getting video by id ', err);
+    logger.error('Error getting video by id ', err);
     return internalServerErrorRequest('Error getting video by id.');
   }
 };
@@ -281,7 +282,7 @@ exports.updateViews = async videoId => {
     }
     return badRequest(`No videos found to update clicks.`);
   } catch (err) {
-    console.log('Error updating views on video: ', err);
+    logger.error('Error updating views on video: ', err);
     return internalServerErrorRequest('Error updating views.');
   }
 };
@@ -448,7 +449,7 @@ exports.updateVideo = async archive => {
       return badRequest(`No video was found to update by videoId provided.`);
     }
   } catch (err) {
-    console.log(`Error updating video metadata: `, err);
+    logger.error(`Error updating video metadata: `, err);
     return internalServerErrorRequest('Error updating video metadata.');
   }
 };
@@ -467,7 +468,7 @@ exports.deleteVideoById = async videoId => {
     }
     return badRequest(`No video found with id provided.`);
   } catch (err) {
-    console.log('Error deleting video by id: ', err);
+    logger.error('Error deleting video by id: ', err);
     return internalServerErrorRequest('Error deleting video by id.');
   }
 };
@@ -486,7 +487,7 @@ exports.getTotal = async query => {
     }
     return badRequest(`No video total found with selected query params.`);
   } catch (err) {
-    console.log('Error getting total for all videos: ', err);
+    logger.error('Error getting total for all videos: ', err);
     return internalServerErrorRequest('Error getting total for all videos.');
   }
 };

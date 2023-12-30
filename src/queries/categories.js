@@ -1,6 +1,7 @@
 'use strict';
 
 import models from '../models';
+import logger from '../logger';
 
 export const getCategories = async query => {
   try {
@@ -33,7 +34,7 @@ export const getCategories = async query => {
       .lean()
       .exec();
   } catch (err) {
-    console.log('Error getting category data from db: ', err);
+    logger.error('Error getting category data from db: ', err);
   }
 };
 
@@ -43,7 +44,7 @@ export const getCategoryById = async categoryId => {
     const category = await Category.findOne({ categoryId });
     return category;
   } catch (err) {
-    console.log('Error getting catgeory data from db by id: ', err);
+    logger.error('Error getting catgeory data from db by id: ', err);
   }
 };
 
@@ -53,7 +54,7 @@ export const getCategoryByName = async name => {
     const category = await Category.findOne({ name });
     return category;
   } catch (err) {
-    console.log('Error getting category data from db by name: ', err);
+    logger.error('Error getting category data from db by name: ', err);
   }
 };
 
@@ -69,7 +70,7 @@ export const createCategory = async payload => {
     const { description, name, categoryId } = createdCategory;
     return [null, { description, name, categoryId }];
   } catch (err) {
-    console.log('Error saving category data to db: ', err);
+    logger.error('Error saving category data to db: ', err);
   }
 };
 
@@ -82,7 +83,7 @@ export const updateCategory = async (categoryId, name) => {
     const category = await Category.findOneAndUpdate(filter, update, options);
     return [null, category];
   } catch (err) {
-    console.log('Error updating category data to db: ', err);
+    logger.error('Error updating category data to db: ', err);
   }
 };
 
@@ -92,6 +93,6 @@ export const deleteCategoryById = async categoryId => {
     const deletedCategory = await Category.deleteOne({ categoryId });
     return [null, deletedCategory];
   } catch (err) {
-    console.log('Error deleting video by id: ', err);
+    logger.error('Error deleting video by id: ', err);
   }
 };

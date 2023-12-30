@@ -1,6 +1,7 @@
 'use strict';
 
 import { SubscriptionService } from '../services';
+import logger from '../logger';
 
 exports.getSubscriptions = async (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ exports.getSubscriptions = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with getting subscriptions: `, err);
+    logger.error(`Error with getting subscriptions: `, err);
     next(err);
   }
 };
@@ -34,7 +35,7 @@ exports.getSubscription = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(
+    logger.error(
       `Error with getting subscription by id: ${subscriptionId} `,
       err
     );
@@ -49,7 +50,7 @@ exports.getSubscriptionStatus = async (req, res, next) => {
       await SubscriptionService.getSubscriptionStatus(query);
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with getting subscription status: `, err);
+    logger.error(`Error with getting subscription status: `, err);
     next(err);
   }
 };
@@ -62,7 +63,7 @@ exports.createSubscription = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with creating subscription: `, err);
+    logger.error(`Error with creating subscription: `, err);
     next(err);
   }
 };
@@ -77,7 +78,7 @@ exports.updateSubscription = async (req, res, next) => {
     );
     return res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with updating subscription: `, err);
+    logger.error(`Error with updating subscription: `, err);
     next(err);
   }
 };
@@ -90,7 +91,7 @@ exports.deleteSubscription = async (req, res, next) => {
     );
     return res.status(statusCode).send(response);
   } catch (err) {
-    console.log(
+    logger.error(
       `Error with deleting by id subscription: ${subscriptionId} `,
       err
     );
@@ -105,7 +106,7 @@ exports.deleteSubscriptions = async (req, res, next) => {
       await SubscriptionService.deleteSubscriptions(userId);
     return res.status(statusCode).send(response);
   } catch (err) {
-    console.log(
+    logger.error(
       `Error with deleting subscriptions by user id: ${userId} `,
       err
     );

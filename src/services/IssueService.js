@@ -34,6 +34,7 @@ import {
 import { internalServerErrorRequest, badRequest } from '../response-codes';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
+import logger from '../logger';
 
 exports.getPayloadFromFormRequest = async req => {
   const form = formidable({ multiples: true, maxFileSize: MAX_FILE_SIZE_PDF });
@@ -69,10 +70,10 @@ exports.getPayloadFromFormRequest = async req => {
       }
     });
     form.on('error', err => {
-      console.log('Error on form parse: ', err);
+      logger.info('Error on form parse: ', err);
     });
     form.on('end', () => {
-      console.log('Form is finished processing.');
+      logger.info('Form is finished processing.');
     });
   });
 };
@@ -91,7 +92,7 @@ exports.getIssues = async query => {
     }
     return badRequest(`No issues found with selected query params.`);
   } catch (err) {
-    console.log('Error getting all issues: ', err);
+    logger.error('Error getting all issues: ', err);
     return internalServerErrorRequest('Error getting issues.');
   }
 };
@@ -107,7 +108,7 @@ exports.getIssueById = async issueId => {
     }
     return badRequest(`No issue found with id provided.`);
   } catch (err) {
-    console.log('Error getting issue by id ', err);
+    logger.error('Error getting issue by id ', err);
     return internalServerErrorRequest('Error getting issue by id.');
   }
 };
@@ -182,7 +183,7 @@ exports.createIssue = async archive => {
       }
     }
   } catch (err) {
-    console.log(`Error uploading issue to s3: `, err);
+    logger.error(`Error uploading issue to s3: `, err);
     return internalServerErrorRequest('Error uploading issue to s3.');
   }
 };
@@ -336,7 +337,7 @@ exports.updateIssue = async archive => {
       return badRequest(`No issue was found for issueId passed.`);
     }
   } catch (err) {
-    console.log(`Error updating issue metadata: `, err);
+    logger.error(`Error updating issue metadata: `, err);
     return internalServerErrorRequest('Error updating issue metadata.');
   }
 };
@@ -355,7 +356,7 @@ exports.updateViews = async issueId => {
     }
     return badRequest(`No issues found to update clicks.`);
   } catch (err) {
-    console.log('Error updating views on issue: ', err);
+    logger.error('Error updating views on issue: ', err);
     return internalServerErrorRequest('Error updating views.');
   }
 };
@@ -374,7 +375,7 @@ exports.deleteIssueById = async issueId => {
     }
     return badRequest(`No issue found with id provided.`);
   } catch (err) {
-    console.log('Error deleting issue by id: ', err);
+    logger.error('Error deleting issue by id: ', err);
     return internalServerErrorRequest('Error deleting issue by id.');
   }
 };
@@ -393,7 +394,7 @@ exports.getTotal = async query => {
     }
     return badRequest(`No issue found with selected query params.`);
   } catch (err) {
-    console.log('Error getting all issues: ', err);
+    logger.error('Error getting all issues: ', err);
     return internalServerErrorRequest('Error getting issues.');
   }
 };
@@ -412,7 +413,7 @@ exports.getNextIssueOrder = async () => {
     }
     return badRequest(`Unable to compute next largest issue order number.`);
   } catch (err) {
-    console.log('Error computing next largest issue order number: ', err);
+    logger.error('Error computing next largest issue order number: ', err);
     return internalServerErrorRequest(
       'Error computing next largest issue order number.'
     );

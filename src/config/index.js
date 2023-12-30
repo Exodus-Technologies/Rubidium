@@ -25,7 +25,8 @@ const config = {
       s3CoverImageBucketName: process.env.S3_COVERIMAGE_BUCKET_NAME,
       videoDistributionURI: process.env.AWS_CLOUDFRONT_VIDEOS_DISTRIBUTION_URI,
       thumbnailDistributionURI:
-        process.env.AWS_CLOUDFRONT_THUMBNAILS_DISTRIBUTION_URI
+        process.env.AWS_CLOUDFRONT_THUMBNAILS_DISTRIBUTION_URI,
+      cloudWatchLogGroup: process.env.CLOUDWATCH_LOG_GROUP
     },
     bambuser: {
       apiKey: process.env.BAMBUSER_API_KEY,

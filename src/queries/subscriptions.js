@@ -12,6 +12,7 @@ import {
   getSubscriptionStartDate,
   getSubscriptionEndDate
 } from '../utilities/time';
+import logger from '../logger';
 
 export const getSubscriptions = async query => {
   try {
@@ -45,7 +46,7 @@ export const getSubscriptions = async query => {
       .sort({ endDate: 'asc' })
       .exec();
   } catch (err) {
-    console.log('Error getting subscriptions data from db: ', err);
+    logger.error('Error getting subscriptions data from db: ', err);
   }
 };
 
@@ -55,7 +56,7 @@ export const getUserSubscriptions = async userId => {
     const subscription = await Subscription.find({ userId });
     return subscription;
   } catch (err) {
-    console.log('Error getting subscription data from db by id: ', err);
+    logger.error('Error getting subscription data from db by id: ', err);
   }
 };
 
@@ -65,7 +66,7 @@ export const getSubscription = async subscriptionId => {
     const subscription = await Subscription.findOne({ subscriptionId });
     return subscription;
   } catch (err) {
-    console.log('Error getting subscription data from db by id: ', err);
+    logger.error('Error getting subscription data from db by id: ', err);
   }
 };
 
@@ -90,7 +91,7 @@ export const getSubscriptionStatus = async query => {
     }
     return [''];
   } catch (err) {
-    console.log('Error getting subscription data to db: ', err);
+    logger.error('Error getting subscription data to db: ', err);
   }
 };
 
@@ -149,7 +150,7 @@ export const createSubscription = async payload => {
       return [null, createdSubscription];
     }
   } catch (err) {
-    console.log('Error saving subscription data to db: ', err);
+    logger.error('Error saving subscription data to db: ', err);
   }
 };
 
@@ -182,7 +183,7 @@ export const updateSubscription = async (subscriptionId, payload) => {
     }
     return badRequest('Subscription with ID provided doesnt exist');
   } catch (err) {
-    console.log('Error updating issue data to db: ', err);
+    logger.error('Error updating issue data to db: ', err);
   }
 };
 
@@ -197,7 +198,7 @@ export const deleteSubscription = async subscriptionId => {
     }
     return [Error('Unable to find subscription by id.'), null];
   } catch (err) {
-    console.log('Error deleting subscription data from db: ', err);
+    logger.error('Error deleting subscription data from db: ', err);
   }
 };
 
@@ -212,6 +213,6 @@ export const deleteSubscriptions = async userId => {
     }
     return [Error('Unable to find any subscriptions by userId.'), null];
   } catch (err) {
-    console.log('Error deleting subscription data from db: ', err);
+    logger.error('Error deleting subscription data from db: ', err);
   }
 };

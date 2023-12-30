@@ -22,6 +22,7 @@ import {
   BAMBUSER_API_VERSION_TWO,
   BAMBUSER_API_TIMEOUT
 } from '../constants';
+import logger from '../logger';
 
 const { bambuser } = config.sources;
 const { apiKey, broadcastURL } = bambuser;
@@ -41,7 +42,7 @@ export const getBroadCastById = async broadcastId => {
 
     return broadcast;
   } catch (err) {
-    console.log('Error getting broadcast data from bambuser: ', err);
+    logger.error('Error getting broadcast data from bambuser: ', err);
   }
 };
 
@@ -54,9 +55,9 @@ export const deleteBroadCastById = async broadcastId => {
       method: 'DELETE'
     });
 
-    console.log('Broadcast deleted from bambuser');
+    logger.info('Broadcast deleted from bambuser');
   } catch (err) {
-    console.log('Error getting broadcast download link from bambuser: ', err);
+    logger.error('Error getting broadcast download link from bambuser: ', err);
   }
 };
 
@@ -74,7 +75,7 @@ export const getDownloadLink = broadcastId => {
         clearInterval(intervalID);
       }, BAMBUSER_API_TIMEOUT);
     } catch (err) {
-      console.log(
+      logger.error(
         'Error getting broadcast download link status from bambuser: ',
         err
       );
@@ -98,7 +99,7 @@ const getMP4DownloadStatus = broadcastId => {
 
       resolve(link);
     } catch (err) {
-      console.log(
+      logger.error(
         'Error getting broadcast download link status from bambuser: ',
         err
       );
@@ -120,10 +121,10 @@ export const uploadLivestream = async broadcastId => {
     const currentDate = moment(new Date()).format('MM-DD-YYYY');
     const key = `livestream-${currentDate}`;
 
-    console.log('uploading video to s3....');
+    logger.info('uploading video to s3....');
     await uploadVideoToS3(videoFile, key);
 
-    console.log('uploading thumbnail to s3....');
+    logger.info('uploading thumbnail to s3....');
     await uploadThumbnailToS3(thumbnailFile, key);
 
     const videoLocation = getVideoDistributionURI(key);
@@ -148,7 +149,7 @@ export const uploadLivestream = async broadcastId => {
       return [Error('Unable to save video metadata.'), null];
     }
   } catch (err) {
-    console.log(`Error with moving livestream data to s3: `, err);
+    logger.error(`Error with moving livestream data to s3: `, err);
     return [
       Error(`Unable to save video metadata: ${err.response.statusText}`),
       null

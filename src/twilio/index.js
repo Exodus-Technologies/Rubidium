@@ -2,6 +2,7 @@
 
 import sgMail from '@sendgrid/mail';
 import config from '../config';
+import logger from '../logger';
 
 const { sendGridAPIKey, noReplyEmail } = config.sources.twilio;
 
@@ -23,7 +24,7 @@ export const sendEmailNotification = (toEmail, subject, content) => {
         resolve();
       }
     } catch (err) {
-      console.log(`Error send email to user: ${toEmail}`, err);
+      logger.error(`Error send email to user: ${toEmail}`, err);
       reject(err);
     }
   });

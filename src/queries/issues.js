@@ -1,6 +1,7 @@
 'use strict';
 
 import models from '../models';
+import logger from '../logger';
 
 export const getIssues = async query => {
   try {
@@ -37,7 +38,7 @@ export const getIssues = async query => {
       pages: Math.ceil(total / limit)
     }));
   } catch (err) {
-    console.log('Error getting issue data from db: ', err);
+    logger.error('Error getting issue data from db: ', err);
   }
 };
 
@@ -47,7 +48,7 @@ export const getTotal = async () => {
     const total = await Issue.count();
     return total;
   } catch (err) {
-    console.log('Error getting total issue data from db: ', err);
+    logger.error('Error getting total issue data from db: ', err);
   }
 };
 
@@ -57,7 +58,7 @@ export const getIssueById = async issueId => {
     const issue = await Issue.findOne({ issueId });
     return issue;
   } catch (err) {
-    console.log('Error getting issue data from db by id: ', err);
+    logger.error('Error getting issue data from db by id: ', err);
   }
 };
 
@@ -67,7 +68,7 @@ export const getIssueByTitle = async title => {
     const issue = await Issue.findOne({ title });
     return issue;
   } catch (err) {
-    console.log('Error getting issue data from db by title: ', err);
+    logger.error('Error getting issue data from db by title: ', err);
   }
 };
 
@@ -87,7 +88,7 @@ export const createIssue = async payload => {
       issueId
     };
   } catch (err) {
-    console.log('Error saving issue data to db: ', err);
+    logger.error('Error saving issue data to db: ', err);
   }
 };
 
@@ -101,7 +102,7 @@ export const updateIssue = async payload => {
 
     await Issue.findOneAndUpdate(filter, update, options);
   } catch (err) {
-    console.log('Error updating issue data to db: ', err);
+    logger.error('Error updating issue data to db: ', err);
   }
 };
 
@@ -111,7 +112,7 @@ export const deleteIssueById = async issueId => {
     const deletedIssue = await Issue.deleteOne({ issueId });
     return deletedIssue;
   } catch (err) {
-    console.log('Error deleting issue data from db: ', err);
+    logger.error('Error deleting issue data from db: ', err);
   }
 };
 
@@ -121,7 +122,7 @@ export const getNextIssueOrder = async () => {
     const issue = await Issue.find({}).sort({ issueOrder: -1 }).limit(1);
     return (issue[0].issueOrder += 1);
   } catch (err) {
-    console.log('Error computing max issue order data from db: ', err);
+    logger.error('Error computing max issue order data from db: ', err);
     return null;
   }
 };

@@ -21,6 +21,7 @@ import {
   PASSWORD_RESET_REQUEST_SUBJECT,
   PASSWORD_RESET_SUCCESS_SUBJECT
 } from '../constants';
+import logger from '../logger';
 
 exports.validateLogin = async (email, password) => {
   try {
@@ -50,7 +51,7 @@ exports.validateLogin = async (email, password) => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log(`Error logging with credentials: `, err);
+    logger.error(`Error logging with credentials: `, err);
     return internalServerErrorRequest('Error logging with credentials.');
   }
 };
@@ -106,7 +107,7 @@ exports.requestPasswordReset = async email => {
       }
     ];
   } catch (err) {
-    console.log(`Error password reset requesting: `, err);
+    logger.error(`Error password reset requesting: `, err);
     const transaction = {
       transactionId,
       response: 'ERROR',
@@ -130,7 +131,7 @@ exports.verifyOTP = async (email, otpCode) => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error verifing code: ', err);
+    logger.error('Error verifing code: ', err);
     return internalServerErrorRequest('Error verifing code.');
   }
 };
@@ -179,7 +180,7 @@ exports.changePassword = async (email, token, password) => {
     }
     return badRequest('Token provided does not match.');
   } catch (err) {
-    console.log(`Error updating password: `, err);
+    logger.error(`Error updating password: `, err);
     const transaction = {
       transactionId,
       response: 'ERROR',

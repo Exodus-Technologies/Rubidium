@@ -1,6 +1,7 @@
 'use strict';
 
 import models from '../models';
+import logger from '../logger';
 
 export const getBroadcasts = async query => {
   try {
@@ -45,7 +46,7 @@ export const getBroadcasts = async query => {
       };
     });
   } catch (err) {
-    console.log('Error getting broadcast data from db: ', err);
+    logger.error('Error getting broadcast data from db: ', err);
   }
 };
 
@@ -55,7 +56,7 @@ export const getActiveBroadcast = async () => {
     const broadcast = await Broadcast.findOne({ isActive: true });
     return broadcast;
   } catch (err) {
-    console.log('Error getting most latest active broadcast: ', err);
+    logger.error('Error getting most latest active broadcast: ', err);
   }
 };
 
@@ -65,7 +66,7 @@ export const getBroadcastById = async eventId => {
     const broadcast = await Broadcast.findOne({ eventId });
     return broadcast;
   } catch (err) {
-    console.log('Error getting broadcast by id: ', err);
+    logger.error('Error getting broadcast by id: ', err);
   }
 };
 
@@ -81,7 +82,7 @@ export const createBroadcast = async payload => {
     await broadcast.save();
     return broadcast;
   } catch (err) {
-    console.log('Error saving broadcast data to db: ', err);
+    logger.error('Error saving broadcast data to db: ', err);
   }
 };
 
@@ -101,7 +102,7 @@ export const updateBroadcast = async (broadcastId, livestream) => {
     const broadcast = await Broadcast.findOneAndUpdate(filter, update, options);
     return broadcast;
   } catch (err) {
-    console.log('Error updating broadcast status: ', err);
+    logger.error('Error updating broadcast status: ', err);
   }
 };
 
@@ -113,6 +114,6 @@ export const deleteBroadcast = async broadcastId => {
     });
     return deletedBroadcast;
   } catch (err) {
-    console.log('Error deleting video by id: ', err);
+    logger.error('Error deleting video by id: ', err);
   }
 };

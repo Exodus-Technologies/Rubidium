@@ -11,10 +11,11 @@ import {
   updateUser,
   deleteUserById
 } from '../queries/users';
+import logger from '../logger';
 
 exports.getUsers = async query => {
   try {
-    const [_, users] = await getUsers(query);
+    const [error, users] = await getUsers(query);
     if (users) {
       return [
         StatusCodes.OK,
@@ -24,10 +25,10 @@ exports.getUsers = async query => {
         }
       ];
     } else {
-      return badRequest(`No users found with selected query params.`);
+      return badRequest(error.message);
     }
   } catch (err) {
-    console.log('Error getting all users: ', err);
+    logger.error('Error getting all users: ', err);
     return internalServerErrorRequest('Error getting users.');
   }
 };
@@ -46,7 +47,7 @@ exports.getUser = async userId => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error getting user: ', err);
+    logger.error('Error getting user: ', err);
     return internalServerErrorRequest('Error getting user.');
   }
 };
@@ -66,7 +67,7 @@ exports.createUser = async payload => {
       return badRequest(error.message);
     }
   } catch (err) {
-    console.log(`Error creating user: `, err);
+    logger.error(`Error creating user: `, err);
     return internalServerErrorRequest('Error creating user.');
   }
 };
@@ -82,7 +83,7 @@ exports.updateUser = async (userId, payload) => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error updating user: ', err);
+    logger.error('Error updating user: ', err);
     return internalServerErrorRequest('Error updating user.');
   }
 };
@@ -103,7 +104,7 @@ exports.deleteUser = async userId => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error deleting user by id: ', err);
+    logger.error('Error deleting user by id: ', err);
     return internalServerErrorRequest('Error deleting user by id.');
   }
 };

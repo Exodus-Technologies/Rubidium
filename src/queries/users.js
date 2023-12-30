@@ -2,6 +2,7 @@
 
 import models from '../models';
 import { stringToBoolean } from '../utilities/boolean';
+import logger from '../logger';
 
 export const getUsers = async query => {
   try {
@@ -51,9 +52,12 @@ export const getUsers = async query => {
       total,
       pages: Math.ceil(total / limit)
     }));
-    return [null, result];
+    if (result) {
+      return [null, result];
+    }
+    return [new Error('No users found with selected query params')];
   } catch (err) {
-    console.log('Error getting user data from db: ', err);
+    logger.error('Error getting user data from db: ', err);
   }
 };
 
@@ -66,7 +70,7 @@ export const getUserById = async userId => {
     }
     return [new Error('User with id does not exist.')];
   } catch (err) {
-    console.log('Error getting user data to db: ', err);
+    logger.error('Error getting user data to db: ', err);
   }
 };
 
@@ -84,7 +88,7 @@ export const getUserByEmail = async email => {
     }
     return [new Error('Unable to find user with email provided.')];
   } catch (err) {
-    console.log('Error getting user data to db: ', err);
+    logger.error('Error getting user data to db: ', err);
     return [new Error('No user found associated with email provided.')];
   }
 };
@@ -102,7 +106,7 @@ export const createUser = async payload => {
     }
     return [Error('User with email already exists.')];
   } catch (err) {
-    console.log('Error saving user data to db: ', err);
+    logger.error('Error saving user data to db: ', err);
   }
 };
 
@@ -132,7 +136,7 @@ export const updateUser = async (userId, payload) => {
       return [new Error('Unable to update user details.')];
     }
   } catch (err) {
-    console.log('Error updating user data to db: ', err);
+    logger.error('Error updating user data to db: ', err);
   }
 };
 
@@ -145,7 +149,7 @@ export const deleteUserById = async userId => {
     }
     return [new Error('Unable to find user to delete details.')];
   } catch (err) {
-    console.log('Error deleting user data from db: ', err);
+    logger.error('Error deleting user data from db: ', err);
   }
 };
 
@@ -158,7 +162,7 @@ export const getCodeByUserId = async userId => {
     }
     return [new Error('Unable to find code associated with user.')];
   } catch (err) {
-    console.log('Error getting otpCode for user data to db: ', err);
+    logger.error('Error getting otpCode for user data to db: ', err);
   }
 };
 
@@ -174,7 +178,7 @@ export const createOtpCode = async payload => {
     }
     return [Error('Code with the userId provided already exists.')];
   } catch (err) {
-    console.log('Error saving code data to db: ', err);
+    logger.error('Error saving code data to db: ', err);
   }
 };
 
@@ -187,7 +191,7 @@ export const deleteCode = async userId => {
     }
     return [new Error('Unable to find code to delete details.')];
   } catch (err) {
-    console.log('Error deleting code data from db: ', err);
+    logger.error('Error deleting code data from db: ', err);
   }
 };
 
@@ -197,7 +201,7 @@ export const saveTransaction = async payload => {
     const transaction = new Transaction(payload);
     await transaction.save();
   } catch (err) {
-    console.log('Error saving transaction data to db: ', err);
+    logger.error('Error saving transaction data to db: ', err);
   }
 };
 
@@ -210,6 +214,6 @@ export const verifyOptCode = async (email, otpCode) => {
     }
     return [Error('Code supplied was incorrect.')];
   } catch (err) {
-    console.log(`Error verifying otpCode: ${otpCode}: `, err);
+    logger.error(`Error verifying otpCode: ${otpCode}: `, err);
   }
 };

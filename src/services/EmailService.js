@@ -2,15 +2,16 @@
 
 import config from '../config';
 import { sendEmailNotification } from '../twilio';
+import logger from '../logger';
 
 const { CMS } = config;
 
 exports.sendMail = async (toEmail, subject, content) => {
   try {
     await sendEmailNotification(toEmail, subject, content);
-    console.log(`Sending email was a success`);
+    logger.info(`Sending email was a success`);
   } catch (err) {
-    console.log(`Error sending email: `, err);
+    logger.error(`Error sending email: `, err);
   }
 };
 

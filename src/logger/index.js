@@ -9,6 +9,15 @@ const { NODE_ENV, sources } = config;
 const { cloudWatchLogGroup, accessKeyId, secretAccessKey, region } =
   sources.aws;
 
+const { splat, combine, timestamp, printf, colorize } = winston.format;
+
+// meta param is ensured by splat()
+const myFormat = printf(({ timestamp, level, message, meta }) => {
+  return `${timestamp} ${level}: ${message} ${
+    meta ? JSON.stringify(meta) : ''
+  }`;
+});
+
 const loggerTransports = [
   {
     type: 'console',
@@ -55,6 +64,7 @@ const getLoggerTransports = transports => {
 
 const createLoggerFactory = transports => {
   return winston.createLogger({
+    format: combine(timestamp(), colorize(), splat(), myFormat),
     transports: getLoggerTransports(transports)
   });
 };

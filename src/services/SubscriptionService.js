@@ -12,6 +12,7 @@ import {
   deleteSubscriptions
 } from '../queries/subscriptions';
 import { internalServerErrorRequest, badRequest } from '../response-codes';
+import logger from '../logger';
 
 exports.getSubscriptions = async query => {
   try {
@@ -27,7 +28,7 @@ exports.getSubscriptions = async query => {
     }
     return badRequest(`No subscriptions found with selected query params.`);
   } catch (err) {
-    console.log('Error getting all subscriptions: ', err);
+    logger.error('Error getting all subscriptions: ', err);
     return internalServerErrorRequest('Error getting subscriptions.');
   }
 };
@@ -46,7 +47,7 @@ exports.getUserSubscriptions = async userId => {
     }
     return badRequest(`No subscriptions found with user id: ${userId}.`);
   } catch (err) {
-    console.log('Error getting remaining time on subscription: ', err);
+    logger.error('Error getting remaining time on subscription: ', err);
     return internalServerErrorRequest(
       'Error getting remaining time on subscription.'
     );
@@ -67,7 +68,7 @@ exports.getSubscription = async subscriptionId => {
     }
     return badRequest(`No subscriptions found with id: ${subscriptionId}.`);
   } catch (err) {
-    console.log('Error getting remaining time on subscription: ', err);
+    logger.error('Error getting remaining time on subscription: ', err);
     return internalServerErrorRequest(
       'Error getting remaining time on subscription.'
     );
@@ -87,7 +88,7 @@ exports.getSubscriptionStatus = async query => {
     }
     return badRequest(`No subscriptions found with query.`);
   } catch (err) {
-    console.log('Error getting remaining time on subscription: ', err);
+    logger.error('Error getting remaining time on subscription: ', err);
     return internalServerErrorRequest(
       'Error getting remaining time on subscription.'
     );
@@ -108,7 +109,7 @@ exports.createSubscription = async payload => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error creating subscription: ', err);
+    logger.error('Error creating subscription: ', err);
     return internalServerErrorRequest('Error creating subscription.');
   }
 };
@@ -130,7 +131,7 @@ exports.updateSubscription = async (subscriptionId, payload) => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error updating subscription: ', err);
+    logger.error('Error updating subscription: ', err);
     return internalServerErrorRequest('Error updating subscription.');
   }
 };
@@ -145,7 +146,7 @@ exports.deleteSubscription = async subscriptionId => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error deleting subscription: ', err);
+    logger.error('Error deleting subscription: ', err);
     return internalServerErrorRequest('Error deleting subscription.');
   }
 };
@@ -158,7 +159,7 @@ exports.deleteSubscriptions = async userId => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error deleting subscriptions by user: ', err);
+    logger.error('Error deleting subscriptions by user: ', err);
     return internalServerErrorRequest('Error deleting subscriptions by user.');
   }
 };

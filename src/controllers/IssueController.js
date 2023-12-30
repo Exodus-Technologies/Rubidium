@@ -1,6 +1,7 @@
 'use strict';
 
 import { IssueService } from '../services';
+import logger from '../logger';
 
 exports.getIssues = async (req, res, next) => {
   try {
@@ -8,7 +9,7 @@ exports.getIssues = async (req, res, next) => {
     const [statusCode, response] = await IssueService.getIssues(query);
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with getting issues: `, err);
+    logger.error(`Error with getting issues: `, err);
     next(err);
   }
 };
@@ -19,7 +20,7 @@ exports.getIssueById = async (req, res, next) => {
     const [statusCode, response] = await IssueService.getIssueById(issueId);
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with getting an issue: `, err);
+    logger.error(`Error with getting an issue: `, err);
     next(err);
   }
 };
@@ -30,7 +31,7 @@ exports.createIssue = async (req, res, next) => {
     const [statusCode, response] = await IssueService.createIssue(payload);
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with creating issue: `, err);
+    logger.error(`Error with creating issue: `, err);
     next(err);
   }
 };
@@ -41,7 +42,7 @@ exports.updateIssue = async (req, res, next) => {
     const [statusCode, response] = await IssueService.updateIssue(payload);
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with updating issue: `, err);
+    logger.error(`Error with updating issue: `, err);
     next(err);
   }
 };
@@ -52,7 +53,7 @@ exports.updateViews = async (req, res, next) => {
     const [statusCode, payload] = await VideoService.updateViews(issueId);
     res.status(statusCode).send(payload);
   } catch (err) {
-    console.log(`Error with updating views for issue: `, err);
+    logger.error(`Error with updating views for issue: `, err);
     next(err);
   }
 };
@@ -63,7 +64,7 @@ exports.deleteIssueById = async (req, res, next) => {
     const [statusCode] = await IssueService.deleteIssueById(issueId);
     res.status(statusCode).end();
   } catch (err) {
-    console.log(`Error with deleteing an issue: `, err);
+    logger.error(`Error with deleteing an issue: `, err);
     next(err);
   }
 };
@@ -74,7 +75,7 @@ exports.getTotal = async (req, res, next) => {
     const [statusCode, response] = await IssueService.getTotal(query);
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with getting issues: `, err);
+    logger.error(`Error with getting issues: `, err);
     next(err);
   }
 };
@@ -84,7 +85,7 @@ exports.getNextIssueOrder = async (req, res, next) => {
     const [statusCode, response] = await IssueService.getNextIssueOrder();
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with getting largest issue number: `, err);
+    logger.error(`Error with getting largest issue number: `, err);
     next(err);
   }
 };

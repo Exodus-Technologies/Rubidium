@@ -4,6 +4,7 @@ import server from './server';
 import config from './config';
 import models from './models';
 import generateDBUri from './queries';
+import logger from './logger';
 
 /**
  * Starts web server
@@ -12,9 +13,9 @@ const initializeServer = async () => {
   const { PORT, HOST } = config;
   try {
     await server.listen(PORT, HOST);
-    console.log(`Server listening on port: ${PORT}`);
+    logger.info(`Server listening on port: ${PORT}`);
   } catch (err) {
-    console.log(`Server started with error: ${err}`);
+    logger.error(`Server started with error: ${err}`);
     throw err;
   }
 };
@@ -29,34 +30,34 @@ const initializeDB = async () => {
   try {
     await source.connect(uri, options);
   } catch (e) {
-    console.log(`Error connecting to db: ${e}`);
+    logger.error(`Error connecting to db: ${e}`);
     throw e;
   }
 };
 
 const initializeApp = async () => {
-  console.log('Starting app...');
+  logger.info('Starting app...');
   await initializeDB();
   await initializeServer();
 };
 
 initializeApp().catch(err => {
-  console.log(`Error starting application: ${err}`);
+  logger.error(`Error starting application: ${err}`);
 });
 
 process
   .on('unhandledRejection', reason => {
-    console.log(`Unhandled rejection, reason: ${reason.stack} `);
+    logger.error(`Unhandled rejection, reason: ${reason.stack} `);
   })
   .on('uncaughtException', err => {
-    console.log(err, 'Uncaught exception thrown.');
+    logger.error(err, 'Uncaught exception thrown.');
     process.exit(1);
   })
   .on('SIGINT', () => {
     /**
      * Close connection to db
      */
-    console.log('Disconnecting from database and shutting down application.');
+    logger.info('Disconnecting from database and shutting down application.');
     const { source } = models;
     source
       .disconnect()

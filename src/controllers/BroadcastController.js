@@ -1,13 +1,14 @@
 'use strict';
 
 import { BroadcastService } from '../services';
+import logger from '../logger';
 
 exports.getActiveBroadcast = async (_, res, next) => {
   try {
     const [statusCode, response] = await BroadcastService.getActiveBroadcast();
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with getting active broadcast: `, err);
+    logger.error(`Error with getting active broadcast: `, err);
     next(err);
   }
 };
@@ -18,7 +19,7 @@ exports.getBroadcasts = async (req, res, next) => {
     const [statusCode, response] = await BroadcastService.getBroadcasts(query);
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with retrieving broadcasts: `, err);
+    logger.error(`Error with retrieving broadcasts: `, err);
     next(err);
   }
 };
@@ -31,7 +32,7 @@ exports.deleteBroadcast = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with broadcasy by id: ${broadcastId}: `, err);
+    logger.error(`Error with broadcasy by id: ${broadcastId}: `, err);
     next(err);
   }
 };

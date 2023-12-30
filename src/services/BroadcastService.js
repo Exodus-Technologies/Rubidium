@@ -7,6 +7,7 @@ import {
   getBroadcasts
 } from '../queries/broadcasts';
 import { internalServerErrorRequest, badRequest } from '../response-codes';
+import logger from '../logger';
 
 exports.getActiveBroadcast = async () => {
   try {
@@ -17,7 +18,7 @@ exports.getActiveBroadcast = async () => {
       return badRequest(`No active broadcast avaiable.`);
     }
   } catch (err) {
-    console.log('Error getting active broadcast: ', err);
+    logger.error('Error getting active broadcast: ', err);
     return internalServerErrorRequest('Error getting active broadcast.');
   }
 };
@@ -34,7 +35,7 @@ exports.getBroadcasts = async query => {
       return badRequest(`No broadcasts found with selected query params.`);
     }
   } catch (err) {
-    console.log('Error getting all broadcasts: ', err);
+    logger.error('Error getting all broadcasts: ', err);
     return internalServerErrorRequest('Error getting broadcasts.');
   }
 };
@@ -47,7 +48,7 @@ exports.deleteBroadcast = async broadcastId => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error deleting broadcast: ', err);
+    logger.error('Error deleting broadcast: ', err);
     return internalServerErrorRequest('Error deleting broadcast.');
   }
 };

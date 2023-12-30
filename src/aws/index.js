@@ -20,6 +20,7 @@ import {
   DEFAULT_COVERIMAGE_FILE_EXTENTION,
   DEFAULT_PDF_FILE_EXTENTION
 } from '../constants';
+import logger from '../logger';
 
 const {
   accessKeyId,
@@ -73,7 +74,7 @@ export const createVideoS3Bucket = () => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'createS3Bucket',
         requestId,
         cfId,
@@ -103,7 +104,7 @@ export const createThumbnailS3Bucket = () => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'createS3Bucket',
         requestId,
         cfId,
@@ -123,7 +124,7 @@ export const doesVideoS3BucketExist = () => {
       resolve(bucket);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'doesVideoS3BucketExist',
         requestId,
         cfId,
@@ -145,7 +146,7 @@ export const doesThumbnailS3BucketExist = () => {
       resolve(bucket);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'doesThumbnailS3BucketExist',
         requestId,
         cfId,
@@ -168,7 +169,7 @@ export const doesVideoObjectExist = key => {
       resolve(s3Object);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'doesVideoObjectExist',
         requestId,
         cfId,
@@ -190,7 +191,7 @@ export const doesThumbnailObjectExist = key => {
       resolve(s3Object);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'doesThumbnailObjectExist',
         requestId,
         cfId,
@@ -213,7 +214,7 @@ export const copyVideoObject = (oldKey, newKey) => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'copyVideoObject',
         requestId,
         cfId,
@@ -236,7 +237,7 @@ export const copyThumbnailObject = (oldKey, newKey) => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'copyThumbnailObject',
         requestId,
         cfId,
@@ -258,7 +259,7 @@ export const deleteVideoByKey = key => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'deleteVideoByKey',
         requestId,
         cfId,
@@ -280,7 +281,7 @@ export const deleteThumbnailByKey = key => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'deleteVideoByKey',
         requestId,
         cfId,
@@ -303,21 +304,21 @@ export const uploadVideoToS3 = (videoPath, key) => {
       const parallelUpload = createS3ParallelUpload(params);
 
       parallelUpload.on('httpUploadProgress', progress => {
-        console.log(progress);
+        logger.info(progress);
       });
 
       await parallelUpload.done();
       resolve();
     } catch (err) {
-      console.log(err);
+      logger.error(err);
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'uploadVideoToS3',
         requestId,
         cfId,
         extendedRequestId
       });
-      console.log(
+      logger.error(
         `Error uploading video file to s3 bucket: ${s3VideoBucketName} `,
         err
       );
@@ -338,20 +339,20 @@ export const uploadThumbnailToS3 = (fileContent, key) => {
       const parallelUpload = createS3ParallelUpload(params);
 
       parallelUpload.on('httpUploadProgress', progress => {
-        console.log(progress);
+        logger.info(progress);
       });
 
       await parallelUpload.done();
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'uploadToS3',
         requestId,
         cfId,
         extendedRequestId
       });
-      console.log(
+      logger.error(
         `Error uploading thumbnail file to s3 bucket: ${s3VideoBucketName} `,
         err
       );
@@ -372,7 +373,7 @@ export const uploadVideoArchiveToS3Location = async archive => {
       const thumbNailLocation = getThumbnailDistributionURI(key);
       resolve({ thumbNailLocation, videoLocation, duration });
     } catch (err) {
-      console.log(`Error uploading video and content to s3 buckets`, err);
+      logger.error(`Error uploading video and content to s3 buckets`, err);
       reject(err);
     }
   });
@@ -399,7 +400,7 @@ export const createIssueS3Bucket = () => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'createS3Bucket',
         requestId,
         cfId,
@@ -421,7 +422,7 @@ export const createCoverImageS3Bucket = () => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'createS3Bucket',
         requestId,
         cfId,
@@ -441,7 +442,7 @@ export const doesIssueS3BucketExist = () => {
       resolve(bucket);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'doesIssueS3BucketExist',
         requestId,
         cfId,
@@ -463,7 +464,7 @@ export const doesCoverImageS3BucketExist = () => {
       resolve(bucket);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'doesCoverImageS3BucketExist',
         requestId,
         cfId,
@@ -486,7 +487,7 @@ export const doesIssueObjectExist = key => {
       resolve(s3Object);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'doesIssueObjectExist',
         requestId,
         cfId,
@@ -508,7 +509,7 @@ export const doesCoverImageObjectExist = key => {
       resolve(s3Object);
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'doesCoverImageObjectExist',
         requestId,
         cfId,
@@ -531,7 +532,7 @@ export const copyIssueObject = (oldKey, newKey) => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'copyS3Object',
         requestId,
         cfId,
@@ -554,7 +555,7 @@ export const copyCoverImageObject = (oldKey, newKey) => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'copyS3Object',
         requestId,
         cfId,
@@ -588,7 +589,7 @@ export const deleteIssueByKey = key => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'deleteIssueByKey',
         requestId,
         cfId,
@@ -611,7 +612,7 @@ export const deleteCoverImageByKey = key => {
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
-      console.log({
+      logger.error({
         message: 'deleteCoverImageByKey',
         requestId,
         cfId,
@@ -635,7 +636,7 @@ const uploadIssueToS3 = (fileContent, key) => {
       await s3Client.send(new PutObjectCommand(params));
       resolve();
     } catch (err) {
-      console.log(
+      logger.error(
         `Error uploading file to s3 bucket: ${s3IssueBucketName} `,
         err
       );
@@ -656,7 +657,7 @@ const uploadCoverImageToS3 = (fileContent, key) => {
       await s3Client.send(new PutObjectCommand(params));
       resolve();
     } catch (err) {
-      console.log(
+      logger.error(
         `Error uploading file to s3 bucket: ${s3CoverImageBucketName} `,
         err
       );
@@ -679,7 +680,7 @@ export const uploadPdfArchiveToS3Location = async archive => {
       const coverImageLocation = getCoverImageUrlFromS3(key);
       resolve({ issueLocation, coverImageLocation });
     } catch (err) {
-      console.log(`Error uploading pdf and content to s3 bucket:`, err);
+      logger.error(`Error uploading pdf and content to s3 bucket:`, err);
       reject(err);
     }
   });

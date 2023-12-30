@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import { http, https } from 'follow-redirects';
+import logger from '../logger';
 
 export const getFileContentFromPath = path => {
   return new Promise((resolve, reject) => {
@@ -13,7 +14,7 @@ export const getFileContentFromPath = path => {
         resolve(buffer);
       });
     } catch (err) {
-      console.log(`Error getting file: ${path} `, err);
+      logger.error(`Error getting file: ${path} `, err);
       reject(err);
     }
   });
@@ -70,12 +71,12 @@ export const getVideoContentFromURL = url => {
           const content = { file: Buffer.concat(chunks) };
           const duration = await getVideoDurationInSeconds(url);
           content['duration'] = duration;
-          console.log('Finished processing file from url: ', url, content);
+          logger.info('Finished processing file from url: ', url, content);
           resolve(content);
         });
       })
       .on('error', err => {
-        console.log(`Error getting video data from url: ${url} `, err);
+        logger.error(`Error getting video data from url: ${url} `, err);
         reject(err);
       });
   });

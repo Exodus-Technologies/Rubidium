@@ -9,6 +9,7 @@ import {
   getCategoryById
 } from '../queries/categories';
 import { internalServerErrorRequest, badRequest } from '../response-codes';
+import logger from '../logger';
 
 exports.getCategories = async query => {
   try {
@@ -24,7 +25,7 @@ exports.getCategories = async query => {
       );
     }
   } catch (err) {
-    console.log('Error getting categories: ', err);
+    logger.error('Error getting categories: ', err);
     return internalServerErrorRequest('Error getting categories.');
   }
 };
@@ -41,7 +42,7 @@ exports.getCategory = async categoryId => {
       return badRequest(`No category found with id provided.`);
     }
   } catch (err) {
-    console.log('Error getting category by id ', err);
+    logger.error('Error getting category by id ', err);
     return internalServerErrorRequest('Error getting category by id.');
   }
 };
@@ -58,7 +59,7 @@ exports.createCategory = async payload => {
       return badRequest(error.message);
     }
   } catch (err) {
-    console.log('Error creating new category: ', err);
+    logger.error('Error creating new category: ', err);
     return internalServerErrorRequest('Error creating new category.');
   }
 };
@@ -75,7 +76,7 @@ exports.updateCategory = async (categoryId, name) => {
       return badRequest(error.message);
     }
   } catch (err) {
-    console.log('Error updating existing category: ', err);
+    logger.error('Error updating existing category: ', err);
     return internalServerErrorRequest('Error updating existing category.');
   }
 };
@@ -88,7 +89,7 @@ exports.deleteCategoryById = async categoryId => {
     }
     return badRequest(error.message);
   } catch (err) {
-    console.log('Error deleting category by id: ', err);
+    logger.error('Error deleting category by id: ', err);
     return internalServerErrorRequest('Error deleting category by id.');
   }
 };

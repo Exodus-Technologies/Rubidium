@@ -1,6 +1,7 @@
 'use strict';
 
 import models from '../models';
+import logger from '../logger';
 
 export const getVideos = async query => {
   try {
@@ -42,7 +43,7 @@ export const getVideos = async query => {
       };
     });
   } catch (err) {
-    console.log('Error getting video data from db: ', err);
+    logger.error('Error getting video data from db: ', err);
   }
 };
 
@@ -52,7 +53,7 @@ export const getTotal = async () => {
     const total = await Video.count();
     return total;
   } catch (err) {
-    console.log('Error getting total video data from db: ', err);
+    logger.error('Error getting total video data from db: ', err);
   }
 };
 
@@ -62,7 +63,7 @@ export const getVideoByTitle = async title => {
     const video = await Video.findOne({ title });
     return video;
   } catch (err) {
-    console.log('Error getting video data from db by title: ', err);
+    logger.error('Error getting video data from db by title: ', err);
   }
 };
 
@@ -72,7 +73,7 @@ export const getVideoById = async videoId => {
     const video = await Video.findOne({ videoId });
     return video;
   } catch (err) {
-    console.log('Error getting video data from db by id: ', err);
+    logger.error('Error getting video data from db by id: ', err);
   }
 };
 
@@ -83,7 +84,7 @@ export const createVideo = async payload => {
     const createdVideo = await video.save();
     return createdVideo;
   } catch (err) {
-    console.log('Error saving video data to db: ', err);
+    logger.error('Error saving video data to db: ', err);
   }
 };
 
@@ -97,7 +98,7 @@ export const updateVideo = async payload => {
 
     await Video.findOneAndUpdate(filter, update, options);
   } catch (err) {
-    console.log('Error updating video data to db: ', err);
+    logger.error('Error updating video data to db: ', err);
   }
 };
 
@@ -109,7 +110,7 @@ export const updateVideoViews = async videoId => {
       { $inc: { videoViews: 1 } }
     );
   } catch (err) {
-    console.log('Error updating video views: ', err);
+    logger.error('Error updating video views: ', err);
   }
 };
 
@@ -119,6 +120,6 @@ export const deleteVideoById = async videoId => {
     const deletedVideo = await Video.deleteOne({ videoId });
     return deletedVideo;
   } catch (err) {
-    console.log('Error deleting video by id: ', err);
+    logger.error('Error deleting video by id: ', err);
   }
 };
