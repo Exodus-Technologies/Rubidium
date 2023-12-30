@@ -4,7 +4,7 @@ import { VideoService } from '../services';
 
 exports.uploadVideo = async (req, res, next) => {
   try {
-    const payload = await VideoService.getPayloadFromRequest(req);
+    const payload = await VideoService.getPayloadFromFormRequest(req);
     const [statusCode, response] = await VideoService.uploadVideo(payload);
     res.status(statusCode).send(response);
   } catch (err) {
@@ -59,7 +59,7 @@ exports.updateViews = async (req, res, next) => {
 
 exports.updateVideo = async (req, res, next) => {
   try {
-    const payload = await VideoService.getPayloadFromRequest(req);
+    const payload = await VideoService.getPayloadFromFormRequest(req);
     const [statusCode, response] = await VideoService.updateVideo(payload);
     res.status(statusCode).send(response);
   } catch (err) {

@@ -10,14 +10,6 @@ export const getUsers = async query => {
     const limit = parseInt(query.limit);
     const skipIndex = (page - 1) * limit;
 
-    const queryOps = {
-      __v: 0,
-      _id: 0,
-      password: 0,
-      createdAt: 0,
-      updatedAt: 0
-    };
-
     const filter = [];
     for (const [key, value] of Object.entries(query)) {
       if (
@@ -47,13 +39,13 @@ export const getUsers = async query => {
       sortString = query.sort;
     }
 
-    const users = await User.find(objectFilter, queryOps)
+    const users = await User.find(objectFilter)
       .limit(limit)
       .skip(skipIndex)
       .sort(sortString)
       .lean()
       .exec();
-    const total = await User.find(objectFilter, queryOps).count();
+    const total = await User.find(objectFilter).count();
     const result = users.map(user => ({
       ...user,
       total,

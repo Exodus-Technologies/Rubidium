@@ -26,7 +26,7 @@ exports.getIssueById = async (req, res, next) => {
 
 exports.createIssue = async (req, res, next) => {
   try {
-    const payload = await IssueService.getPayloadFromRequest(req);
+    const payload = await IssueService.getPayloadFromFormRequest(req);
     const [statusCode, response] = await IssueService.createIssue(payload);
     res.status(statusCode).send(response);
   } catch (err) {
@@ -37,7 +37,7 @@ exports.createIssue = async (req, res, next) => {
 
 exports.updateIssue = async (req, res, next) => {
   try {
-    const payload = await IssueService.getPayloadFromRequest(req);
+    const payload = await IssueService.getPayloadFromFormRequest(req);
     const [statusCode, response] = await IssueService.updateIssue(payload);
     res.status(statusCode).send(response);
   } catch (err) {

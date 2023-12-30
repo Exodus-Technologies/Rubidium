@@ -7,11 +7,12 @@ import {
   HeadObjectCommand,
   DeleteObjectCommand,
   CopyObjectCommand,
-  CreateBucketCommand
+  CreateBucketCommand,
+  PutObjectCommand
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { getVideoDurationInSeconds } from 'get-video-duration';
-import { getThumbnailContentFromPath } from '../utilities/files';
+import { getFileContentFromPath } from '../utilities/files';
 import config from '../config';
 import {
   DEFAULT_THUMBNAIL_FILE_EXTENTION,
@@ -26,6 +27,8 @@ const {
   region,
   s3VideoBucketName,
   s3ThumbnailBucketName,
+  s3IssueBucketName,
+  s3CoverImageBucketName,
   videoDistributionURI,
   thumbnailDistributionURI
 } = config.sources.aws;
@@ -362,7 +365,7 @@ export const uploadVideoArchiveToS3Location = async archive => {
     try {
       const { videoPath, thumbnailPath, key } = archive;
       const duration = await getVideoDurationInSeconds(videoPath);
-      const thumbnailFile = await getThumbnailContentFromPath(thumbnailPath);
+      const thumbnailFile = await getFileContentFromPath(thumbnailPath);
       await uploadVideoToS3(videoPath, key);
       await uploadThumbnailToS3(thumbnailFile, key);
       const videoLocation = getVideoDistributionURI(key);
@@ -629,8 +632,8 @@ const uploadIssueToS3 = (fileContent, key) => {
       Body: fileContent
     };
     try {
-      const data = await s3Client.send(new PutObjectCommand(params));
-      resolve(data);
+      await s3Client.send(new PutObjectCommand(params));
+      resolve();
     } catch (err) {
       console.log(
         `Error uploading file to s3 bucket: ${s3IssueBucketName} `,
@@ -650,8 +653,8 @@ const uploadCoverImageToS3 = (fileContent, key) => {
       Body: fileContent
     };
     try {
-      const data = await s3Client.send(new PutObjectCommand(params));
-      resolve(data);
+      await s3Client.send(new PutObjectCommand(params));
+      resolve();
     } catch (err) {
       console.log(
         `Error uploading file to s3 bucket: ${s3CoverImageBucketName} `,
@@ -668,8 +671,7 @@ export const uploadPdfArchiveToS3Location = async archive => {
       const { key, issuePath, coverImagePath } = archive;
       const { file: issueFile } = await getFileContentFromPath(issuePath);
       const { file: coverImageFile } = await getFileContentFromPath(
-        coverImagePath,
-        false
+        coverImagePath
       );
       await uploadIssueToS3(issueFile, key);
       await uploadCoverImageToS3(coverImageFile, key);

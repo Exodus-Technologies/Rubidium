@@ -1,6 +1,4 @@
 import express from 'express';
-
-const { Router } = express;
 import { SubscriptionController } from '../controllers';
 import {
   subscriptionQueryValidation,
@@ -12,59 +10,61 @@ import {
 } from '../validations/subscriptions';
 import { validationHandler } from '../middlewares';
 
+const { Router } = express;
+
 const router = Router();
 
 router.get(
-  '/subscription-service/getSubscriptions',
+  '/sheen-service/getSubscriptions',
   subscriptionQueryValidation,
   validationHandler,
   SubscriptionController.getSubscriptions
 );
 
 router.get(
-  '/subscription-service/getUserSubscriptions/:userId',
+  '/sheen-service/getUserSubscriptions/:userId',
   userIdParamValidation,
   validationHandler,
   SubscriptionController.getUserSubscriptions
 );
 
 router.get(
-  '/subscription-service/getSubscription/:subscriptionId',
+  '/sheen-service/getSubscription/:subscriptionId',
   subscriptionIdParamValidation,
   validationHandler,
   SubscriptionController.getSubscription
 );
 
 router.get(
-  '/subscription-service/getSubscriptionStatus',
+  '/sheen-service/getSubscriptionStatus',
   subscriptionStatusQueryValidation,
   validationHandler,
   SubscriptionController.getSubscriptionStatus
 );
 
 router.post(
-  '/subscription-service/createSubscription',
+  '/sheen-service/createSubscription',
   subscriptionPostBodyValidation,
   validationHandler,
   SubscriptionController.createSubscription
 );
 
 router.put(
-  '/subscription-service/updateSubscription/:subscriptionId',
+  '/sheen-service/updateSubscription/:subscriptionId',
   subscriptionUpdateBodyValidation,
   validationHandler,
   SubscriptionController.updateSubscription
 );
 
 router.delete(
-  '/subscription-service/deleteSubscription/:subscriptionId',
+  '/sheen-service/deleteSubscription/:subscriptionId',
   subscriptionIdParamValidation,
   validationHandler,
   SubscriptionController.deleteSubscription
 );
 
 router.delete(
-  '/subscription-service/deleteSubscriptions/:userId',
+  '/sheen-service/deleteSubscriptions/:userId',
   userIdParamValidation,
   validationHandler,
   SubscriptionController.deleteSubscriptions

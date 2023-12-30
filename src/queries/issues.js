@@ -1,7 +1,6 @@
 'use strict';
 
 import models from '../models';
-import { queryOps } from './';
 
 export const getIssues = async query => {
   try {
@@ -24,14 +23,14 @@ export const getIssues = async query => {
       };
     }
 
-    const issues = await Issue.find(objectFilter, queryOps)
+    const issues = await Issue.find(objectFilter)
       .limit(limit)
       .skip(skipIndex)
       .sort({ issueOrder: 'desc' })
       .lean()
       .exec();
 
-    const total = await Issue.find(objectFilter, queryOps).count();
+    const total = await Issue.find(objectFilter).count();
     return issues.map(issue => ({
       ...issue,
       total,

@@ -8,6 +8,7 @@ import BambuserService from './BambuserService';
 import BroadcastService from './BroadcastService';
 import CategoryService from './CategoryService';
 import VideoService from './VideoService';
+import IssueService from './IssueService';
 
 export {
   AuthService,
@@ -17,5 +18,6 @@ export {
   EmailService,
   SubscriptionService,
   UserService,
-  VideoService
+  VideoService,
+  IssueService
 };

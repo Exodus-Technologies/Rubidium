@@ -3,7 +3,7 @@
 import fs from 'fs';
 import { http, https } from 'follow-redirects';
 
-export const getThumbnailContentFromPath = path => {
+export const getFileContentFromPath = path => {
   return new Promise((resolve, reject) => {
     try {
       fs.readFile(path, (err, buffer) => {
@@ -13,7 +13,7 @@ export const getThumbnailContentFromPath = path => {
         resolve(buffer);
       });
     } catch (err) {
-      console.log(`Error getting thumbnail file: ${path} `, err);
+      console.log(`Error getting file: ${path} `, err);
       reject(err);
     }
   });

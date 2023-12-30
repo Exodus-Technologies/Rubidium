@@ -3,12 +3,12 @@
 import server from './server';
 import config from './config';
 import models from './models';
-import { generateDBUri } from './queries';
+import generateDBUri from './queries';
 
 /**
  * Starts web server
  */
-const initServer = async () => {
+const initializeServer = async () => {
   const { PORT, HOST } = config;
   try {
     await server.listen(PORT, HOST);
@@ -22,24 +22,25 @@ const initServer = async () => {
 /**
  * Connects to database
  */
-const initDB = async () => {
+const initializeDB = async () => {
   const { options } = config.sources.database;
   const { source } = models;
+  const uri = generateDBUri();
   try {
-    await source.connect(generateDBUri(), options);
+    await source.connect(uri, options);
   } catch (e) {
     console.log(`Error connecting to db: ${e}`);
     throw e;
   }
 };
 
-const init = async () => {
+const initializeApp = async () => {
   console.log('Starting app...');
-  await initDB();
-  await initServer();
+  await initializeDB();
+  await initializeServer();
 };
 
-init().catch(err => {
+initializeApp().catch(err => {
   console.log(`Error starting application: ${err}`);
 });
 
@@ -55,6 +56,7 @@ process
     /**
      * Close connection to db
      */
+    console.log('Disconnecting from database and shutting down application.');
     const { source } = models;
     source
       .disconnect()
@@ -64,5 +66,4 @@ process
       .catch(() => {
         process.exit(1);
       });
-    console.log('Disconnecting from database and shutting down application.');
   });

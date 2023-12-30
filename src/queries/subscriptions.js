@@ -13,16 +13,33 @@ import {
   getSubscriptionEndDate
 } from '../utilities/time';
 
-const queryOps = { __v: 0, _id: 0 };
-
 export const getSubscriptions = async query => {
   try {
     const { Subscription } = models;
     const page = parseInt(query.page);
     const limit = parseInt(query.limit);
     const skipIndex = (page - 1) * limit;
-    return await Subscription.find({ ...query }, queryOps)
-      .sort({ _id: 1 })
+
+    const filter = [];
+    for (const [key, value] of Object.entries(query)) {
+      if (key != 'page' && key != 'limit' && key != 'sort') {
+        filter.push({ [key]: { $regex: value, $options: 'i' } });
+      }
+    }
+
+    let objectFilter = {};
+    if (filter.length > 0) {
+      objectFilter = {
+        $and: filter
+      };
+    }
+
+    let sortString = '-id';
+    if (query.sort) {
+      sortString = query.sort;
+    }
+
+    return await Subscription.find(objectFilter)
       .limit(limit)
       .skip(skipIndex)
       .sort({ endDate: 'asc' })

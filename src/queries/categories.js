@@ -2,18 +2,35 @@
 
 import models from '../models';
 
-import { queryOps } from './';
-
 export const getCategories = async query => {
   try {
     const { Category } = models;
     const page = parseInt(query.page);
     const limit = parseInt(query.limit);
     const skipIndex = (page - 1) * limit;
-    return await Category.find(query, queryOps)
-      .sort({ _id: 1 })
+    const filter = [];
+    for (const [key, value] of Object.entries(query)) {
+      if (key != 'page' && key != 'limit' && key != 'sort') {
+        filter.push({ [key]: { $regex: value, $options: 'i' } });
+      }
+    }
+    let objectFilter = {};
+    if (filter.length > 0) {
+      objectFilter = {
+        $and: filter
+      };
+    }
+
+    let sortString = '-id';
+    if (query.sort) {
+      sortString = query.sort;
+    }
+
+    return await Category.find(objectFilter)
       .limit(limit)
       .skip(skipIndex)
+      .sort(sortString)
+      .lean()
       .exec();
   } catch (err) {
     console.log('Error getting category data from db: ', err);
@@ -52,7 +69,7 @@ export const createCategory = async payload => {
     const { description, name, categoryId } = createdCategory;
     return [null, { description, name, categoryId }];
   } catch (err) {
-    console.log('Error saving video data to db: ', err);
+    console.log('Error saving category data to db: ', err);
   }
 };
 
@@ -73,7 +90,7 @@ export const deleteCategoryById = async categoryId => {
   try {
     const { Category } = models;
     const deletedCategory = await Category.deleteOne({ categoryId });
-    return deletedCategory;
+    return [null, deletedCategory];
   } catch (err) {
     console.log('Error deleting video by id: ', err);
   }

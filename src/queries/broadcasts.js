@@ -1,7 +1,5 @@
 'use strict';
 
-import { queryOps } from './';
-
 import models from '../models';
 
 export const getBroadcasts = async query => {
@@ -18,9 +16,11 @@ export const getBroadcasts = async query => {
       }
     }
 
-    const objectFilter = { isActive: false };
+    let objectFilter = {};
     if (filter.length > 0) {
-      objectFilter['$and'] = filter;
+      objectFilter = {
+        $and: filter
+      };
     }
 
     let sortString = '-id';
@@ -28,14 +28,14 @@ export const getBroadcasts = async query => {
       sortString = query.sort;
     }
 
-    const broadcasts = await Broadcast.find(objectFilter, queryOps)
+    const broadcasts = await Broadcast.find(objectFilter)
       .limit(limit)
       .skip(skipIndex)
       .sort(sortString)
       .lean()
       .exec();
 
-    const total = await Broadcast.find(objectFilter, queryOps).count();
+    const total = await Broadcast.find(objectFilter).count();
 
     return broadcasts.map(broadcast => {
       return {

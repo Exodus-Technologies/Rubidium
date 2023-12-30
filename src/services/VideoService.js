@@ -38,7 +38,7 @@ import { stringToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
 
-exports.getPayloadFromRequest = async req => {
+exports.getPayloadFromFormRequest = async req => {
   const form = formidable({
     multiples: true,
     maxFileSize: MAX_FILE_SIZE_VIDEO

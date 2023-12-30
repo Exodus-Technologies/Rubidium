@@ -2,8 +2,6 @@
 
 import models from '../models';
 
-import { queryOps } from './';
-
 export const getVideos = async query => {
   try {
     const { Video } = models;
@@ -29,13 +27,13 @@ export const getVideos = async query => {
       sortString = query.sort;
     }
 
-    const videos = await Video.find(objectFilter, queryOps)
+    const videos = await Video.find(objectFilter)
       .limit(limit)
       .skip(skipIndex)
       .sort(sortString)
       .lean()
       .exec();
-    const total = await Video.find(objectFilter, queryOps).count();
+    const total = await Video.find(objectFilter).count();
     return videos.map(video => {
       return {
         ...video,

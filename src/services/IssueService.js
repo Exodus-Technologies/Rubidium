@@ -3,7 +3,7 @@
 import formidable from 'formidable';
 import { StatusCodes } from 'http-status-codes';
 import {
-  uploadArchiveToS3Location,
+  uploadPdfArchiveToS3Location,
   deleteIssueByKey,
   copyS3Object,
   doesIssueS3BucketExist,
@@ -35,7 +35,7 @@ import { internalServerErrorRequest, badRequest } from '../response-codes';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
 
-exports.getPayloadFromRequest = async req => {
+exports.getPayloadFromFormRequest = async req => {
   const form = formidable({ multiples: true, maxFileSize: MAX_FILE_SIZE_PDF });
   return new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
@@ -162,7 +162,7 @@ exports.createIssue = async archive => {
         await createCoverImageS3Bucket();
       } else {
         const { issueLocation, coverImageLocation } =
-          await uploadArchiveToS3Location(archive);
+          await uploadPdfArchiveToS3Location(archive);
 
         const issueOrder = await getNextIssueOrder();
 
