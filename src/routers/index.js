@@ -9,6 +9,7 @@ import broadcastRouter from './broadcastRouter';
 import categoryRouter from './categoryRouter';
 import videoRouter from './videoRouter';
 import issueRouter from './issueRouter';
+import swaggerRouter from './swaggerRouter';
 
 export {
   appRouter,
@@ -19,5 +20,6 @@ export {
   issueRouter,
   subscriptionRouter,
   userRouter,
-  videoRouter
+  videoRouter,
+  swaggerRouter
 };

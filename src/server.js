@@ -18,7 +18,8 @@ import {
   broadcastRouter,
   issueRouter,
   categoryRouter,
-  videoRouter
+  videoRouter,
+  swaggerRouter
 } from './routers';
 import logger from './logger';
 
@@ -63,6 +64,10 @@ logger.info('Loaded error handler middleware.');
 //route middleware with request/response
 server.use(requestResponse);
 logger.info('Loaded request/response middleware.');
+
+//Swagger middleware
+server.use(swaggerRouter);
+logger.info('Loaded swagger documentation routes middleware.');
 
 //App middleware
 server.use(appRouter);

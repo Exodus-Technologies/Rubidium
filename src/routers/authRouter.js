@@ -2,13 +2,13 @@
 
 import express from 'express';
 import { AuthController, UserController } from '../controllers';
+import { userCreationValidation } from '../validations/users';
 import {
   loginValidation,
-  userCreationValidation,
   passwordRequestResetBodyValidation,
   changePasswordValidation,
   otpBodyValidation
-} from '../validations/users';
+} from '../validations/auth';
 import { validationHandler } from '../middlewares';
 
 const { Router } = express;
