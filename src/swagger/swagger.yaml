@@ -1,8 +1,8 @@
 info:
-  title: Service API for Sheen Magazine Service
+  title: API Definition for Sheen Magazine Service
   version: 1.0.0
 consumes:
   - application/json
 produces:
   - application/json
-swagger: '2.0'
+openapi: 3.1.0
