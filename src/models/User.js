@@ -1,7 +1,7 @@
 'use strict';
 
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import mongooseSequence from 'mongoose-sequence';
 import config from '../config';
 import { STATES } from '../constants';
