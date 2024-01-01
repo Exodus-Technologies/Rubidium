@@ -5,15 +5,17 @@ import { StatusCodes } from 'http-status-codes';
 import {
   uploadPdfArchiveToS3Location,
   deleteIssueByKey,
-  copyS3Object,
   doesIssueS3BucketExist,
   createCoverImageS3Bucket,
   createIssueS3Bucket,
   doesCoverImageS3BucketExist,
   deleteCoverImageByKey,
-  getIssueUrlFromS3,
+  getIssueDistributionURI,
+  getCoverImageDistributionURI,
   doesIssueObjectExist,
-  doesCoverImageObjectExist
+  doesCoverImageObjectExist,
+  copyCoverImageObject,
+  copyIssueObject
 } from '../aws';
 import {
   COVERIMAGE_MIME_TYPES,
@@ -223,19 +225,23 @@ exports.updateIssue = async archive => {
     if (issue) {
       const newKey = removeSpaces(title);
       if (newKey !== issue.key) {
-        await copyS3Object(issue.key, newKey);
-        const s3Location = getIssueUrlFromS3(newKey);
+        await copyIssueObject(issue.key, newKey);
+        await copyCoverImageObject(issue.key, newKey);
+        const url = getIssueDistributionURI(newKey);
+        const coverImage = getCoverImageDistributionURI(newKey);
         const body = {
           title,
           issueId,
           key: newKey,
           description,
-          url: s3Location,
+          coverImage,
+          url,
           paid,
           issueOrder
         };
         await updateIssue(body);
         deleteIssueByKey(issue.key);
+        deleteCoverImageByKey(issue.key);
         return [
           StatusCodes.OK,
           {
@@ -286,7 +292,7 @@ exports.updateIssue = async archive => {
         if (isCoverImageBucketAvaiable) {
           const s3Object = await doesCoverImageObjectExist(newKey);
           if (s3Object) {
-            deleteIssueByKey(newKey);
+            deleteCoverImageByKey(newKey);
           }
           const { coverImageLocation } = await uploadArchiveToS3Location(
             archive
@@ -313,12 +319,14 @@ exports.updateIssue = async archive => {
           ];
         }
       } else {
-        const url = await getIssueUrlFromS3(newKey);
+        const url = await getIssueDistributionURI(newKey);
+        const coverImage = await getCoverImageDistributionURI(newKey);
         const body = {
           title,
           issueId,
           url,
           description,
+          coverImage,
           paid,
           issueOrder
         };
