@@ -26,7 +26,7 @@ export const generateOTPCode = () => {
   return nanoid();
 };
 
-export const generateAuthJwtToken = user => {
+export const generateAuthJWTToken = user => {
   const { isAdmin, email, userId } = user;
   const expirationTime = moment().add(TOKEN_EXPIRY, 'minutes').valueOf() / 1000;
   const payload = { isAdmin, email, userId };

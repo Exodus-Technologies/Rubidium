@@ -110,7 +110,10 @@ export const deleteIssueById = async issueId => {
   try {
     const { Issue } = models;
     const deletedIssue = await Issue.deleteOne({ issueId });
-    return deletedIssue;
+    if (deletedIssue.deletedCount > 0) {
+      return [null, deletedIssue];
+    }
+    return [new Error('Unable to find issue to delete details.')];
   } catch (err) {
     logger.error('Error deleting issue data from db: ', err);
   }

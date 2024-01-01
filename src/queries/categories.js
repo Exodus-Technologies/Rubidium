@@ -91,8 +91,11 @@ export const deleteCategoryById = async categoryId => {
   try {
     const { Category } = models;
     const deletedCategory = await Category.deleteOne({ categoryId });
-    return [null, deletedCategory];
+    if (deletedCategory.deletedCount > 0) {
+      return [null, deletedCategory];
+    }
+    return [new Error('Unable to find category to delete details.')];
   } catch (err) {
-    logger.error('Error deleting video by id: ', err);
+    logger.error('Error deleting category by id: ', err);
   }
 };

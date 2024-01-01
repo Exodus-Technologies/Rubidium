@@ -319,14 +319,12 @@ exports.updateIssue = async archive => {
           ];
         }
       } else {
-        const url = await getIssueDistributionURI(newKey);
-        const coverImage = await getCoverImageDistributionURI(newKey);
         const body = {
           title,
           issueId,
-          url,
+          url: getIssueDistributionURI(newKey),
           description,
-          coverImage,
+          coverImage: getCoverImageDistributionURI(newKey),
           paid,
           issueOrder
         };

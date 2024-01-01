@@ -118,7 +118,10 @@ export const deleteVideoById = async videoId => {
   try {
     const { Video } = models;
     const deletedVideo = await Video.deleteOne({ videoId });
-    return deletedVideo;
+    if (deletedVideo.deletedCount > 0) {
+      return [null, deletedVideo];
+    }
+    return [new Error('Unable to find video to delete details.')];
   } catch (err) {
     logger.error('Error deleting video by id: ', err);
   }

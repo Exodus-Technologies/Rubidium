@@ -112,7 +112,10 @@ export const deleteBroadcast = async broadcastId => {
     const deletedBroadcast = await Broadcast.deleteOne({
       'payload.id': broadcastId
     });
-    return deletedBroadcast;
+    if (deletedBroadcast.deletedCount > 0) {
+      return [null, deletedBroadcast];
+    }
+    return [new Error('Unable to find broadcast to delete details.')];
   } catch (err) {
     logger.error('Error deleting video by id: ', err);
   }
