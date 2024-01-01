@@ -6,7 +6,7 @@ import { createSubscriptionId } from '../utilities/strings';
 const { Schema, model } = mongoose;
 
 import { SUBSCRIPTION_TYPES, RECURRING_TYPES } from '../constants';
-import { isProduction } from '../utilities/boolean';
+import { isProductionEnvironment } from '../utilities/boolean';
 
 //SUBSCRIPTION SCHEMA
 //  ============================================
@@ -28,7 +28,7 @@ const subscriptionSchema = new Schema({
 /**
  * Set the autoCreate option on models if not on production
  */
-subscriptionSchema.set('autoCreate', !isProduction());
+subscriptionSchema.set('autoCreate', !isProductionEnvironment());
 
 /**
  * Create Subscription model out of subscriptionSchema

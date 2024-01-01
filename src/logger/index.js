@@ -3,7 +3,7 @@
 import winston from 'winston';
 import WinstonCloudWatch from 'winston-cloudwatch';
 import config from '../config';
-import { isProduction } from '../utilities/boolean';
+import { isProductionEnvironment } from '../utilities/boolean';
 
 const { NODE_ENV, sources } = config;
 const { cloudWatchLogGroup, accessKeyId, secretAccessKey, region } =
@@ -28,7 +28,7 @@ const loggerTransports = [
   }
 ];
 
-if (isProduction()) {
+if (isProductionEnvironment()) {
   loggerTransports.push({
     type: 'cloud-watch',
     options: {
@@ -37,7 +37,7 @@ if (isProduction()) {
       awsAccessKeyId: accessKeyId,
       awsSecretKey: secretAccessKey,
       awsRegion: region,
-      messageFormatter: ({ level, message }) => `[${level}] : ${message}`
+      messageFormatter: ({ level, message }) => `[${level}]: ${message}`
     }
   });
 }

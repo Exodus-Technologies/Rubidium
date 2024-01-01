@@ -94,7 +94,8 @@ exports.deleteUser = async userId => {
     const [error, user] = await getUserById(userId);
     if (user) {
       if (purgeSubscriptions) {
-        SubscriptionService.deleteSubscriptions(userId);
+        const { email } = user;
+        SubscriptionService.deleteSubscriptions(email);
       }
       const [error, deletedUser] = await deleteUserById(userId);
       if (deletedUser) {

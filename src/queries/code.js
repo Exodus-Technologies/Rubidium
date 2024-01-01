@@ -26,7 +26,7 @@ export const createOTPCode = async payload => {
       const createdCode = await newCode.save();
       return [null, createdCode];
     }
-    return [Error('Code with the userId provided exists and active.')];
+    return [new Error('Code with the userId provided exists and active.')];
   } catch (err) {
     logger.error('Error saving code data to db: ', err);
   }
@@ -39,7 +39,7 @@ export const deleteCode = async userId => {
     if (deletedCode.deletedCount > 0) {
       return [null, deletedCode];
     }
-    return [new Error('Unable to find code to delete details.')];
+    return [new Error('Unable to find code to delete details.')()];
   } catch (err) {
     logger.error('Error deleting code data from db: ', err);
   }
@@ -52,7 +52,7 @@ export const verifyOTPCode = async (email, otpCode) => {
     if (code.otpCode === otpCode) {
       return [null, true];
     }
-    return [Error('Unable to find code to verify.')];
+    return [new Error('Unable to find code to verify.')];
   } catch (err) {
     logger.error(`Error verifying otpCode: ${otpCode}: `, err);
   }

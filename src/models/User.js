@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import mongooseSequence from 'mongoose-sequence';
 import config from '../config';
 import { STATES } from '../constants';
-import { isProduction } from '../utilities/boolean';
+import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
@@ -82,7 +82,7 @@ userSchema.methods.getIsValidPassword = function (password) {
 /**
  * Set the autoCreate option on models if not on production
  */
-userSchema.set('autoCreate', !isProduction());
+userSchema.set('autoCreate', !isProductionEnvironment());
 
 /**
  * Increments userId everytime an instances is created

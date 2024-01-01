@@ -113,7 +113,7 @@ export const deleteIssueById = async issueId => {
     if (deletedIssue.deletedCount > 0) {
       return [null, deletedIssue];
     }
-    return [new Error('Unable to find issue to delete details.')];
+    return [new Error('Unable to find issue to delete details.')()];
   } catch (err) {
     logger.error('Error deleting issue data from db: ', err);
   }

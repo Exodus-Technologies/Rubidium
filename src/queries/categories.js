@@ -63,7 +63,7 @@ export const createCategory = async payload => {
     const { Category } = models;
     const category = await Category.findOne({ name: payload.name });
     if (category) {
-      return [Error('category with name already exists.'), null];
+      return [new Error('category with name already exists.')];
     }
     const cat = new Category(payload);
     const createdCategory = await cat.save();
@@ -94,7 +94,7 @@ export const deleteCategoryById = async categoryId => {
     if (deletedCategory.deletedCount > 0) {
       return [null, deletedCategory];
     }
-    return [new Error('Unable to find category to delete details.')];
+    return [new Error('Unable to find category to delete details.')()];
   } catch (err) {
     logger.error('Error deleting category by id: ', err);
   }

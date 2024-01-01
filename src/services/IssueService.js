@@ -37,6 +37,7 @@ import { internalServerErrorRequest, badRequest } from '../response-codes';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
 import logger from '../logger';
+import { stringToBoolean } from '../utilities/boolean';
 
 exports.getPayloadFromFormRequest = async req => {
   const form = formidable({ multiples: true, maxFileSize: MAX_FILE_SIZE_PDF });
@@ -46,7 +47,11 @@ exports.getPayloadFromFormRequest = async req => {
         reject(err);
       }
       if (isEmpty(fields)) reject('Form is empty.');
-      const file = { ...fields, key: removeSpaces(fields.title) };
+      const file = {
+        ...fields,
+        key: removeSpaces(fields.title),
+        paid: stringToBoolean(fields.paid)
+      };
       if (!isEmpty(files)) {
         const {
           filepath: issuePath,
@@ -205,13 +210,8 @@ exports.updateIssue = async archive => {
       coverImageSize,
       issueOrder
     } = archive;
-    if (description && description.length > 255) {
-      return badRequest(
-        'Description must be provided and less than 255 characters long.'
-      );
-    }
-    if (paid && typeof paid !== 'boolean') {
-      return badRequest('Purchased flag must be provided and a boolean flag.');
+    if (!description) {
+      return badRequest('Description must be provided.');
     }
 
     const issue = await getIssueById(issueId);
@@ -374,10 +374,11 @@ exports.deleteIssueById = async issueId => {
       const { key } = issue;
       deleteIssueByKey(key);
       deleteCoverImageByKey(key);
-      const deletedIssue = await deleteIssueById(issueId);
+      const [error, deletedIssue] = await deleteIssueById(issueId);
       if (deletedIssue) {
         return [StatusCodes.NO_CONTENT];
       }
+      return badRequest(error.message);
     }
     return badRequest(`No issue found with id provided.`);
   } catch (err) {

@@ -461,10 +461,11 @@ exports.deleteVideoById = async videoId => {
       const { key } = video;
       deleteVideoByKey(key);
       deleteThumbnailByKey(key);
-      const deletedVideo = await deleteVideoById(videoId);
+      const [error, deletedVideo] = await deleteIssueById(issueId);
       if (deletedVideo) {
         return [StatusCodes.NO_CONTENT];
       }
+      return badRequest(error.message);
     }
     return badRequest(`No video found with id provided.`);
   } catch (err) {

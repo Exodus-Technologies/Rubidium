@@ -146,12 +146,12 @@ export const uploadLivestream = async broadcastId => {
     if (video) {
       return [null, video];
     } else {
-      return [Error('Unable to save video metadata.'), null];
+      return [new Error('Unable to save video metadata.'), null];
     }
   } catch (err) {
     logger.error(`Error with moving livestream data to s3: `, err);
     return [
-      Error(`Unable to save video metadata: ${err.response.statusText}`),
+      new Error(`Unable to save video metadata: ${err.response.statusText}`),
       null
     ];
   }

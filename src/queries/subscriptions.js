@@ -35,11 +35,6 @@ export const getSubscriptions = async query => {
       };
     }
 
-    let sortString = '-id';
-    if (query.sort) {
-      sortString = query.sort;
-    }
-
     return await Subscription.find(objectFilter)
       .limit(limit)
       .skip(skipIndex)
@@ -196,22 +191,22 @@ export const deleteSubscription = async subscriptionId => {
     if (deletedSubscription.deletedCount > 0) {
       return [null, deletedSubscription];
     }
-    return [Error('Unable to find subscription by id.'), null];
+    return [new Error('Unable to find subscription by id.')];
   } catch (err) {
     logger.error('Error deleting subscription data from db: ', err);
   }
 };
 
-export const deleteSubscriptions = async userId => {
+export const deleteSubscriptions = async email => {
   try {
     const { Subscription } = models;
     const deletedSubscriptions = await Subscription.deleteMany({
-      userId
+      email
     });
     if (deletedSubscriptions.deletedCount > 0) {
       return [null, deletedSubscriptions];
     }
-    return [Error('Unable to find any subscriptions by userId.'), null];
+    return [new Error('Unable to find any subscriptions by email.')];
   } catch (err) {
     logger.error('Error deleting subscription data from db: ', err);
   }

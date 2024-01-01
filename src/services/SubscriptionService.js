@@ -151,9 +151,9 @@ exports.deleteSubscription = async subscriptionId => {
   }
 };
 
-exports.deleteSubscriptions = async userId => {
+exports.deleteSubscriptions = async email => {
   try {
-    const [error, deletedSubscriptions] = await deleteSubscriptions(userId);
+    const [error, deletedSubscriptions] = await deleteSubscriptions(email);
     if (deletedSubscriptions) {
       return [StatusCodes.NO_CONTENT];
     }
