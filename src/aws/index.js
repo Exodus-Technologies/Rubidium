@@ -31,7 +31,9 @@ const {
   s3IssueBucketName,
   s3CoverImageBucketName,
   videoDistributionURI,
-  thumbnailDistributionURI
+  thumbnailDistributionURI,
+  issueDistributionURI,
+  coverImageDistributionURI
 } = config.sources.aws;
 
 // Create S3 service object
@@ -566,16 +568,12 @@ export const copyCoverImageObject = (oldKey, newKey) => {
   });
 };
 
-export const getCoverImageUrlFromS3 = key => {
-  return `https://${s3CoverImageBucketName}.s3.amazonaws.com/${getCoverImageObjectKey(
-    key
-  )}`;
+export const getIssueDistributionURI = key => {
+  return `${issueDistributionURI}/${getIssueObjectKey(key)}`;
 };
 
-export const getIssueUrlFromS3 = key => {
-  return `https://${s3IssueBucketName}.s3.amazonaws.com/${getIssueObjectKey(
-    key
-  )}`;
+export const getCoverImageDistributionURI = key => {
+  return `${coverImageDistributionURI}/${getCoverImageObjectKey(key)}`;
 };
 
 export const deleteIssueByKey = key => {
@@ -676,8 +674,8 @@ export const uploadPdfArchiveToS3Location = async archive => {
       );
       await uploadIssueToS3(issueFile, key);
       await uploadCoverImageToS3(coverImageFile, key);
-      const issueLocation = getIssueUrlFromS3(key);
-      const coverImageLocation = getCoverImageUrlFromS3(key);
+      const issueLocation = getIssueDistributionURI(key);
+      const coverImageLocation = getCoverImageDistributionURI(key);
       resolve({ issueLocation, coverImageLocation });
     } catch (err) {
       logger.error(`Error uploading pdf and content to s3 bucket:`, err);

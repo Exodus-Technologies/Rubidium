@@ -26,6 +26,9 @@ const config = {
       videoDistributionURI: process.env.AWS_CLOUDFRONT_VIDEOS_DISTRIBUTION_URI,
       thumbnailDistributionURI:
         process.env.AWS_CLOUDFRONT_THUMBNAILS_DISTRIBUTION_URI,
+      issueDistributionURI: process.env.AWS_CLOUDFRONT_ISSUES_DISTRIBUTION_URI,
+      coverImageDistributionURI:
+        process.env.AWS_CLOUDFRONT_COVERIMAGES_DISTRIBUTION_URI,
       cloudWatchLogGroup: process.env.CLOUDWATCH_LOG_GROUP
     },
     bambuser: {
