@@ -8,7 +8,12 @@ import noCache from 'nocache';
 import cors from 'cors';
 import responseTime from 'response-time';
 
-import { requestResponse, errorHandler, rateLimiter } from './middlewares';
+import {
+  requestResponse,
+  errorHandler,
+  rateLimiter,
+  notFoundHandler
+} from './middlewares';
 import {
   appRouter,
   authRouter,
@@ -19,7 +24,8 @@ import {
   issueRouter,
   categoryRouter,
   videoRouter,
-  swaggerRouter
+  swaggerRouter,
+  notFoundRouter
 } from './routers';
 import logger from './logger';
 
@@ -104,5 +110,8 @@ logger.info('Loaded video routes middleware.');
 //Issue middleware
 server.use(rateLimiter, issueRouter);
 logger.info('Loaded issue routes middleware.');
+
+server.use(notFoundRouter);
+logger.info('Loaded not found routes middleware.');
 
 export default http.createServer(server);
