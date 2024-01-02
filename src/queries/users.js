@@ -7,8 +7,8 @@ import logger from '../logger';
 export const getUsers = async query => {
   try {
     const { User } = models;
-    const page = parseInt(query.page);
-    const limit = parseInt(query.limit);
+    const page = +query.page;
+    const limit = +query.limit;
     const skipIndex = (page - 1) * limit;
 
     const filter = [];

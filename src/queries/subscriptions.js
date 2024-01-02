@@ -17,8 +17,8 @@ import logger from '../logger';
 export const getSubscriptions = async query => {
   try {
     const { Subscription } = models;
-    const page = parseInt(query.page);
-    const limit = parseInt(query.limit);
+    const page = +query.page;
+    const limit = +query.limit;
     const skipIndex = (page - 1) * limit;
 
     const filter = [];
@@ -208,6 +208,6 @@ export const deleteSubscriptions = async email => {
     }
     return [new Error('Unable to find any subscriptions by email.')];
   } catch (err) {
-    logger.error('Error deleting subscription data from db: ', err);
+    logger.error('Error deleting subscriptions data from db: ', err);
   }
 };

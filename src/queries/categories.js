@@ -6,8 +6,8 @@ import logger from '../logger';
 export const getCategories = async query => {
   try {
     const { Category } = models;
-    const page = parseInt(query.page);
-    const limit = parseInt(query.limit);
+    const page = +query.page;
+    const limit = +query.limit;
     const skipIndex = (page - 1) * limit;
     const filter = [];
     for (const [key, value] of Object.entries(query)) {
