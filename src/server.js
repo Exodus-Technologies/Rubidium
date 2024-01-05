@@ -8,6 +8,7 @@ import http from 'http';
 import noCache from 'nocache';
 import responseTime from 'response-time';
 
+import config from './config';
 import logger from './logger';
 import { errorHandler, rateLimiter, requestResponse } from './middlewares';
 import {
@@ -24,13 +25,13 @@ import {
   videoRouter
 } from './routers';
 
-import { NUM_OF_PROXIES } from './constants';
+const { numOfProxies } = config;
 
 // Create the Express application object
 const server = express();
 
 // specify a single subnet
-server.set('trust proxy', NUM_OF_PROXIES);
+server.set('trust proxy', numOfProxies);
 
 //Cors middleware
 server.use(cors());

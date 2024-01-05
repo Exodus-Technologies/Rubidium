@@ -6,10 +6,15 @@ import config from '../config';
 import { isProductionEnvironment } from '../utilities/boolean';
 
 const { NODE_ENV, sources } = config;
-const { cloudWatchLogGroup, accessKeyId, secretAccessKey, region } =
-  sources.aws;
+const { region } = sources.aws;
+const { cloudAccessKeyId, cloudSecretAccessKey, logGroupName } =
+  sources.aws.cloudWatch;
 
 const { splat, combine, timestamp, printf, colorize } = winston.format;
+
+const getLogStreamName = () => {
+  return `${logGroupName}-${NODE_ENV}`;
+};
 
 // meta param is ensured by splat()
 const myFormat = printf(({ timestamp, level, message, meta }) => {
@@ -32,10 +37,10 @@ if (isProductionEnvironment()) {
   loggerTransports.push({
     type: 'cloud-watch',
     options: {
-      logGroupName: cloudWatchLogGroup,
-      logStreamName: `${cloudWatchLogGroup}-${NODE_ENV}`,
-      awsAccessKeyId: accessKeyId,
-      awsSecretKey: secretAccessKey,
+      logGroupName: logGroupName,
+      logStreamName: getLogStreamName(),
+      awsAccessKeyId: cloudAccessKeyId,
+      awsSecretKey: cloudSecretAccessKey,
       awsRegion: region,
       messageFormatter: ({ level, message }) => `[${level}]: ${message}`
     }
