@@ -210,19 +210,16 @@ exports.updateIssue = async archive => {
       coverImageSize,
       issueOrder
     } = archive;
-    if (!description) {
-      return badRequest('Description must be provided.');
-    }
 
     const issue = await getIssueById(issueId);
 
-    if (issue.issueOrder === issueOrder) {
-      return badRequest(
-        'Issue Order number provided already in use. Please provide another issue order number'
-      );
-    }
-
     if (issue) {
+      if (issue.issueOrder === issueOrder) {
+        return badRequest(
+          'Issue order number provided already in use. Please provide another issue order number.'
+        );
+      }
+
       const newKey = removeSpaces(title);
       if (newKey !== issue.key) {
         await copyIssueObject(issue.key, newKey);
@@ -262,7 +259,7 @@ exports.updateIssue = async archive => {
           if (s3Object) {
             deleteIssueByKey(newKey);
           }
-          const { issueLocation } = await uploadArchiveToS3Location(archive);
+          const { issueLocation } = await uploadPdfArchiveToS3Location(archive);
           const body = {
             title,
             issueId,
@@ -294,7 +291,7 @@ exports.updateIssue = async archive => {
           if (s3Object) {
             deleteCoverImageByKey(newKey);
           }
-          const { coverImageLocation } = await uploadArchiveToS3Location(
+          const { coverImageLocation } = await uploadPdfArchiveToS3Location(
             archive
           );
 
@@ -399,7 +396,7 @@ exports.getTotal = async query => {
         }
       ];
     }
-    return badRequest(`No issue found with selected query params.`);
+    return badRequest(`Unable to get total number of issues.`);
   } catch (err) {
     logger.error('Error getting all issues: ', err);
     return internalServerErrorRequest('Error getting issues.');

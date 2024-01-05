@@ -57,8 +57,8 @@ exports.validateLogin = async (email, password) => {
 };
 
 exports.requestPasswordReset = async email => {
+  const transactionId = generateTransactionId();
   try {
-    const transactionId = generateTransactionId();
     const [error, user] = await getUserByEmail(email);
     if (error || !user) {
       const transaction = {
@@ -135,8 +135,8 @@ exports.verifyOTP = async (email, otpCode) => {
 };
 
 exports.changePassword = async (email, token, password) => {
+  const transactionId = generateTransactionId();
   try {
-    const transactionId = generateTransactionId();
     const [error, user] = await getUserByEmail(email);
 
     if (error || !user) {

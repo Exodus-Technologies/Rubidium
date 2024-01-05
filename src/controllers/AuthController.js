@@ -18,8 +18,8 @@ exports.login = async (req, res, next) => {
 };
 
 exports.requestPasswordReset = async (req, res, next) => {
+  const { email } = req.body;
   try {
-    const { email } = req.body;
     const [statusCode, response] = await AuthService.requestPasswordReset(
       email,
       true
@@ -32,8 +32,8 @@ exports.requestPasswordReset = async (req, res, next) => {
 };
 
 exports.verifyOTP = async (req, res, next) => {
+  const { email, otpCode } = req.body;
   try {
-    const { email, otpCode } = req.body;
     const [statusCode, response] = await AuthService.verifyOTP(email, otpCode);
     res.status(statusCode).send(response);
   } catch (err) {

@@ -68,6 +68,9 @@ export const windowMs = 10 * 60 * 1000; // 15 minutes
 
 export const TOKEN_EXPIRY = 60;
 
+export const CUSTOM_ALPHABET =
+  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 export const PASSWORD_RESET_REQUEST_SUBJECT = 'Password Reset Request';
 
 export const PASSWORD_RESET_SUCCESS_SUBJECT = 'Password Reset Successfully';

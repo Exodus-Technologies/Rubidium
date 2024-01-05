@@ -195,20 +195,10 @@ exports.manualUpload = async upload => {
 
     const key = removeSpaces(title);
 
-    const s3VideoObject = await doesVideoObjectExist(key);
-    if (!s3VideoObject) {
-      return badRequest('Video file is not in s3 bucket. Try again later.');
-    }
-
-    const s3ThumbNailObject = await doesThumbnailObjectExist(key);
-    if (!s3ThumbNailObject) {
-      return badRequest('Thumbnail file is not in s3 bucket. Try again later.');
-    }
-
     const body = {
       title,
       description,
-      key: removeSpaces(title),
+      key,
       ...(categories && {
         categories: categories.split(',').map(item => item.trim())
       }),
@@ -222,10 +212,10 @@ exports.manualUpload = async upload => {
     if (video) {
       return [
         StatusCodes.OK,
-        { message: 'Video manual uploaded to s3 with success', video }
+        { message: 'Metadata for manual upload to s3 with success', video }
       ];
     } else {
-      return badRequest('Unable to save manual upload video with metadata.');
+      return badRequest('Unable to save metadata for manual update.');
     }
   } catch (err) {
     logger.error(`Error manually uploading video to s3: `, err);
@@ -461,7 +451,7 @@ exports.deleteVideoById = async videoId => {
       const { key } = video;
       deleteVideoByKey(key);
       deleteThumbnailByKey(key);
-      const [error, deletedVideo] = await deleteIssueById(issueId);
+      const [error, deletedVideo] = await deleteVideoById(videoId);
       if (deletedVideo) {
         return [StatusCodes.NO_CONTENT];
       }

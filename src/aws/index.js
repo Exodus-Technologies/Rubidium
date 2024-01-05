@@ -1,6 +1,7 @@
 'use strict';
 
-import fs from 'fs';
+import { createReadStream } from 'fs';
+import { PassThrough } from 'stream';
 import {
   S3Client,
   ListBucketsCommand,
@@ -59,9 +60,7 @@ const getThumbnailObjectKey = key => {
 const createS3ParallelUpload = params => {
   return new Upload({
     client: s3Client,
-    queueSize: 7, // optional concurrency configuration
-    partSize: '5MB', // optional size of each part
-    leavePartsOnError: false, // optional manually handle dropped parts
+    queueSize: 10, // optional concurrency configuration
     params
   });
 };
@@ -294,22 +293,39 @@ export const deleteThumbnailByKey = key => {
   });
 };
 
-export const uploadVideoToS3 = (videoPath, key) => {
+export const uploadVideoToS3 = (filePath, key) => {
   return new Promise(async (resolve, reject) => {
-    const params = {
-      Bucket: s3VideoBucketName,
-      Key: getVideoObjectKey(key), // File name you want to save as in S3
-      Body: fs.createReadStream(videoPath)
-    };
-
     try {
-      const parallelUpload = createS3ParallelUpload(params);
+      const fileStream = createReadStream(filePath);
 
-      parallelUpload.on('httpUploadProgress', progress => {
-        logger.info(progress);
+      // Create a PassThrough stream to pipe the file stream through
+      const passThrough = new PassThrough();
+
+      // Pipe the file stream through the PassThrough stream
+      fileStream.pipe(passThrough);
+
+      // Set up the parameters for the S3 upload
+      const params = {
+        Bucket: s3VideoBucketName,
+        Key: getVideoObjectKey(key),
+        Body: passThrough
+      };
+
+      // Upload the file to S3
+      const upload = new Upload({
+        client: s3Client,
+        partSize: 1024 * 1024 * 64, // optional size of each part, in bytes, at least 5MB (64GB)
+        queueSize: 50, // optional concurrency configuration
+        params
       });
 
-      await parallelUpload.done();
+      // Monitor the upload progress
+      upload.on('httpUploadProgress', progress => {
+        logger.info(`Progress on video upload: ${JSON.stringify(progress)}`);
+      });
+
+      // Handle the upload completion
+      await upload.done();
       resolve();
     } catch (err) {
       logger.error(err);
@@ -338,10 +354,12 @@ export const uploadThumbnailToS3 = (fileContent, key) => {
     };
 
     try {
-      const parallelUpload = createS3ParallelUpload(params);
+      const upload = createS3ParallelUpload(params);
 
-      parallelUpload.on('httpUploadProgress', progress => {
-        logger.info(progress);
+      upload.on('httpUploadProgress', progress => {
+        logger.info(
+          `Progress on thumbnail upload: ${JSON.stringify(progress)}`
+        );
       });
 
       await parallelUpload.done();
@@ -375,7 +393,7 @@ export const uploadVideoArchiveToS3Location = async archive => {
       const thumbNailLocation = getThumbnailDistributionURI(key);
       resolve({ thumbNailLocation, videoLocation, duration });
     } catch (err) {
-      logger.error(`Error uploading video and content to s3 buckets`, err);
+      logger.error(`Error uploading video and thumbnail to s3 buckets`, err);
       reject(err);
     }
   });
@@ -668,10 +686,8 @@ export const uploadPdfArchiveToS3Location = async archive => {
   return new Promise(async (resolve, reject) => {
     try {
       const { key, issuePath, coverImagePath } = archive;
-      const { file: issueFile } = await getFileContentFromPath(issuePath);
-      const { file: coverImageFile } = await getFileContentFromPath(
-        coverImagePath
-      );
+      const issueFile = await getFileContentFromPath(issuePath);
+      const coverImageFile = await getFileContentFromPath(coverImagePath);
       await uploadIssueToS3(issueFile, key);
       await uploadCoverImageToS3(coverImageFile, key);
       const issueLocation = getIssueDistributionURI(key);
