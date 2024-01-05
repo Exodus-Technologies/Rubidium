@@ -6,8 +6,8 @@ import logger from '../logger';
 export const getCategories = async query => {
   try {
     const { Category } = models;
-    const page = parseInt(query.page);
-    const limit = parseInt(query.limit);
+    const page = +query.page;
+    const limit = +query.limit;
     const skipIndex = (page - 1) * limit;
     const filter = [];
     for (const [key, value] of Object.entries(query)) {
@@ -63,7 +63,7 @@ export const createCategory = async payload => {
     const { Category } = models;
     const category = await Category.findOne({ name: payload.name });
     if (category) {
-      return [Error('category with name already exists.'), null];
+      return [new Error('category with name already exists.')];
     }
     const cat = new Category(payload);
     const createdCategory = await cat.save();
@@ -91,8 +91,11 @@ export const deleteCategoryById = async categoryId => {
   try {
     const { Category } = models;
     const deletedCategory = await Category.deleteOne({ categoryId });
-    return [null, deletedCategory];
+    if (deletedCategory.deletedCount > 0) {
+      return [null, deletedCategory];
+    }
+    return [new Error('Unable to find category to delete details.')()];
   } catch (err) {
-    logger.error('Error deleting video by id: ', err);
+    logger.error('Error deleting category by id: ', err);
   }
 };

@@ -6,8 +6,8 @@ import logger from '../logger';
 export const getVideos = async query => {
   try {
     const { Video } = models;
-    const page = parseInt(query.page);
-    const limit = parseInt(query.limit);
+    const page = +query.page;
+    const limit = +query.limit;
     const skipIndex = (page - 1) * limit;
 
     const filter = [];
@@ -118,7 +118,10 @@ export const deleteVideoById = async videoId => {
   try {
     const { Video } = models;
     const deletedVideo = await Video.deleteOne({ videoId });
-    return deletedVideo;
+    if (deletedVideo.deletedCount > 0) {
+      return [null, deletedVideo];
+    }
+    return [new Error('Unable to find video to delete details.')];
   } catch (err) {
     logger.error('Error deleting video by id: ', err);
   }

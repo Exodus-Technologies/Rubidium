@@ -6,8 +6,8 @@ import logger from '../logger';
 export const getBroadcasts = async query => {
   try {
     const { Broadcast } = models;
-    const page = parseInt(query.page);
-    const limit = parseInt(query.limit);
+    const page = +query.page;
+    const limit = +query.limit;
     const skipIndex = (page - 1) * limit;
 
     const filter = [];
@@ -112,7 +112,10 @@ export const deleteBroadcast = async broadcastId => {
     const deletedBroadcast = await Broadcast.deleteOne({
       'payload.id': broadcastId
     });
-    return deletedBroadcast;
+    if (deletedBroadcast.deletedCount > 0) {
+      return [null, deletedBroadcast];
+    }
+    return [new Error('Unable to find broadcast to delete details.')];
   } catch (err) {
     logger.error('Error deleting video by id: ', err);
   }

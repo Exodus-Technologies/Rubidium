@@ -14,8 +14,6 @@ const loginValidation = [
     .withMessage('Must provide a existing and valid email.'),
   body('password')
     .isString()
-    .isLength({ min: 8 })
-    .isStrongPassword(STRONG_PASSWORD_VALIDATIONS)
     .withMessage(
       'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
     )

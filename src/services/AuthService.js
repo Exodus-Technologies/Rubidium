@@ -3,7 +3,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { internalServerErrorRequest, badRequest } from '../response-codes';
 import {
-  generateAuthJwtToken,
+  generateAuthJWTToken,
   generateTransactionId,
   generateOTPCode,
   verifyJWTToken
@@ -11,12 +11,12 @@ import {
 import { EmailService } from '../services';
 import {
   getCodeByUserId,
-  getUserByEmail,
-  createOtpCode,
+  createOTPCode,
   deleteCode,
-  saveTransaction,
-  verifyOptCode
-} from '../queries/users';
+  verifyOTPCode
+} from '../queries/code';
+import { getUserByEmail } from '../queries/users';
+import { saveTransaction } from '../queries/transactions';
 import {
   PASSWORD_RESET_REQUEST_SUBJECT,
   PASSWORD_RESET_SUCCESS_SUBJECT
@@ -30,7 +30,7 @@ exports.validateLogin = async (email, password) => {
       const validPassword = user.getIsValidPassword(password);
       if (validPassword) {
         const { email, fullName, city, state, isAdmin, userId } = user;
-        const token = generateAuthJwtToken(user);
+        const token = generateAuthJWTToken(user);
         return [
           StatusCodes.OK,
           {
@@ -57,8 +57,8 @@ exports.validateLogin = async (email, password) => {
 };
 
 exports.requestPasswordReset = async email => {
+  const transactionId = generateTransactionId();
   try {
-    const transactionId = generateTransactionId();
     const [error, user] = await getUserByEmail(email);
     if (error || !user) {
       const transaction = {
@@ -76,18 +76,14 @@ exports.requestPasswordReset = async email => {
     const [_, existingCode] = await getCodeByUserId(userId);
 
     if (existingCode) {
-      await deleteCode(userId);
+      deleteCode(userId);
     }
 
     const otpCode = generateOTPCode();
 
-    await createOtpCode({
-      userId,
-      email,
-      otpCode
-    });
+    createOTPCode({ userId, email, otpCode });
 
-    const html = EmailService.generateHtmlRequestPayload(user, otpCode);
+    const html = EmailService.generateOTPCodeHtml(user, otpCode);
 
     EmailService.sendMail(email, PASSWORD_RESET_REQUEST_SUBJECT, html);
 
@@ -103,7 +99,7 @@ exports.requestPasswordReset = async email => {
     return [
       StatusCodes.OK,
       {
-        message: `Password reset success! An email with instructions has been sent to your email.`
+        message: `Password reset success! An email with instructions has been sent.`
       }
     ];
   } catch (err) {
@@ -120,14 +116,16 @@ exports.requestPasswordReset = async email => {
 
 exports.verifyOTP = async (email, otpCode) => {
   try {
-    const [error, isVerified] = await verifyOptCode(email, otpCode);
+    const [error, isVerified] = await verifyOTPCode(email, otpCode);
     if (isVerified) {
       const [_, user] = await getUserByEmail(email);
-      const token = generateAuthJwtToken(user);
-      return [
-        StatusCodes.OK,
-        { message: 'Code was verified successfully.', token }
-      ];
+      if (user) {
+        const token = generateAuthJWTToken(user);
+        return [
+          StatusCodes.OK,
+          { message: 'Code was verified successfully.', token }
+        ];
+      }
     }
     return badRequest(error.message);
   } catch (err) {
@@ -137,8 +135,8 @@ exports.verifyOTP = async (email, otpCode) => {
 };
 
 exports.changePassword = async (email, token, password) => {
+  const transactionId = generateTransactionId();
   try {
-    const transactionId = generateTransactionId();
     const [error, user] = await getUserByEmail(email);
 
     if (error || !user) {
@@ -158,7 +156,7 @@ exports.changePassword = async (email, token, password) => {
       const updatedUser = await user.save();
       if (updatedUser) {
         const { userId } = updatedUser;
-        const html = EmailService.generateHtmlResetPayload(user);
+        const html = EmailService.generatePasswordResetHtml(user);
         EmailService.sendMail(email, PASSWORD_RESET_SUCCESS_SUBJECT, html);
         const transaction = {
           transactionId,
@@ -169,7 +167,7 @@ exports.changePassword = async (email, token, password) => {
           content: html
         };
         saveTransaction(transaction);
-        await deleteCode(userId);
+        deleteCode(userId);
         return [
           StatusCodes.OK,
           {

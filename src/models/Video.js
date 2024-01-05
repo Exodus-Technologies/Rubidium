@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
 import { AUTHOR, VIDEO_PUBLISHED_STATUS } from '../constants';
 import { createVideoSubId } from '../utilities/strings';
-import { isProduction } from '../utilities/boolean';
+import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
@@ -33,7 +33,7 @@ const videoSchema = new Schema(
 /**
  * Set the autoCreate option on models if not on production
  */
-videoSchema.set('autoCreate', !isProduction());
+videoSchema.set('autoCreate', !isProductionEnvironment());
 
 /**
  * Increments videoId everytime an instances is created

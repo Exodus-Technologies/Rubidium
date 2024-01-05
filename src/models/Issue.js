@@ -7,7 +7,7 @@ const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
 import { createIssueSubId } from '../utilities/strings';
-import { isProduction } from '../utilities/boolean';
+import { isProductionEnvironment } from '../utilities/boolean';
 
 //ISSUE SCHEMA
 //  ============================================
@@ -30,7 +30,7 @@ const issueSchema = new Schema(
 /**
  * Set the autoCreate option on models if not on production
  */
-issueSchema.set('autoCreate', !isProduction());
+issueSchema.set('autoCreate', !isProductionEnvironment());
 
 /**
  * Increments issueId everytime an instances is created

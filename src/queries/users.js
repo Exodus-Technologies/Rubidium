@@ -7,8 +7,8 @@ import logger from '../logger';
 export const getUsers = async query => {
   try {
     const { User } = models;
-    const page = parseInt(query.page);
-    const limit = parseInt(query.limit);
+    const page = +query.page;
+    const limit = +query.limit;
     const skipIndex = (page - 1) * limit;
 
     const filter = [];
@@ -150,70 +150,5 @@ export const deleteUserById = async userId => {
     return [new Error('Unable to find user to delete details.')];
   } catch (err) {
     logger.error('Error deleting user data from db: ', err);
-  }
-};
-
-export const getCodeByUserId = async userId => {
-  try {
-    const { Code } = models;
-    const code = await Code.findOne({ userId });
-    if (code) {
-      return [null, code];
-    }
-    return [new Error('Unable to find code associated with user.')];
-  } catch (err) {
-    logger.error('Error getting otpCode for user data to db: ', err);
-  }
-};
-
-export const createOtpCode = async payload => {
-  try {
-    const { Code } = models;
-    const { userId } = payload;
-    const code = await Code.findOne({ userId });
-    if (!code) {
-      const newCode = new Code(payload);
-      const createdCode = await newCode.save();
-      return [null, createdCode];
-    }
-    return [Error('Code with the userId provided already exists.')];
-  } catch (err) {
-    logger.error('Error saving code data to db: ', err);
-  }
-};
-
-export const deleteCode = async userId => {
-  try {
-    const { Code } = models;
-    const deletedCode = await Code.deleteOne({ userId });
-    if (deletedCode.deletedCount > 0) {
-      return [null, deletedCode];
-    }
-    return [new Error('Unable to find code to delete details.')];
-  } catch (err) {
-    logger.error('Error deleting code data from db: ', err);
-  }
-};
-
-export const saveTransaction = async payload => {
-  try {
-    const { Transaction } = models;
-    const transaction = new Transaction(payload);
-    await transaction.save();
-  } catch (err) {
-    logger.error('Error saving transaction data to db: ', err);
-  }
-};
-
-export const verifyOptCode = async (email, otpCode) => {
-  try {
-    const { Code } = models;
-    const code = await Code.findOne({ email });
-    if (code.otpCode === otpCode) {
-      return [null, true];
-    }
-    return [Error('Code supplied was incorrect.')];
-  } catch (err) {
-    logger.error(`Error verifying otpCode: ${otpCode}: `, err);
   }
 };

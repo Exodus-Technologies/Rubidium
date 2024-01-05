@@ -37,6 +37,7 @@ import { internalServerErrorRequest, badRequest } from '../response-codes';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
 import logger from '../logger';
+import { stringToBoolean } from '../utilities/boolean';
 
 exports.getPayloadFromFormRequest = async req => {
   const form = formidable({ multiples: true, maxFileSize: MAX_FILE_SIZE_PDF });
@@ -46,7 +47,11 @@ exports.getPayloadFromFormRequest = async req => {
         reject(err);
       }
       if (isEmpty(fields)) reject('Form is empty.');
-      const file = { ...fields, key: removeSpaces(fields.title) };
+      const file = {
+        ...fields,
+        key: removeSpaces(fields.title),
+        paid: stringToBoolean(fields.paid)
+      };
       if (!isEmpty(files)) {
         const {
           filepath: issuePath,
@@ -205,24 +210,16 @@ exports.updateIssue = async archive => {
       coverImageSize,
       issueOrder
     } = archive;
-    if (description && description.length > 255) {
-      return badRequest(
-        'Description must be provided and less than 255 characters long.'
-      );
-    }
-    if (paid && typeof paid !== 'boolean') {
-      return badRequest('Purchased flag must be provided and a boolean flag.');
-    }
 
     const issue = await getIssueById(issueId);
 
-    if (issue.issueOrder === issueOrder) {
-      return badRequest(
-        'Issue Order number provided already in use. Please provide another issue order number'
-      );
-    }
-
     if (issue) {
+      if (issue.issueOrder === issueOrder) {
+        return badRequest(
+          'Issue order number provided already in use. Please provide another issue order number.'
+        );
+      }
+
       const newKey = removeSpaces(title);
       if (newKey !== issue.key) {
         await copyIssueObject(issue.key, newKey);
@@ -262,7 +259,7 @@ exports.updateIssue = async archive => {
           if (s3Object) {
             deleteIssueByKey(newKey);
           }
-          const { issueLocation } = await uploadArchiveToS3Location(archive);
+          const { issueLocation } = await uploadPdfArchiveToS3Location(archive);
           const body = {
             title,
             issueId,
@@ -294,7 +291,7 @@ exports.updateIssue = async archive => {
           if (s3Object) {
             deleteCoverImageByKey(newKey);
           }
-          const { coverImageLocation } = await uploadArchiveToS3Location(
+          const { coverImageLocation } = await uploadPdfArchiveToS3Location(
             archive
           );
 
@@ -319,14 +316,12 @@ exports.updateIssue = async archive => {
           ];
         }
       } else {
-        const url = await getIssueDistributionURI(newKey);
-        const coverImage = await getCoverImageDistributionURI(newKey);
         const body = {
           title,
           issueId,
-          url,
+          url: getIssueDistributionURI(newKey),
           description,
-          coverImage,
+          coverImage: getCoverImageDistributionURI(newKey),
           paid,
           issueOrder
         };
@@ -376,10 +371,11 @@ exports.deleteIssueById = async issueId => {
       const { key } = issue;
       deleteIssueByKey(key);
       deleteCoverImageByKey(key);
-      const deletedIssue = await deleteIssueById(issueId);
+      const [error, deletedIssue] = await deleteIssueById(issueId);
       if (deletedIssue) {
         return [StatusCodes.NO_CONTENT];
       }
+      return badRequest(error.message);
     }
     return badRequest(`No issue found with id provided.`);
   } catch (err) {
@@ -400,7 +396,7 @@ exports.getTotal = async query => {
         }
       ];
     }
-    return badRequest(`No issue found with selected query params.`);
+    return badRequest(`Unable to get total number of issues.`);
   } catch (err) {
     logger.error('Error getting all issues: ', err);
     return internalServerErrorRequest('Error getting issues.');

@@ -9,7 +9,7 @@ import { windowMs } from '../constants';
 import { verifyJWTToken } from '../utilities/token';
 import { getUserByEmail } from '../queries/users';
 import logger from '../logger';
-import { isProduction } from '../utilities/boolean';
+import { isDevelopmentEnvironment } from '../utilities/boolean';
 
 const nodeCache = new NodeCache();
 const { defaultCacheTtl } = config;
@@ -69,7 +69,7 @@ const apiCache = () => {
 };
 
 const validateToken = async (req, res, next) => {
-  if (!isProduction()) return next();
+  if (isDevelopmentEnvironment()) return next();
   const authorizationHeader = req.headers['authorization'];
 
   if (!authorizationHeader) {

@@ -1,32 +1,23 @@
 'use strict';
 
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import config from '../config';
-import { TOKEN_EXPIRY } from '../constants';
+import { CUSTOM_ALPHABET, TOKEN_EXPIRY } from '../constants';
 
-const { customAlphabet } = nanoid;
 const { sign, verify } = jwt;
 const { jwtSecret } = config;
 
 export const generateTransactionId = () => {
-  const nanoid = customAlphabet(
-    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-    12
-  );
-  return nanoid();
+  return customAlphabet(CUSTOM_ALPHABET, 12);
 };
 
 export const generateOTPCode = () => {
-  const nanoid = customAlphabet(
-    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-    6
-  );
-  return nanoid();
+  return customAlphabet(CUSTOM_ALPHABET, 6);
 };
 
-export const generateAuthJwtToken = user => {
+export const generateAuthJWTToken = user => {
   const { isAdmin, email, userId } = user;
   const expirationTime = moment().add(TOKEN_EXPIRY, 'minutes').valueOf() / 1000;
   const payload = { isAdmin, email, userId };

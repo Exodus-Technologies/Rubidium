@@ -15,7 +15,7 @@ exports.sendMail = async (toEmail, subject, content) => {
   }
 };
 
-exports.generateHtmlRequestPayload = (user, otpCode) => {
+exports.generateOTPCodeHtml = (user, otpCode) => {
   const { fullName, email, isAdmin } = user;
   return `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
   <div style="margin:50px auto;width:70%;padding:20px 0">
@@ -59,7 +59,7 @@ exports.generateHtmlRequestPayload = (user, otpCode) => {
 </div>`;
 };
 
-exports.generateHtmlResetPayload = user => {
+exports.generatePasswordResetHtml = user => {
   const { fullName, isAdmin } = user;
   return `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
   <div style="margin:50px auto;width:100%;padding:20px 0">

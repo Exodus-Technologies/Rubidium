@@ -16,6 +16,7 @@ router.post('/sheen-service/uploadVideo', VideoController.uploadVideo);
 router.post(
   '/sheen-service/manualUpload',
   manualUploadBodyValidation,
+  validationHandler,
   VideoController.manualUpload
 );
 

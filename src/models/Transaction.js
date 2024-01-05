@@ -1,7 +1,7 @@
 'use strict';
 
 import mongoose from 'mongoose';
-import { isProduction } from '../utilities/boolean';
+import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema } = mongoose;
 
@@ -35,7 +35,7 @@ const transactionSchema = new Schema(
 /**
  * Set the autoCreate option on models if not on production
  */
-transactionSchema.set('autoCreate', !isProduction());
+transactionSchema.set('autoCreate', !isProductionEnvironment());
 
 /**
  * Create Transaction model out of transactionSchema

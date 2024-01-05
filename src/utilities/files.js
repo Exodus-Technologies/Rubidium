@@ -1,13 +1,13 @@
 'use strict';
 
-import fs from 'fs';
+import { readFile } from 'fs';
 import { http, https } from 'follow-redirects';
 import logger from '../logger';
 
 export const getFileContentFromPath = path => {
   return new Promise((resolve, reject) => {
     try {
-      fs.readFile(path, (err, buffer) => {
+      readFile(path, (err, buffer) => {
         if (err) {
           reject(err);
         }
