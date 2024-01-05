@@ -41,8 +41,8 @@ const {
 // Create S3 service object
 const s3Client = new S3Client({
   credentials: {
-    s3AccessKeyId,
-    s3AecretAccessKey,
+    accessKeyId: s3AccessKeyId,
+    secretAccessKey: s3AecretAccessKey,
     region
   }
 });
