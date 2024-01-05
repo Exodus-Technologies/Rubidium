@@ -1,32 +1,33 @@
 'use strict';
 
-import { createReadStream } from 'fs';
-import { PassThrough } from 'stream';
 import {
-  S3Client,
-  ListBucketsCommand,
-  HeadObjectCommand,
-  DeleteObjectCommand,
   CopyObjectCommand,
   CreateBucketCommand,
-  PutObjectCommand
+  DeleteObjectCommand,
+  HeadObjectCommand,
+  ListBucketsCommand,
+  PutObjectCommand,
+  S3Client
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { createReadStream } from 'fs';
 import { getVideoDurationInSeconds } from 'get-video-duration';
-import { getFileContentFromPath } from '../utilities/files';
+import { PassThrough } from 'stream';
 import config from '../config';
 import {
-  DEFAULT_THUMBNAIL_FILE_EXTENTION,
-  DEFAULT_VIDEO_FILE_EXTENTION,
   DEFAULT_COVERIMAGE_FILE_EXTENTION,
-  DEFAULT_PDF_FILE_EXTENTION
+  DEFAULT_PDF_FILE_EXTENTION,
+  DEFAULT_THUMBNAIL_FILE_EXTENTION,
+  DEFAULT_VIDEO_FILE_EXTENTION
 } from '../constants';
 import logger from '../logger';
+import { getFileContentFromPath } from '../utilities/files';
 
+const { aws } = config.sources;
+const { region, s3 } = aws;
 const {
-  accessKeyId,
-  secretAccessKey,
-  region,
+  s3AccessKeyId,
+  s3AecretAccessKey,
   s3VideoBucketName,
   s3ThumbnailBucketName,
   s3IssueBucketName,
@@ -35,13 +36,13 @@ const {
   thumbnailDistributionURI,
   issueDistributionURI,
   coverImageDistributionURI
-} = config.sources.aws;
+} = s3;
 
 // Create S3 service object
 const s3Client = new S3Client({
   credentials: {
-    accessKeyId,
-    secretAccessKey,
+    s3AccessKeyId,
+    s3AecretAccessKey,
     region
   }
 });
@@ -314,7 +315,7 @@ export const uploadVideoToS3 = (filePath, key) => {
       // Upload the file to S3
       const upload = new Upload({
         client: s3Client,
-        partSize: 1024 * 1024 * 64, // optional size of each part, in bytes, at least 5MB (64GB)
+        partSize: 1024 * 1024 * 64, // optional size of each part, in bytes, at least 5MB (64MB)
         queueSize: 50, // optional concurrency configuration
         params
       });
@@ -345,12 +346,12 @@ export const uploadVideoToS3 = (filePath, key) => {
   });
 };
 
-export const uploadThumbnailToS3 = (fileContent, key) => {
+export const uploadThumbnailToS3 = (buffer, key) => {
   return new Promise(async (resolve, reject) => {
     const params = {
       Bucket: s3ThumbnailBucketName,
       Key: getThumbnailObjectKey(key), // File name you want to save as in S3
-      Body: fileContent
+      Body: buffer
     };
 
     try {

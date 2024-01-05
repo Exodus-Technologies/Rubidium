@@ -1,7 +1,7 @@
 'use strict';
 
-import { UserService } from '../services';
 import logger from '../logger';
+import { UserService } from '../services';
 
 exports.getUsers = async (req, res, next) => {
   try {

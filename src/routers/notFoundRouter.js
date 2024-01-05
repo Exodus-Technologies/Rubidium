@@ -1,7 +1,7 @@
 'use strict';
 
 import express from 'express';
-import { StatusCodes, ReasonPhrases } from 'http-status-codes';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 const { Router } = express;
 

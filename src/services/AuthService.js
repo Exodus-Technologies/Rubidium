@@ -1,27 +1,27 @@
 'use strict';
 
 import { StatusCodes } from 'http-status-codes';
-import { internalServerErrorRequest, badRequest } from '../response-codes';
-import {
-  generateAuthJWTToken,
-  generateTransactionId,
-  generateOTPCode,
-  verifyJWTToken
-} from '../utilities/token';
-import { EmailService } from '../services';
-import {
-  getCodeByUserId,
-  createOTPCode,
-  deleteCode,
-  verifyOTPCode
-} from '../queries/code';
-import { getUserByEmail } from '../queries/users';
-import { saveTransaction } from '../queries/transactions';
 import {
   PASSWORD_RESET_REQUEST_SUBJECT,
   PASSWORD_RESET_SUCCESS_SUBJECT
 } from '../constants';
 import logger from '../logger';
+import {
+  createOTPCode,
+  deleteCode,
+  getCodeByUserId,
+  verifyOTPCode
+} from '../queries/code';
+import { saveTransaction } from '../queries/transactions';
+import { getUserByEmail } from '../queries/users';
+import { badRequest, internalServerErrorRequest } from '../response-codes';
+import { EmailService } from '../services';
+import {
+  generateAuthJWTToken,
+  generateOTPCode,
+  generateTransactionId,
+  verifyJWTToken
+} from '../utilities/token';
 
 exports.validateLogin = async (email, password) => {
   try {

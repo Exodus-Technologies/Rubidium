@@ -1,8 +1,8 @@
 'use strict';
 
 import config from '../config';
-import { sendEmailNotification } from '../twilio';
 import logger from '../logger';
+import { sendEmailNotification } from '../twilio';
 
 const { CMS } = config;
 

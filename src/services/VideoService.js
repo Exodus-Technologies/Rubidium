@@ -1,43 +1,43 @@
 'use strict';
 
-import { StatusCodes } from 'http-status-codes';
 import formidable from 'formidable';
+import { StatusCodes } from 'http-status-codes';
 import {
-  uploadVideoArchiveToS3Location,
-  doesVideoS3BucketExist,
+  copyThumbnailObject,
+  copyVideoObject,
+  createThumbnailS3Bucket,
+  createVideoS3Bucket,
+  deleteThumbnailByKey,
+  deleteVideoByKey,
+  doesThumbnailObjectExist,
   doesThumbnailS3BucketExist,
   doesVideoObjectExist,
-  deleteVideoByKey,
-  copyVideoObject,
-  copyThumbnailObject,
-  getVideoDistributionURI,
-  deleteThumbnailByKey,
-  createVideoS3Bucket,
-  createThumbnailS3Bucket,
+  doesVideoS3BucketExist,
   getThumbnailDistributionURI,
-  doesThumbnailObjectExist
+  getVideoDistributionURI,
+  uploadVideoArchiveToS3Location
 } from '../aws';
 import {
-  VIDEO_MIME_TYPE,
+  MAX_FILE_SIZE_VIDEO,
   THUMBNAIL_MIME_TYPE,
-  MAX_FILE_SIZE_VIDEO
+  VIDEO_MIME_TYPE
 } from '../constants';
+import logger from '../logger';
 import {
   createVideo,
-  updateVideoViews,
+  deleteVideoById,
+  getTotal,
   getVideoById,
   getVideoByTitle,
-  updateVideo,
-  deleteVideoById,
   getVideos,
-  getTotal
+  updateVideo,
+  updateVideoViews
 } from '../queries/videos';
-import { internalServerErrorRequest, badRequest } from '../response-codes';
-import { fancyTimeFormat } from '../utilities/time';
+import { badRequest, internalServerErrorRequest } from '../response-codes';
 import { stringToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
-import logger from '../logger';
+import { fancyTimeFormat } from '../utilities/time';
 
 exports.getPayloadFromFormRequest = async req => {
   const form = formidable({
@@ -464,9 +464,9 @@ exports.deleteVideoById = async videoId => {
   }
 };
 
-exports.getTotal = async query => {
+exports.getTotal = async () => {
   try {
-    const total = await getTotal(query);
+    const total = await getTotal();
     if (total) {
       return [
         StatusCodes.OK,

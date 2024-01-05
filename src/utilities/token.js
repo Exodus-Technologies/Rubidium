@@ -1,8 +1,8 @@
 'use strict';
 
-import { customAlphabet } from 'nanoid';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
+import { customAlphabet } from 'nanoid';
 import config from '../config';
 import { CUSTOM_ALPHABET, TOKEN_EXPIRY } from '../constants';
 

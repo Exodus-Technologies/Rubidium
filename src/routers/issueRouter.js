@@ -1,15 +1,15 @@
 'use strict';
 
 import express from 'express';
+import { IssueController } from '../controllers';
+import { validationHandler } from '../middlewares';
+import {
+  issueIdBodyValidation,
+  issueIdParamValidation,
+  issueQueryValidation
+} from '../validations/issues';
 
 const { Router } = express;
-import { IssueController } from '../controllers';
-import {
-  issueQueryValidation,
-  issueIdParamValidation,
-  issueIdBodyValidation
-} from '../validations/issues';
-import { validationHandler } from '../middlewares';
 
 const router = Router();
 

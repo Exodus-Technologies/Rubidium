@@ -1,7 +1,7 @@
 'use strict';
 
-import models from '../models';
 import logger from '../logger';
+import models from '../models';
 
 export const saveTransaction = async payload => {
   try {

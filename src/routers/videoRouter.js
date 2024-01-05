@@ -1,12 +1,12 @@
 import express from 'express';
 import { VideoController } from '../controllers';
+import { validateToken, validationHandler } from '../middlewares';
 import {
-  videoIdParamValidation,
-  videoQueryValidation,
+  manualUploadBodyValidation,
   videoIdBodyUpdateValidation,
-  manualUploadBodyValidation
+  videoIdParamValidation,
+  videoQueryValidation
 } from '../validations/videos';
-import { validationHandler } from '../middlewares';
 
 const { Router } = express;
 const router = Router();
@@ -15,6 +15,7 @@ router.post('/sheen-service/uploadVideo', VideoController.uploadVideo);
 
 router.post(
   '/sheen-service/manualUpload',
+  validateToken,
   manualUploadBodyValidation,
   validationHandler,
   VideoController.manualUpload

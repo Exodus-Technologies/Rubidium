@@ -2,13 +2,13 @@
 
 import express from 'express';
 import { CategoryController } from '../controllers';
+import { validationHandler } from '../middlewares';
 import {
-  categoryQueryValidation,
-  categoryPostValidation,
   categoryIdParamValidation,
+  categoryPostValidation,
+  categoryQueryValidation,
   categoryUpdateValidation
 } from '../validations/categories';
-import { validationHandler } from '../middlewares';
 
 const { Router } = express;
 const router = Router();

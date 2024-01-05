@@ -1,7 +1,7 @@
 'use strict';
 
-import { AuthService } from '../services';
 import logger from '../logger';
+import { AuthService } from '../services';
 
 exports.login = async (req, res, next) => {
   try {

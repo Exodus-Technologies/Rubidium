@@ -3,7 +3,7 @@
 /**
  * https://github.com/validatorjs/validator.js#validators
  */
-import { body, query, param, validationResult } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import { VIDEO_STATUSES } from '../constants';
 
 const videoQueryValidation = [
@@ -69,8 +69,8 @@ const manualUploadBodyValidation = [
 ];
 
 export {
-  videoQueryValidation,
+  manualUploadBodyValidation,
   videoIdBodyUpdateValidation,
   videoIdParamValidation,
-  manualUploadBodyValidation
+  videoQueryValidation
 };

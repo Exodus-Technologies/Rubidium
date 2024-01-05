@@ -9,4 +9,4 @@ const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
   return `${location}[${param}]: ${msg}`;
 };
 
-export { validationResult, errorFormatter };
+export { errorFormatter, validationResult };

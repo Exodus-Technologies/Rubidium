@@ -2,16 +2,16 @@
 
 import { StatusCodes } from 'http-status-codes';
 import config from '../config';
-import SubscriptionService from './SubscriptionService';
-import { badRequest, internalServerErrorRequest } from '../response-codes';
-import {
-  getUsers,
-  createUser,
-  getUserById,
-  updateUser,
-  deleteUserById
-} from '../queries/users';
 import logger from '../logger';
+import {
+  createUser,
+  deleteUserById,
+  getUserById,
+  getUsers,
+  updateUser
+} from '../queries/users';
+import { badRequest, internalServerErrorRequest } from '../response-codes';
+import SubscriptionService from './SubscriptionService';
 
 exports.getUsers = async query => {
   try {

@@ -1,14 +1,14 @@
 'use strict';
 
-import UserService from './UserService';
 import AuthService from './AuthService';
-import EmailService from './EmailService';
-import SubscriptionService from './SubscriptionService';
 import BambuserService from './BambuserService';
 import BroadcastService from './BroadcastService';
 import CategoryService from './CategoryService';
-import VideoService from './VideoService';
+import EmailService from './EmailService';
 import IssueService from './IssueService';
+import SubscriptionService from './SubscriptionService';
+import UserService from './UserService';
+import VideoService from './VideoService';
 
 export {
   AuthService,
@@ -16,8 +16,8 @@ export {
   BroadcastService,
   CategoryService,
   EmailService,
+  IssueService,
   SubscriptionService,
   UserService,
-  VideoService,
-  IssueService
+  VideoService
 };

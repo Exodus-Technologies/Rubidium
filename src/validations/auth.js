@@ -53,8 +53,8 @@ const otpBodyValidation = [
 ];
 
 export {
-  loginValidation,
-  passwordRequestResetBodyValidation,
   changePasswordValidation,
-  otpBodyValidation
+  loginValidation,
+  otpBodyValidation,
+  passwordRequestResetBodyValidation
 };

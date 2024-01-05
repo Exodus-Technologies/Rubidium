@@ -55,8 +55,10 @@
   "devDependencies": {
     "dotenv": "^16.0.0",
     "husky": "^7.0.4",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "mocha": "^10.2.0",
     "nodemon": "^1.4.1",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "typescript": "^5.3.3"
   }
 }

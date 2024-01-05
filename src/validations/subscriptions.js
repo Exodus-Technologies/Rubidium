@@ -3,7 +3,7 @@
 /**
  * https://github.com/validatorjs/validator.js#validators
  */
-import { query, body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 import { RECURRING_TYPES, SUBSCRIPTION_TYPES } from '../constants';
 
@@ -103,10 +103,10 @@ const subscriptionUpdateBodyValidation = [
 ];
 
 export {
-  userIdParamValidation,
   subscriptionIdParamValidation,
-  subscriptionQueryValidation,
   subscriptionPostBodyValidation,
+  subscriptionQueryValidation,
   subscriptionStatusQueryValidation,
-  subscriptionUpdateBodyValidation
+  subscriptionUpdateBodyValidation,
+  userIdParamValidation
 };

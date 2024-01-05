@@ -1,7 +1,7 @@
 'use strict';
 
-import { readFile } from 'fs';
 import { http, https } from 'follow-redirects';
+import { readFile } from 'fs';
 import logger from '../logger';
 
 export const getFileContentFromPath = path => {

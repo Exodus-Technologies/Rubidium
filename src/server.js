@@ -1,41 +1,37 @@
 'use strict';
 
-import http from 'http';
-import express from 'express';
 import compression from 'compression';
-import helmet from 'helmet';
-import noCache from 'nocache';
 import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
+import http from 'http';
+import noCache from 'nocache';
 import responseTime from 'response-time';
 
-import {
-  requestResponse,
-  errorHandler,
-  rateLimiter,
-  notFoundHandler
-} from './middlewares';
+import config from './config';
+import logger from './logger';
+import { errorHandler, rateLimiter, requestResponse } from './middlewares';
 import {
   appRouter,
   authRouter,
-  userRouter,
-  subscriptionRouter,
   bambuserRouter,
   broadcastRouter,
-  issueRouter,
   categoryRouter,
-  videoRouter,
+  issueRouter,
+  notFoundRouter,
+  subscriptionRouter,
   swaggerRouter,
-  notFoundRouter
+  userRouter,
+  videoRouter
 } from './routers';
-import logger from './logger';
 
-import { NUM_OF_PROXIES } from './constants';
+const { numOfProxies } = config;
 
 // Create the Express application object
 const server = express();
 
 // specify a single subnet
-server.set('trust proxy', NUM_OF_PROXIES);
+server.set('trust proxy', numOfProxies);
 
 //Cors middleware
 server.use(cors());

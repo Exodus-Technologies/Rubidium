@@ -1,7 +1,7 @@
 'use strict';
 
-import { VideoService } from '../services';
 import logger from '../logger';
+import { VideoService } from '../services';
 
 exports.uploadVideo = async (req, res, next) => {
   try {
@@ -82,8 +82,7 @@ exports.deleteVideoById = async (req, res, next) => {
 
 exports.getTotal = async (req, res, next) => {
   try {
-    const { query } = req;
-    const [statusCode, response] = await VideoService.getTotal(query);
+    const [statusCode, response] = await VideoService.getTotal();
     res.status(statusCode).send(response);
   } catch (err) {
     logger.error(`Error with getting videos: `, err);

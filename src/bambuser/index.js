@@ -1,28 +1,27 @@
 'use strict';
 
 import moment from 'moment';
+import {
+  getThumbnailDistributionURI,
+  getVideoDistributionURI,
+  uploadThumbnailToS3,
+  uploadVideoToS3
+} from '../aws';
 import config from '../config';
 import {
-  uploadVideoToS3,
-  uploadThumbnailToS3,
-  getVideoDistributionURI,
-  getThumbnailDistributionURI
-} from '../aws';
+  BAMBUSER_API_TIMEOUT,
+  BAMBUSER_API_VERSION_ONE,
+  BAMBUSER_API_VERSION_TWO,
+  DOWNLOAD_LINK_SUCCESS_STATUS,
+  VIDEO_DRAFT_STATUS
+} from '../constants';
+import logger from '../logger';
 import { createVideo } from '../queries/videos';
-import AxiosClient from '../utilities/axios';
-import {
+import AxiosClient, {
   fancyTimeFormat,
   getContentFromURL,
   getVideoContentFromURL
 } from '../utilities/axios';
-import {
-  DOWNLOAD_LINK_SUCCESS_STATUS,
-  VIDEO_DRAFT_STATUS,
-  BAMBUSER_API_VERSION_ONE,
-  BAMBUSER_API_VERSION_TWO,
-  BAMBUSER_API_TIMEOUT
-} from '../constants';
-import logger from '../logger';
 
 const { bambuser } = config.sources;
 const { apiKey, broadcastURL } = bambuser;

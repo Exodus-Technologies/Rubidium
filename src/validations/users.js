@@ -3,7 +3,7 @@
 /**
  * https://github.com/validatorjs/validator.js#validators
  */
-import { query, body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 import { STATES, STRONG_PASSWORD_VALIDATIONS } from '../constants';
 
@@ -101,7 +101,7 @@ const userUpdateValidation = [
 
 export {
   userCreationValidation,
-  userUpdateValidation,
+  userIdParamValidation,
   userQueryValidation,
-  userIdParamValidation
+  userUpdateValidation
 };

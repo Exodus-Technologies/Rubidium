@@ -4,8 +4,8 @@
  * https://gist.github.com/AKIRA-MIYAKE/03b9ae80dbdf61bf28ef
  */
 import fs from 'fs';
-import path from 'path';
 import mongoose from 'mongoose';
+import path from 'path';
 import config from '../config';
 import logger from '../logger';
 
