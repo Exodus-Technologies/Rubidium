@@ -3,7 +3,7 @@
 /**
  * https://github.com/validatorjs/validator.js#validators
  */
-import { query, body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 const issueQueryValidation = [
   query('page')
@@ -38,4 +38,4 @@ const issueIdBodyValidation = [
   body('issueId').isString().withMessage('Must provide an existing issue id.')
 ];
 
-export { issueQueryValidation, issueIdParamValidation, issueIdBodyValidation };
+export { issueIdBodyValidation, issueIdParamValidation, issueQueryValidation };

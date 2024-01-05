@@ -1,13 +1,13 @@
 'use strict';
 
 import { StatusCodes } from 'http-status-codes';
+import logger from '../logger';
 import {
-  getActiveBroadcast,
   deleteBroadcast,
+  getActiveBroadcast,
   getBroadcasts
 } from '../queries/broadcasts';
-import { internalServerErrorRequest, badRequest } from '../response-codes';
-import logger from '../logger';
+import { badRequest, internalServerErrorRequest } from '../response-codes';
 
 exports.getActiveBroadcast = async () => {
   try {

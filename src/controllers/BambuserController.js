@@ -1,7 +1,7 @@
 'use strict';
 
-import { BambuserService } from '../services';
 import logger from '../logger';
+import { BambuserService } from '../services';
 
 exports.getApplicationId = async (req, res, next) => {
   try {

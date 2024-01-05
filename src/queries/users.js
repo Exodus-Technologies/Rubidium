@@ -1,8 +1,8 @@
 'use strict';
 
+import logger from '../logger';
 import models from '../models';
 import { stringToBoolean } from '../utilities/boolean';
-import logger from '../logger';
 
 export const getUsers = async query => {
   try {

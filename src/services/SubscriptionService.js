@@ -1,18 +1,18 @@
 'use strict';
 
 import { StatusCodes } from 'http-status-codes';
-import {
-  getSubscriptions,
-  getSubscriptionStatus,
-  getSubscription,
-  createSubscription,
-  updateSubscription,
-  getUserSubscriptions,
-  deleteSubscription,
-  deleteSubscriptions
-} from '../queries/subscriptions';
-import { internalServerErrorRequest, badRequest } from '../response-codes';
 import logger from '../logger';
+import {
+  createSubscription,
+  deleteSubscription,
+  deleteSubscriptions,
+  getSubscription,
+  getSubscriptionStatus,
+  getSubscriptions,
+  getUserSubscriptions,
+  updateSubscription
+} from '../queries/subscriptions';
+import { badRequest, internalServerErrorRequest } from '../response-codes';
 
 exports.getSubscriptions = async query => {
   try {

@@ -1,7 +1,7 @@
 'use strict';
 
-import { SubscriptionService } from '../services';
 import logger from '../logger';
+import { SubscriptionService } from '../services';
 
 exports.getSubscriptions = async (req, res, next) => {
   try {

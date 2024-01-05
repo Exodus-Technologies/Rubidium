@@ -1,15 +1,15 @@
 'use strict';
 
-import NodeCache from 'node-cache';
 import rateLimit from 'express-rate-limit';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import NodeCache from 'node-cache';
 import config from '../config';
-import { errorFormatter, validationResult } from '../validations';
 import { windowMs } from '../constants';
-import { verifyJWTToken } from '../utilities/token';
-import { getUserByEmail } from '../queries/users';
 import logger from '../logger';
+import { getUserByEmail } from '../queries/users';
 import { isDevelopmentEnvironment } from '../utilities/boolean';
+import { verifyJWTToken } from '../utilities/token';
+import { errorFormatter, validationResult } from '../validations';
 
 const nodeCache = new NodeCache();
 const { defaultCacheTtl } = config;
@@ -149,10 +149,10 @@ const validateToken = async (req, res, next) => {
 };
 
 export {
-  requestResponse,
-  errorHandler,
-  validationHandler,
   apiCache,
+  errorHandler,
+  rateLimiter,
+  requestResponse,
   validateToken,
-  rateLimiter
+  validationHandler
 };

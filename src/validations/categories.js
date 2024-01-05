@@ -3,7 +3,7 @@
 /**
  * https://github.com/validatorjs/validator.js#validators
  */
-import { body, query, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 const categoryQueryValidation = [
   query('page')
@@ -43,8 +43,8 @@ const categoryUpdateValidation = [
 ];
 
 export {
-  categoryQueryValidation,
-  categoryPostValidation,
   categoryIdParamValidation,
+  categoryPostValidation,
+  categoryQueryValidation,
   categoryUpdateValidation
 };

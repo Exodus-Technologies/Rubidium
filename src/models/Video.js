@@ -3,8 +3,8 @@
 import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
 import { AUTHOR, VIDEO_PUBLISHED_STATUS } from '../constants';
-import { createVideoSubId } from '../utilities/strings';
 import { isProductionEnvironment } from '../utilities/boolean';
+import { createVideoSubId } from '../utilities/strings';
 
 const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);

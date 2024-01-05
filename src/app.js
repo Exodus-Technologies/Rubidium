@@ -1,10 +1,10 @@
 'use strict';
 
-import server from './server';
 import config from './config';
+import logger from './logger';
 import models from './models';
 import generateDBUri from './queries';
-import logger from './logger';
+import server from './server';
 
 /**
  * Starts web server

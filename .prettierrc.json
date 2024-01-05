@@ -2,5 +2,6 @@
   "trailingComma": "none",
   "quoteProps": "consistent",
   "singleQuote": true,
-  "arrowParens": "avoid"
+  "arrowParens": "avoid",
+  "plugins": ["prettier-plugin-organize-imports"]
 }

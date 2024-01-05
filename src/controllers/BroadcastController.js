@@ -1,7 +1,7 @@
 'use strict';
 
-import { BroadcastService } from '../services';
 import logger from '../logger';
+import { BroadcastService } from '../services';
 
 exports.getActiveBroadcast = async (_, res, next) => {
   try {

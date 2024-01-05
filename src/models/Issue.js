@@ -6,8 +6,8 @@ import mongooseSequence from 'mongoose-sequence';
 const { Schema } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
-import { createIssueSubId } from '../utilities/strings';
 import { isProductionEnvironment } from '../utilities/boolean';
+import { createIssueSubId } from '../utilities/strings';
 
 //ISSUE SCHEMA
 //  ============================================

@@ -1,15 +1,15 @@
 'use strict';
 
 import { StatusCodes } from 'http-status-codes';
+import logger from '../logger';
 import {
-  getCategories,
   createCategory,
   deleteCategoryById,
-  updateCategory,
-  getCategoryById
+  getCategories,
+  getCategoryById,
+  updateCategory
 } from '../queries/categories';
-import { internalServerErrorRequest, badRequest } from '../response-codes';
-import logger from '../logger';
+import { badRequest, internalServerErrorRequest } from '../response-codes';
 
 exports.getCategories = async query => {
   try {

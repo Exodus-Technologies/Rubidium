@@ -4,10 +4,10 @@ import AuthController from './AuthController';
 import BambuserController from './BambuserController';
 import BroadcastController from './BroadcastController';
 import CategoryController from './CategoryController';
+import IssueController from './IssueController';
 import SubscriptionController from './SubscriptionController';
 import UserController from './UserContoller';
 import VideoController from './VideoController';
-import IssueController from './IssueController';
 
 export {
   AuthController,

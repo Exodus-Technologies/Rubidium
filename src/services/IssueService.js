@@ -3,41 +3,41 @@
 import formidable from 'formidable';
 import { StatusCodes } from 'http-status-codes';
 import {
-  uploadPdfArchiveToS3Location,
-  deleteIssueByKey,
-  doesIssueS3BucketExist,
+  copyCoverImageObject,
+  copyIssueObject,
   createCoverImageS3Bucket,
   createIssueS3Bucket,
-  doesCoverImageS3BucketExist,
   deleteCoverImageByKey,
-  getIssueDistributionURI,
-  getCoverImageDistributionURI,
-  doesIssueObjectExist,
+  deleteIssueByKey,
   doesCoverImageObjectExist,
-  copyCoverImageObject,
-  copyIssueObject
+  doesCoverImageS3BucketExist,
+  doesIssueObjectExist,
+  doesIssueS3BucketExist,
+  getCoverImageDistributionURI,
+  getIssueDistributionURI,
+  uploadPdfArchiveToS3Location
 } from '../aws';
 import {
   COVERIMAGE_MIME_TYPES,
   ISSUE_MIME_TYPES,
   MAX_FILE_SIZE_PDF
 } from '../constants';
+import logger from '../logger';
 import {
   createIssue,
-  updateIssueViews,
-  getIssueById,
   deleteIssueById,
+  getIssueById,
   getIssueByTitle,
-  updateIssue,
   getIssues,
+  getNextIssueOrder,
   getTotal,
-  getNextIssueOrder
+  updateIssue,
+  updateIssueViews
 } from '../queries/issues';
-import { internalServerErrorRequest, badRequest } from '../response-codes';
+import { badRequest, internalServerErrorRequest } from '../response-codes';
+import { stringToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
-import logger from '../logger';
-import { stringToBoolean } from '../utilities/boolean';
 
 exports.getPayloadFromFormRequest = async req => {
   const form = formidable({ multiples: true, maxFileSize: MAX_FILE_SIZE_PDF });

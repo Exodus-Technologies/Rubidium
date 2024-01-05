@@ -5,7 +5,7 @@ import { createSubscriptionId } from '../utilities/strings';
 
 const { Schema, model } = mongoose;
 
-import { SUBSCRIPTION_TYPES, RECURRING_TYPES } from '../constants';
+import { RECURRING_TYPES, SUBSCRIPTION_TYPES } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
 
 //SUBSCRIPTION SCHEMA

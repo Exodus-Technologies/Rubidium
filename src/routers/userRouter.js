@@ -2,13 +2,13 @@
 
 import express from 'express';
 import { UserController } from '../controllers';
+import { validationHandler } from '../middlewares';
 import {
   userCreationValidation,
   userIdParamValidation,
   userQueryValidation,
   userUpdateValidation
 } from '../validations/users';
-import { validationHandler } from '../middlewares';
 
 const { Router } = express;
 const router = Router();

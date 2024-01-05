@@ -1,7 +1,7 @@
 'use strict';
 
-import { CategoryService } from '../services';
 import logger from '../logger';
+import { CategoryService } from '../services';
 
 exports.getCategories = async (req, res, next) => {
   try {

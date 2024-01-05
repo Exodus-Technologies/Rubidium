@@ -2,17 +2,17 @@
 
 import {
   ISSUE_SUBSCRIPTION_TYPE,
-  VIDEO_SUBSCRIPTION_TYPE,
-  SUBSCRIPTION_MAX_LIMIT
+  SUBSCRIPTION_MAX_LIMIT,
+  VIDEO_SUBSCRIPTION_TYPE
 } from '../constants';
+import logger from '../logger';
 import models from '../models';
 import { badRequest } from '../response-codes';
 import {
   createCurrentMoment,
-  getSubscriptionStartDate,
-  getSubscriptionEndDate
+  getSubscriptionEndDate,
+  getSubscriptionStartDate
 } from '../utilities/time';
-import logger from '../logger';
 
 export const getSubscriptions = async query => {
   try {

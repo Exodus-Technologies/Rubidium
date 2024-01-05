@@ -1,7 +1,7 @@
 import express from 'express';
-import { appIdQueryValidation } from '../validations/broadcasts';
-import { validationHandler } from '../middlewares';
 import { BambuserController } from '../controllers';
+import { validationHandler } from '../middlewares';
+import { appIdQueryValidation } from '../validations/broadcasts';
 
 const { Router } = express;
 const router = Router();

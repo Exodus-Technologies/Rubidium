@@ -1,14 +1,14 @@
 import express from 'express';
 import { SubscriptionController } from '../controllers';
+import { validationHandler } from '../middlewares';
 import {
-  subscriptionQueryValidation,
-  subscriptionPostBodyValidation,
-  subscriptionStatusQueryValidation,
   subscriptionIdParamValidation,
+  subscriptionPostBodyValidation,
+  subscriptionQueryValidation,
+  subscriptionStatusQueryValidation,
   subscriptionUpdateBodyValidation,
   userIdParamValidation
 } from '../validations/subscriptions';
-import { validationHandler } from '../middlewares';
 
 const { Router } = express;
 

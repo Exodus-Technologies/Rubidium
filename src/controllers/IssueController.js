@@ -1,7 +1,7 @@
 'use strict';
 
-import { IssueService } from '../services';
 import logger from '../logger';
+import { IssueService } from '../services';
 
 exports.getIssues = async (req, res, next) => {
   try {
