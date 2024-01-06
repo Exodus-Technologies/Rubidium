@@ -2,17 +2,13 @@
 
 import rateLimit from 'express-rate-limit';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import NodeCache from 'node-cache';
-import config from '../config';
 import { windowMs } from '../constants';
 import logger from '../logger';
+import { getCache, setCache } from '../queries/cache';
 import { getUserByEmail } from '../queries/users';
 import { isDevelopmentEnvironment } from '../utilities/boolean';
 import { verifyJWTToken } from '../utilities/token';
 import { errorFormatter, validationResult } from '../validations';
-
-const nodeCache = new NodeCache();
-const { defaultCacheTtl } = config;
 
 const requestResponse = (req, res, next) => {
   logger.info(`${req.method} ${req.originalUrl}`);
@@ -51,16 +47,15 @@ const validationHandler = (req, res, next) => {
 };
 
 const apiCache = () => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const key = `__express__${req.originalUrl || req.url}`;
-    const cachedBody = nodeCache.get(key);
+    const cachedBody = await getCache(key);
     if (cachedBody) {
-      res.send(JSON.parse(cachedBody));
-      return;
+      return res.send(JSON.parse(cachedBody));
     } else {
       res.sendResponse = res.send;
-      res.send = body => {
-        nodeCache.set(key, body, defaultCacheTtl);
+      res.send = async body => {
+        setCache({ key, body: JSON.stringify(body) });
         res.sendResponse(body);
       };
       next();

@@ -14,7 +14,7 @@ const config = {
   HASH_SALT: +process.env.HASH_SALT,
   jwtSecret: process.env.JWT_SECRET,
   purgeSubscriptions: stringToBoolean(process.env.PURGE_SUBSCRIPTIONS),
-  defaultCacheTtl: +process.env.DEFAULT_CACHE_TTL,
+  defaultCacheExpiry: +process.env.DEFAULT_CACHE_EXPIRY,
   sources: {
     aws: {
       region: process.env.AWS_REGION,
