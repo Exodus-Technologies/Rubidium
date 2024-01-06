@@ -1,5 +1,6 @@
 'use strict';
 
+import { StatusCodes } from 'http-status-codes';
 import logger from '../logger';
 import { BambuserService } from '../services';
 
