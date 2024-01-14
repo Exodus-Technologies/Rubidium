@@ -4,7 +4,9 @@ import sgMail from '@sendgrid/mail';
 import config from '../config';
 import logger from '../logger';
 
-const { sendGridAPIKey, noReplyEmail } = config.sources.twilio;
+const { notification } = config.sources;
+const { noReplyEmail } = notification;
+const { sendGridAPIKey } = notification.twilio;
 
 sgMail.setApiKey(sendGridAPIKey);
 

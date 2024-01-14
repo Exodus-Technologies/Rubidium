@@ -59,9 +59,11 @@ const config = {
       //https://mongodb.github.io/node-mongodb-native/3.1/api/MongoClient.html for options
       options: {}
     },
-    twilio: {
-      sendGridAPIKey: process.env.SENDGRID_API_KEY,
-      noReplyEmail: process.env.NO_REPLY_EMAIL
+    notification: {
+      noReplyEmail: process.env.NO_REPLY_EMAIL,
+      twilio: {
+        sendGridAPIKey: process.env.SENDGRID_API_KEY
+      }
     }
   }
 };
