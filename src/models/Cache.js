@@ -5,7 +5,8 @@ import config from '../config';
 import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema } = mongoose;
-const { defaultCacheExpiry } = config;
+const { sources } = config;
+const { expiryTime: expires } = sources.database;
 
 //cache SCHEMA
 //  ============================================
@@ -22,7 +23,7 @@ const cacheSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: defaultCacheExpiry // this is the expiry time in seconds (15 minutes)
+    expires // this is the expiry time in seconds (15 minutes)
   }
 });
 

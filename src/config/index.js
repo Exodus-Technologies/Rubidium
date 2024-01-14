@@ -14,7 +14,6 @@ const config = {
   HASH_SALT: +process.env.HASH_SALT,
   jwtSecret: process.env.JWT_SECRET,
   purgeSubscriptions: stringToBoolean(process.env.PURGE_SUBSCRIPTIONS),
-  defaultCacheExpiry: +process.env.DEFAULT_CACHE_EXPIRY,
   sources: {
     aws: {
       region: process.env.AWS_REGION,
@@ -56,6 +55,7 @@ const config = {
       dbName: process.env.DB_NAME,
       dbUser: process.env.DB_USER,
       dbPass: process.env.DB_PASS,
+      expiryTime: +process.env.EXPIRY_TIME,
       //https://mongodb.github.io/node-mongodb-native/3.1/api/MongoClient.html for options
       options: {}
     },
