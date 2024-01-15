@@ -2,16 +2,27 @@
 
 import config from '../config';
 import logger from '../logger';
-import { sendEmailNotification } from '../twilio';
+import { sgMailClient } from '../twilio';
 
 const { CMS } = config;
 
 exports.sendMail = async (toEmail, subject, content) => {
+  const params = {
+    to: toEmail,
+    from: noReplyEmail, // Use the email address or domain you verified above
+    subject,
+    html: content
+  };
+
   try {
-    await sendEmailNotification(toEmail, subject, content);
-    logger.info(`Sending email was a success`);
+    const emailResponses = await sgMailClient.send(params);
+    const [response] = emailResponses;
+    if (response.statusCode < 300) {
+      resolve();
+    }
   } catch (err) {
-    logger.error(`Error sending email: `, err);
+    logger.error(`Error send email to user: ${toEmail}`, err);
+    reject(err);
   }
 };
 
