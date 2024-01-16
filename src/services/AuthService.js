@@ -15,7 +15,11 @@ import {
 import { saveTransaction } from '../queries/transactions';
 import { getUserByEmail } from '../queries/users';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
-import { EmailService } from '../services';
+import { NotificationService } from '../services';
+import {
+  generateOTPCodeHtml,
+  generatePasswordResetHtml
+} from '../utilities/templates';
 import {
   generateAuthJWTToken,
   generateOTPCode,
@@ -83,9 +87,9 @@ exports.requestPasswordReset = async email => {
 
     createOTPCode({ userId, email, otpCode });
 
-    const html = EmailService.generateOTPCodeHtml(user, otpCode);
+    const html = generateOTPCodeHtml(user, otpCode);
 
-    EmailService.sendMail(email, PASSWORD_RESET_REQUEST_SUBJECT, html);
+    NotificationService.sendEmail(email, PASSWORD_RESET_REQUEST_SUBJECT, html);
 
     const transaction = {
       transactionId,
@@ -156,8 +160,12 @@ exports.changePassword = async (email, token, password) => {
       const updatedUser = await user.save();
       if (updatedUser) {
         const { userId } = updatedUser;
-        const html = EmailService.generatePasswordResetHtml(user);
-        EmailService.sendMail(email, PASSWORD_RESET_SUCCESS_SUBJECT, html);
+        const html = generatePasswordResetHtml(user);
+        NotificationService.sendEmail(
+          email,
+          PASSWORD_RESET_SUCCESS_SUBJECT,
+          html
+        );
         const transaction = {
           transactionId,
           userId,
