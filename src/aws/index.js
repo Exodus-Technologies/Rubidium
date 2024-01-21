@@ -1,8 +1,11 @@
 'use strict';
 
 import {
+  AbortMultipartUploadCommand,
+  CompleteMultipartUploadCommand,
   CopyObjectCommand,
   CreateBucketCommand,
+  CreateMultipartUploadCommand,
   DeleteObjectCommand,
   HeadObjectCommand,
   ListBucketsCommand,
@@ -56,6 +59,96 @@ const getVideoObjectKey = key => {
 
 const getThumbnailObjectKey = key => {
   return `${key}.${DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
+};
+
+export const getCreateMultipartUploadId = payload => {
+  return new Promise(async (resolve, reject) => {
+    const { fileName, fileType } = payload;
+
+    try {
+      const params = {
+        Bucket: s3VideoBucketName,
+        Key: getVideoObjectKey(fileName),
+        ContentType: fileType
+      };
+
+      const { UploadId } = await s3Client.send(
+        new CreateMultipartUploadCommand(params)
+      );
+
+      resolve(UploadId);
+    } catch (err) {
+      const { requestId, cfId, extendedRequestId } = err.$metadata;
+      logger.error({
+        message: 'getCreateMultipartUploadId',
+        requestId,
+        cfId,
+        bucketName: s3VideoBucketName,
+        extendedRequestId
+      });
+      reject(err);
+    }
+  });
+};
+
+export const completeMultipartUpload = payload => {
+  return new Promise(async (resolve, reject) => {
+    const { fileName, uploadId, parts } = payload;
+    try {
+      const params = {
+        Bucket: s3VideoBucketName,
+        Key: getVideoObjectKey(fileName),
+        UploadId: uploadId,
+        MultipartUpload: {
+          Parts: parts.map(({ ETag }, i) => ({
+            ETag,
+            PartNumber: i + 1
+          }))
+        }
+      };
+
+      const completeMultipartUploadResponse = await s3Client.send(
+        new CompleteMultipartUploadCommand(params)
+      );
+
+      resolve(completeMultipartUploadResponse);
+    } catch (err) {
+      const { requestId, cfId, extendedRequestId } = err.$metadata;
+      logger.error({
+        message: 'completeMultipartUpload',
+        requestId,
+        cfId,
+        bucketName: s3VideoBucketName,
+        extendedRequestId
+      });
+      reject(err);
+    }
+  });
+};
+
+export const abortMultipartUpload = payload => {
+  return new Promise(async (resolve, reject) => {
+    const { fileName, uploadId } = payload;
+    try {
+      const params = {
+        Bucket: s3VideoBucketName,
+        Key: getVideoObjectKey(fileName),
+        UploadId: uploadId
+      };
+      await s3Client.send(new AbortMultipartUploadCommand(params));
+      resolve();
+    } catch (err) {
+      const { requestId, cfId, extendedRequestId } = err.$metadata;
+      logger.error({
+        message: 'abortMultipartUpload',
+        requestId,
+        cfId,
+        bucketName: s3VideoBucketName,
+        extendedRequestId
+      });
+      reject(err);
+    }
+  });
 };
 
 export const createVideoS3Bucket = () => {
@@ -305,7 +398,7 @@ export const uploadVideoToS3 = (filePath, key) => {
       };
 
       // Upload the file to S3
-      const upload = new Upload({
+      const manager = new Upload({
         client: s3Client,
         partSize: 1024 * 1024 * 64, // optional size of each part, in bytes, at least 5MB (64MB)
         queueSize: 50, // optional concurrency configuration
@@ -313,12 +406,12 @@ export const uploadVideoToS3 = (filePath, key) => {
       });
 
       // Monitor the upload progress
-      upload.on('httpUploadProgress', progress => {
+      manager.on('httpUploadProgress', progress => {
         logger.info(`Progress on video upload: ${JSON.stringify(progress)}`);
       });
 
       // Handle the upload completion
-      await upload.done();
+      await manager.done();
       resolve();
     } catch (err) {
       logger.error(err);
@@ -366,7 +459,7 @@ export const uploadThumbnailToS3 = (buffer, key) => {
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
       logger.error({
-        message: 'uploadToS3',
+        message: 'uploadThumbnailToS3',
         requestId,
         cfId,
         extendedRequestId
@@ -651,6 +744,13 @@ const uploadIssueToS3 = (fileContent, key) => {
       await s3Client.send(new PutObjectCommand(params));
       resolve();
     } catch (err) {
+      const { requestId, cfId, extendedRequestId } = err.$metadata;
+      logger.error({
+        message: 'uploadIssueToS3',
+        requestId,
+        cfId,
+        extendedRequestId
+      });
       logger.error(
         `Error uploading file to s3 bucket: ${s3IssueBucketName} `,
         err
@@ -672,6 +772,13 @@ const uploadCoverImageToS3 = (fileContent, key) => {
       await s3Client.send(new PutObjectCommand(params));
       resolve();
     } catch (err) {
+      const { requestId, cfId, extendedRequestId } = err.$metadata;
+      logger.error({
+        message: 'uploadCoverImageToS3',
+        requestId,
+        cfId,
+        extendedRequestId
+      });
       logger.error(
         `Error uploading file to s3 bucket: ${s3CoverImageBucketName} `,
         err

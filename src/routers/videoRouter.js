@@ -2,7 +2,9 @@ import express from 'express';
 import { VideoController } from '../controllers';
 import { validateToken, validationHandler } from '../middlewares';
 import {
-  manualUploadBodyValidation,
+  completeUploadBodyValidation,
+  createVideoMetadataBodyValidation,
+  initiateUploadBodyValidation,
   videoIdBodyUpdateValidation,
   videoIdParamValidation,
   videoQueryValidation
@@ -11,14 +13,28 @@ import {
 const { Router } = express;
 const router = Router();
 
+router.post(
+  '/sheen-service/initiateUpload',
+  initiateUploadBodyValidation,
+  validationHandler,
+  VideoController.initiateUpload
+);
+
 router.post('/sheen-service/uploadVideo', VideoController.uploadVideo);
 
 router.post(
-  '/sheen-service/manualUpload',
-  validateToken,
-  manualUploadBodyValidation,
+  '/sheen-service/completeUpload',
+  completeUploadBodyValidation,
   validationHandler,
-  VideoController.manualUpload
+  VideoController.completeUpload
+);
+
+router.post(
+  '/sheen-service/createVideoMetadata',
+  validateToken,
+  createVideoMetadataBodyValidation,
+  validationHandler,
+  VideoController.createVideoMetadata
 );
 
 router.get('/sheen-service/getTotal', VideoController.getTotal);

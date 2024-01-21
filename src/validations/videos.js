@@ -49,7 +49,7 @@ const videoIdParamValidation = [
   param('videoId').isString().withMessage('Must provide a existing video id.')
 ];
 
-const manualUploadBodyValidation = [
+const createVideoMetadataBodyValidation = [
   body('title')
     .isString()
     .withMessage('Must provide a title for manual upload.'),
@@ -68,8 +68,34 @@ const manualUploadBodyValidation = [
     .withMessage('Must provide a boolean value if the asset is for sale.')
 ];
 
+const initiateUploadBodyValidation = [
+  body('fileName')
+    .isString()
+    .withMessage('Must provide a file name for initate multipart upload.'),
+  body('fileType')
+    .isString()
+    .withMessage('Must provide a file type for initate multipart upload.')
+];
+
+const completeUploadBodyValidation = [
+  body('fileName')
+    .isString()
+    .withMessage('Must provide a file name for completed multipart upload.'),
+  body('uploadId')
+    .isString()
+    .withMessage('Must provide a upload Id for completed multipart upload.'),
+  body('parts')
+    .isArray()
+    .notEmpty()
+    .withMessage(
+      'Must provide a parts array name for completed multipart upload.'
+    )
+];
+
 export {
-  manualUploadBodyValidation,
+  completeUploadBodyValidation,
+  createVideoMetadataBodyValidation,
+  initiateUploadBodyValidation,
   videoIdBodyUpdateValidation,
   videoIdParamValidation,
   videoQueryValidation
