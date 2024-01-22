@@ -19,6 +19,7 @@ import {
   categoryRouter,
   issueRouter,
   notFoundRouter,
+  permissionRouter,
   subscriptionRouter,
   swaggerRouter,
   userRouter,
@@ -106,6 +107,10 @@ logger.info('Loaded video routes middleware.');
 //Issue middleware
 server.use(rateLimiter, issueRouter);
 logger.info('Loaded issue routes middleware.');
+
+//Permission middleware
+server.use(rateLimiter, permissionRouter);
+logger.info('Loaded permission routes middleware.');
 
 server.use(notFoundRouter);
 logger.info('Loaded not found routes middleware.');
