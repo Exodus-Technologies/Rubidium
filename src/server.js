@@ -20,6 +20,7 @@ import {
   issueRouter,
   notFoundRouter,
   permissionRouter,
+  roleRouter,
   subscriptionRouter,
   swaggerRouter,
   userRouter,
@@ -76,6 +77,14 @@ logger.info('Loaded swagger documentation routes middleware.');
 server.use(appRouter);
 logger.info('Loaded server routes middleware.');
 
+//Permission middleware
+server.use(rateLimiter, permissionRouter);
+logger.info('Loaded permission routes middleware.');
+
+//Permission middleware
+server.use(rateLimiter, roleRouter);
+logger.info('Loaded role routes middleware.');
+
 //Auth middleware
 server.use(rateLimiter, authRouter);
 logger.info('Loaded auth routes middleware.');
@@ -107,10 +116,6 @@ logger.info('Loaded video routes middleware.');
 //Issue middleware
 server.use(rateLimiter, issueRouter);
 logger.info('Loaded issue routes middleware.');
-
-//Permission middleware
-server.use(rateLimiter, permissionRouter);
-logger.info('Loaded permission routes middleware.');
 
 server.use(notFoundRouter);
 logger.info('Loaded not found routes middleware.');

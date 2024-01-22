@@ -8,6 +8,7 @@ import categoryRouter from './categoryRouter';
 import issueRouter from './issueRouter';
 import notFoundRouter from './notFoundRouter';
 import permissionRouter from './permissionRouter';
+import roleRouter from './roleRouter';
 import subscriptionRouter from './subscriptionRouter';
 import swaggerRouter from './swaggerRouter';
 import userRouter from './userRouter';
@@ -22,6 +23,7 @@ export {
   issueRouter,
   notFoundRouter,
   permissionRouter,
+  roleRouter,
   subscriptionRouter,
   swaggerRouter,
   userRouter,
