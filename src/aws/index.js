@@ -400,8 +400,8 @@ export const uploadVideoToS3 = (filePath, key) => {
       // Upload the file to S3
       const manager = new Upload({
         client: s3Client,
-        partSize: 1024 * 1024 * 64, // optional size of each part, in bytes, at least 5MB (64MB)
-        queueSize: 50, // optional concurrency configuration
+        partSize: 1024 * 1024 * 5, // optional size of each part, in bytes, at least 5MB (64MB)
+        queueSize: 10, // optional concurrency configuration
         params
       });
 
