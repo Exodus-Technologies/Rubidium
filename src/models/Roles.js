@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
 //PERMISSION SCHEMA
@@ -23,7 +23,7 @@ const roleSchema = new Schema(
     },
     permissions: [
       {
-        type: mongoose.Schema.ObjectId,
+        type: Schema.ObjectId,
         ref: 'Permission'
       }
     ]
@@ -44,6 +44,6 @@ roleSchema.plugin(autoIncrement, { inc_field: 'roleId' });
 /**
  * Create Role model out of roleSchema
  */
-const Role = mongoose.model('Role', roleSchema);
+const Role = model('Role', roleSchema);
 
 export default Role;

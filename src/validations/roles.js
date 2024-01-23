@@ -20,7 +20,13 @@ const roleQueryValidation = [
 
 const rolePostValidation = [
   body('name').isString().withMessage('Must provide a role name.'),
-  body('description').isString().withMessage('Must provide a role description.')
+  body('description')
+    .isString()
+    .withMessage('Must provide a role description.'),
+  body('permissions')
+    .isArray()
+    .notEmpty()
+    .withMessage('Must provide a list of permissions for role.')
 ];
 
 const roleIdParamValidation = [
@@ -33,7 +39,12 @@ const roleUpdateValidation = [
   body('description')
     .isString()
     .optional()
-    .withMessage('Must provide a role description.')
+    .withMessage('Must provide a role description.'),
+  body('permissions')
+    .isArray()
+    .notEmpty()
+    .optional()
+    .withMessage('Must provide a list of permissions for role.')
 ];
 
 export {
