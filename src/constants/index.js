@@ -73,12 +73,11 @@ export const PASSWORD_RESET_REQUEST_SUBJECT = 'Password Reset Request';
 
 export const PASSWORD_RESET_SUCCESS_SUBJECT = 'Password Reset Successfully';
 
-export const STRONG_PASSWORD_VALIDATIONS = {
-  minLength: 8,
-  minLowercase: 1,
-  minUppercase: 1,
-  minSymbols: 1
-};
+export const STRONG_PASSWORD_VALIDATIONS_REGEX =
+  '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@$%^&*-]).{8,}$';
+
+export const PASSWORD_VALIDATION_MESSAGE =
+  'Please enter a password at least 8 characters, at least one uppercase letter, one lowercase letter, and one special character.';
 
 export const VIDEO_SUBSCRIPTION_TYPE = 'video';
 
