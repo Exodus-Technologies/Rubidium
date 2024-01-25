@@ -1,18 +1,20 @@
+'use strict';
+
 import axios from 'axios';
-import config from '../config';
-const { bambuser } = config.sources;
-const { apiKey, broadcastURL } = bambuser;
 
 class BambuserClient {
-  constructor() {}
+  constructor(baseURL, apiKey) {
+    this.baseURL = baseURL;
+    this.apiKey = apiKey;
+  }
 
   getInstance(version) {
     return axios.create({
-      baseURL: broadcastURL,
+      baseURL: this.baseURL,
       headers: {
         'Content-Type': 'application/json',
         'Accept': `application/vnd.bambuser.${version}+json`,
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${this.apiKey}`
       }
     });
   }

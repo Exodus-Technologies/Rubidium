@@ -7,6 +7,7 @@ import {
   uploadThumbnailToS3,
   uploadVideoToS3
 } from '../aws';
+import config from '../config';
 import {
   BAMBUSER_API_TIMEOUT,
   BAMBUSER_API_VERSION_ONE,
@@ -23,7 +24,10 @@ import {
 } from '../utilities/files';
 import BambuserClient from './client';
 
-const bambuserClient = new BambuserClient();
+const { bambuser } = config.sources;
+const { apiKey, broadcastURL } = bambuser;
+
+const bambuserClient = new BambuserClient(broadcastURL, apiKey);
 
 export const getBroadCastById = async broadcastId => {
   try {
