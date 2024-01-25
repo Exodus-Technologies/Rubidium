@@ -5,7 +5,7 @@ import mongooseSequence from 'mongoose-sequence';
 import config from '../config';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 const { sources } = config;
 const { expiryTime: expires } = sources.database;
 
@@ -49,6 +49,6 @@ optCodeSchema.plugin(autoIncrement, { inc_field: 'optCodeId' });
 /**
  * Create Code model out of optCodeSchema
  */
-const Code = mongoose.model('Code', optCodeSchema);
+const Code = model('Code', optCodeSchema);
 
 export default Code;

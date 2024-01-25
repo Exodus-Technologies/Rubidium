@@ -7,7 +7,7 @@ import config from '../config';
 import { STATES } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 const { HASH_SALT } = config;
 
@@ -92,6 +92,6 @@ userSchema.plugin(autoIncrement, { inc_field: 'userId' });
 /**
  * Create User model out of userSchema
  */
-const User = mongoose.model('User', userSchema);
+const User = model('User', userSchema);
 
 export default User;
