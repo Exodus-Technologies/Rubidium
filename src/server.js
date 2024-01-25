@@ -14,8 +14,6 @@ import { errorHandler, rateLimiter, requestResponse } from './middlewares';
 import {
   appRouter,
   authRouter,
-  bambuserRouter,
-  broadcastRouter,
   categoryRouter,
   issueRouter,
   notFoundRouter,
@@ -88,12 +86,12 @@ server.use(rateLimiter, subscriptionRouter);
 logger.info('Loaded subscription routes middleware.');
 
 //Bambuser middleware
-server.use(rateLimiter, bambuserRouter);
-logger.info('Loaded bambuser routes middleware.');
+// server.use(rateLimiter, bambuserRouter);
+// logger.info('Loaded bambuser routes middleware.');
 
 //Broadcasts middleware
-server.use(rateLimiter, broadcastRouter);
-logger.info('Loaded broadcast routes middleware.');
+// server.use(rateLimiter, broadcastRouter);
+// logger.info('Loaded broadcast routes middleware.');
 
 //Category middleware
 server.use(rateLimiter, categoryRouter);
