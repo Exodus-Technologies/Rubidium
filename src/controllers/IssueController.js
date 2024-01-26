@@ -50,7 +50,7 @@ exports.updateIssue = async (req, res, next) => {
 exports.updateViews = async (req, res, next) => {
   try {
     const { issueId } = req.body;
-    const [statusCode, payload] = await VideoService.updateViews(issueId);
+    const [statusCode, payload] = await IssueService.updateViews(issueId);
     res.status(statusCode).send(payload);
   } catch (err) {
     logger.error(`Error with updating views for issue: `, err);
@@ -71,8 +71,7 @@ exports.deleteIssueById = async (req, res, next) => {
 
 exports.getTotal = async (req, res, next) => {
   try {
-    const { query } = req;
-    const [statusCode, response] = await IssueService.getTotal(query);
+    const [statusCode, response] = await IssueService.getTotal();
     res.status(statusCode).send(response);
   } catch (err) {
     logger.error(`Error with getting issues: `, err);

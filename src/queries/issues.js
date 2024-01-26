@@ -106,6 +106,18 @@ export const updateIssue = async payload => {
   }
 };
 
+export const updateIssueViews = async issueId => {
+  try {
+    const { Issue } = models;
+    return await Issue.findOneAndUpdate(
+      { issueId },
+      { $inc: { totalViews: 1 } }
+    );
+  } catch (err) {
+    logger.error('Error updating issue views: ', err);
+  }
+};
+
 export const deleteIssueById = async issueId => {
   try {
     const { Issue } = models;
