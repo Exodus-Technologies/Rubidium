@@ -58,14 +58,6 @@ const getThumbnailObjectKey = key => {
   return `${key}.${DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
 };
 
-const createS3ParallelUpload = params => {
-  return new Upload({
-    client: s3Client,
-    queueSize: 10, // optional concurrency configuration
-    params
-  });
-};
-
 export const createVideoS3Bucket = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -355,15 +347,21 @@ export const uploadThumbnailToS3 = (buffer, key) => {
     };
 
     try {
-      const upload = createS3ParallelUpload(params);
-
-      upload.on('httpUploadProgress', progress => {
-        logger.info(
-          `Progress on thumbnail upload: ${JSON.stringify(progress)}`
-        );
+      // Upload the file to S3
+      const upload = new Upload({
+        client: s3Client,
+        partSize: 1024 * 1024 * 5, // optional size of each part, in bytes, at least 5MB (64MB)
+        queueSize: 5, // optional concurrency configuration
+        params
       });
 
-      await parallelUpload.done();
+      // Monitor the upload progress
+      upload.on('httpUploadProgress', progress => {
+        logger.info(`Progress on video upload: ${JSON.stringify(progress)}`);
+      });
+
+      // Handle the upload completion
+      await upload.done();
       resolve();
     } catch (err) {
       const { requestId, cfId, extendedRequestId } = err.$metadata;
