@@ -44,10 +44,10 @@ exports.createCategory = async (req, res, next) => {
 exports.updateCategory = async (req, res, next) => {
   try {
     const { categoryId } = req.params;
-    const { name } = req.body;
+    const { body } = req;
     const [statusCode, response] = await CategoryService.updateCategory(
       categoryId,
-      name
+      body
     );
     res.status(statusCode).send(response);
   } catch (err) {
