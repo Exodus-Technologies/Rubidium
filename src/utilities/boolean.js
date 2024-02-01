@@ -1,7 +1,7 @@
 'use strict';
 
 export const stringToBoolean = str => {
-  switch (str?.toLowerCase()?.trim()) {
+  switch (str.toLowerCase().trim()) {
     case 'true':
     case 'yes':
     case '1':

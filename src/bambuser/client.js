@@ -1,6 +1,8 @@
+'use strict';
+
 import axios from 'axios';
 
-class AxiosClient {
+class BambuserClient {
   constructor(baseURL, apiKey) {
     this.baseURL = baseURL;
     this.apiKey = apiKey;
@@ -18,4 +20,4 @@ class AxiosClient {
   }
 }
 
-export default AxiosClient;
+export default BambuserClient;

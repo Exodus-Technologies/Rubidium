@@ -17,20 +17,21 @@ import {
 } from '../constants';
 import logger from '../logger';
 import { createVideo } from '../queries/videos';
-import AxiosClient, {
+import {
   fancyTimeFormat,
   getContentFromURL,
   getVideoContentFromURL
-} from '../utilities/axios';
+} from '../utilities/files';
+import BambuserClient from './client';
 
 const { bambuser } = config.sources;
 const { apiKey, broadcastURL } = bambuser;
 
-const axiosClient = new AxiosClient(broadcastURL, apiKey);
+const bambuserClient = new BambuserClient(broadcastURL, apiKey);
 
 export const getBroadCastById = async broadcastId => {
   try {
-    const v1Instance = axiosClient.getInstance(BAMBUSER_API_VERSION_ONE);
+    const v1Instance = bambuserClient.getInstance(BAMBUSER_API_VERSION_ONE);
 
     const response = await v1Instance({
       url: `/${broadcastId}`,
@@ -47,7 +48,7 @@ export const getBroadCastById = async broadcastId => {
 
 export const deleteBroadCastById = async broadcastId => {
   try {
-    const v1Instance = axiosClient.getInstance(BAMBUSER_API_VERSION_ONE);
+    const v1Instance = bambuserClient.getInstance(BAMBUSER_API_VERSION_ONE);
 
     await v1Instance({
       url: `/${broadcastId}`,
@@ -86,7 +87,7 @@ export const getDownloadLink = broadcastId => {
 const getMP4DownloadStatus = broadcastId => {
   return new Promise(async (resolve, reject) => {
     try {
-      const v2Instance = axiosClient.getInstance(BAMBUSER_API_VERSION_TWO);
+      const v2Instance = bambuserClient.getInstance(BAMBUSER_API_VERSION_TWO);
 
       const response = await v2Instance({
         url: `/${broadcastId}/downloads`,
@@ -150,8 +151,7 @@ export const uploadLivestream = async broadcastId => {
   } catch (err) {
     logger.error(`Error with moving livestream data to s3: `, err);
     return [
-      new Error(`Unable to save video metadata: ${err.response.statusText}`),
-      null
+      new Error(`Unable to save video metadata: ${err.response.statusText}`)
     ];
   }
 };

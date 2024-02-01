@@ -384,9 +384,9 @@ exports.deleteIssueById = async issueId => {
   }
 };
 
-exports.getTotal = async query => {
+exports.getTotal = async () => {
   try {
-    const issues = await getTotal(query);
+    const issues = await getTotal();
     if (issues) {
       return [
         StatusCodes.OK,

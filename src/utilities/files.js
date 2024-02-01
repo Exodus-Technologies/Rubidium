@@ -40,7 +40,9 @@ export const getContentFromURL = url => {
         });
       } else {
         reject(
-          `Server responded with ${resp.statusCode}: ${resp.statusMessage}`
+          new Error(
+            `Server responded with ${resp.statusCode}: ${resp.statusMessage}`
+          )
         );
       }
     });
@@ -76,7 +78,9 @@ export const getVideoContentFromURL = url => {
         });
       })
       .on('error', err => {
-        logger.error(`Error getting video data from url: ${url} `, err);
+        logger.error(
+          `Error getting video data from url: ${url} => ${JSON.stringify(err)}`
+        );
         reject(err);
       });
   });

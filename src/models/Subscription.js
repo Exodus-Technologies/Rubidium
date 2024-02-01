@@ -11,18 +11,51 @@ import { isProductionEnvironment } from '../utilities/boolean';
 //SUBSCRIPTION SCHEMA
 //  ============================================
 const subscriptionSchema = new Schema({
-  subscriptionId: { type: String, default: createSubscriptionId() },
-  userId: { type: Number, required: true },
-  username: { type: String, required: true },
-  email: { type: String, required: true },
-  type: { type: String, required: true, enum: SUBSCRIPTION_TYPES },
-  purchaseDate: { type: String },
-  recurring: { type: String, enum: RECURRING_TYPES },
-  ids: { type: [String] },
-  access: { type: String },
-  startDate: { type: String },
-  endDate: { type: String },
-  left: { type: Number }
+  subscriptionId: {
+    type: String,
+    default: createSubscriptionId(),
+    index: true
+  },
+  userId: {
+    type: Number,
+    required: true,
+    index: true
+  },
+  username: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String,
+    required: true,
+    enum: SUBSCRIPTION_TYPES
+  },
+  purchaseDate: {
+    type: String
+  },
+  recurring: {
+    type: String,
+    enum: RECURRING_TYPES
+  },
+  ids: {
+    type: [String]
+  },
+  access: {
+    type: String
+  },
+  startDate: {
+    type: String
+  },
+  endDate: {
+    type: String
+  },
+  left: {
+    type: Number
+  }
 });
 
 /**

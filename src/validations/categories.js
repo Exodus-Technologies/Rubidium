@@ -39,7 +39,11 @@ const categoryUpdateValidation = [
   body('name')
     .isString()
     .optional()
-    .withMessage('Must provide a category name.')
+    .withMessage('Must provide a category name.'),
+  body('description')
+    .isString()
+    .optional()
+    .withMessage('Must provide a category description.')
 ];
 
 export {

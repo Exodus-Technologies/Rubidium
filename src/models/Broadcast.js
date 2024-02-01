@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
 const stringSchema = { type: String };
@@ -63,7 +63,10 @@ const broadcastSchema = new Schema(
       positionType: stringSchema,
       preview: stringSchema,
       resourceUri: stringSchema,
-      tags: { type: Array, default: [] },
+      tags: {
+        type: Array,
+        default: []
+      },
       title: stringSchema,
       type: stringSchema,
       width: numberSchema
@@ -90,6 +93,6 @@ broadcastSchema.plugin(autoIncrement, { inc_field: 'broadcastId' });
 /**
  * Create Broadcast model out of broadcastSchema
  */
-const Broadcast = mongoose.model('Broadcast', broadcastSchema);
+const Broadcast = model('Broadcast', broadcastSchema);
 
 export default Broadcast;

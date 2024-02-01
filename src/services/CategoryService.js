@@ -64,9 +64,9 @@ exports.createCategory = async payload => {
   }
 };
 
-exports.updateCategory = async (categoryId, name) => {
+exports.updateCategory = async (categoryId, payload) => {
   try {
-    const [error, category] = await updateCategory(categoryId, name);
+    const [error, category] = await updateCategory(categoryId, payload);
     if (category) {
       return [
         StatusCodes.OK,
