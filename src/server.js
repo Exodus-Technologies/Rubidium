@@ -36,8 +36,15 @@ server.use(cors());
 logger.info('CORS enabled.');
 
 //Helmet middleware
-server.use(helmet());
-server.use(helmet.referrerPolicy());
+server.use(
+  helmet({
+    xPoweredBy: false
+  })
+);
+logger.info('Loaded helmet middleware.');
+
+//Reducing fingerprinting
+server.disable('x-powered-by');
 logger.info('Loaded helmet middleware.');
 
 //No cache middleware

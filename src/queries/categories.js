@@ -61,7 +61,7 @@ export const getCategoryByName = async name => {
 export const createCategory = async payload => {
   try {
     const { Category } = models;
-    const category = await Category.findOne({ name: payload.name });
+    const category = await getCategoryByName(payload.name);
     if (category) {
       return [new Error('category with name already exists.')];
     }
@@ -74,12 +74,12 @@ export const createCategory = async payload => {
   }
 };
 
-export const updateCategory = async (categoryId, name) => {
+export const updateCategory = async (categoryId, payload) => {
   try {
     const { Category } = models;
     const filter = { categoryId };
     const options = { new: true };
-    const update = { name };
+    const update = { ...payload };
     const category = await Category.findOneAndUpdate(filter, update, options);
     return [null, category];
   } catch (err) {
