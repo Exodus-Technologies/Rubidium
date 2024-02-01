@@ -1,9 +1,9 @@
 'use strict';
 
-import * as dotenv from 'dotenv';
+import { configDotenv } from 'dotenv';
 import { stringToBoolean } from '../utilities/boolean';
 
-dotenv.config();
+configDotenv();
 
 const config = {
   NODE_ENV: process.env.NODE_ENV,

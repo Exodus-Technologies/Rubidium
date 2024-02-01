@@ -7,12 +7,26 @@ import generateDBUri from './queries';
 import server from './server';
 
 /**
+ * Connects to database
+ */
+const initializeDBConnection = async () => {
+  const { options } = config.sources.database;
+  const { source } = models;
+  try {
+    await source.connect(generateDBUri(), options);
+  } catch (e) {
+    logger.error(`Error connecting to db: ${e}`);
+    throw e;
+  }
+};
+
+/**
  * Starts web server
  */
-const initializeServer = async () => {
+const initializeServer = () => {
   const { PORT, HOST } = config;
   try {
-    await server.listen(PORT, HOST);
+    server.listen(PORT, HOST);
     logger.info(`Server listening on port: ${PORT}`);
   } catch (err) {
     logger.error(`Server started with error: ${err}`);
@@ -20,28 +34,13 @@ const initializeServer = async () => {
   }
 };
 
-/**
- * Connects to database
- */
-const initializeDB = async () => {
-  const { options } = config.sources.database;
-  const { source } = models;
-  const uri = generateDBUri();
-  try {
-    await source.connect(uri, options);
-  } catch (e) {
-    logger.error(`Error connecting to db: ${e}`);
-    throw e;
-  }
-};
-
-const initializeApp = async () => {
+const bootstrapApp = async () => {
   logger.info('Starting app...');
-  await initializeDB();
-  await initializeServer();
+  await initializeDBConnection();
+  initializeServer();
 };
 
-initializeApp().catch(err => {
+bootstrapApp().catch(err => {
   logger.error(`Error starting application: ${err}`);
 });
 
