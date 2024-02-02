@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
 //PERMISSION SCHEMA
@@ -26,7 +26,6 @@ const permissionSchema = new Schema(
       required: true
     }
   },
-
   { timestamps: true }
 );
 
@@ -43,6 +42,6 @@ permissionSchema.plugin(autoIncrement, { inc_field: 'permissionId' });
 /**
  * Create Permission model out of permissionSchema
  */
-const Permission = mongoose.model('Permission', permissionSchema);
+const Permission = model('Permission', permissionSchema);
 
 export default Permission;
