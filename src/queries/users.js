@@ -97,14 +97,14 @@ export const createUser = async payload => {
   try {
     const { User } = models;
     const { email, isAdmin } = payload;
-    const user = await User.findOne({ email });
-    if (!user) {
-      const body = { ...payload, isAdmin: stringToBoolean(isAdmin) };
-      const user = new User(body);
-      const createdUser = await user.save();
-      return [null, createdUser];
+    const user = await getUserByEmail(email);
+    if (user) {
+      return [new Error('User with email already exists.')];
     }
-    return [Error('User with email already exists.')];
+    const body = { ...payload, isAdmin: stringToBoolean(isAdmin) };
+    const newUser = new User(body);
+    const createdUser = await newUser.save();
+    return [null, createdUser];
   } catch (err) {
     logger.error('Error saving user data to db: ', err);
   }
@@ -114,9 +114,9 @@ export const updateUser = async (userId, payload) => {
   try {
     const { User } = models;
     const { email, isAdmin } = payload;
-    const user = await User.findOne({ email });
+    const user = await getUserByEmail(email);
     if (user) {
-      return [Error('Unable to change email. Email already in use.')];
+      return [new Error('Unable to change email. Email already in use.')];
     }
     const filter = { userId };
     const options = { new: true };

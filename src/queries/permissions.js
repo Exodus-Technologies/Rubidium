@@ -61,9 +61,9 @@ export const getPermissionByName = async name => {
 export const createPermission = async payload => {
   try {
     const { Permission } = models;
-    const permission = await Permission.findOne({ name: payload.name });
+    const permission = await getPermissionByName(payload.name);
     if (permission) {
-      return [new Error('permission with name already exists.')];
+      return [new Error('Permission with name already exists.')];
     }
     const perm = new Permission(payload);
     const createdPermission = await perm.save();
