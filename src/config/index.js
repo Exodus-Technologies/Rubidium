@@ -17,9 +17,11 @@ const config = {
   sources: {
     aws: {
       region: process.env.AWS_REGION,
+      signatureVersion: process.env.AWS_SIGNATURE_VERSION,
       s3: {
         s3AccessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
-        s3AecretAccessKey: process.env.S3_AWS_SECRET_ACCESS_KEY,
+        s3SecretAccessKey: process.env.S3_AWS_SECRET_ACCESS_KEY,
+        s3SignatureVersion: process.env.S3_SIGNATURE_VERSION,
         s3ThumbnailBucketName: process.env.S3_THUMBNAIL_BUCKET_NAME,
         s3VideoBucketName: process.env.S3_VIDEO_BUCKET_NAME,
         s3IssueBucketName: process.env.S3_ISSUE_BUCKET_NAME,

@@ -3,6 +3,20 @@
 import logger from '../logger';
 import { VideoService } from '../services';
 
+exports.initiateUpload = async (req, res, next) => {
+  try {
+    const { body } = req;
+    const [statusCode, response] = await VideoService.initiateUpload(body);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error(
+      `Error with initiating multipart upload for file to s3: `,
+      err
+    );
+    next(err);
+  }
+};
+
 exports.uploadVideo = async (req, res, next) => {
   try {
     const payload = await VideoService.getPayloadFromFormRequest(req);
@@ -14,10 +28,24 @@ exports.uploadVideo = async (req, res, next) => {
   }
 };
 
-exports.manualUpload = async (req, res, next) => {
+exports.completeUpload = async (req, res, next) => {
   try {
     const { body } = req;
-    const [statusCode, payload] = await VideoService.manualUpload(body);
+    const [statusCode, response] = await VideoService.completeUpload(body);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error(
+      `Error with completing multipart upload for file to s3: `,
+      err
+    );
+    next(err);
+  }
+};
+
+exports.createVideoMetadata = async (req, res, next) => {
+  try {
+    const { body } = req;
+    const [statusCode, payload] = await VideoService.createVideoMetadata(body);
     res.status(statusCode).send(payload);
   } catch (err) {
     logger.error(`Error with manual uploading file to s3: `, err);
@@ -53,7 +81,7 @@ exports.updateViews = async (req, res, next) => {
     const [statusCode, response] = await VideoService.updateViews(videoId);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error with updating views for issue: `, err);
+    logger.error(`Error with updating views for video: `, err);
     next(err);
   }
 };
@@ -85,7 +113,7 @@ exports.getTotal = async (req, res, next) => {
     const [statusCode, response] = await VideoService.getTotal();
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error with getting videos: `, err);
+    logger.error(`Error with getting total of videos: `, err);
     next(err);
   }
 };
