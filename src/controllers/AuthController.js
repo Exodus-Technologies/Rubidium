@@ -21,8 +21,7 @@ exports.requestPasswordReset = async (req, res, next) => {
   const { email } = req.body;
   try {
     const [statusCode, response] = await AuthService.requestPasswordReset(
-      email,
-      true
+      email
     );
     res.status(statusCode).send(response);
   } catch (err) {
