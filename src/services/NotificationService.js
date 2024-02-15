@@ -1,7 +1,10 @@
 'use strict';
 
+import config from '../config';
 import logger from '../logger';
 import { sgMailClient } from '../twilio';
+
+const { noReplyEmail } = config.sources.notification;
 
 exports.sendEmail = (toEmail, subject, content) => {
   return new Promise(async (resolve, reject) => {

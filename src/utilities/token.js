@@ -10,11 +10,11 @@ const { sign, verify } = jwt;
 const { jwtSecret } = config;
 
 export const generateTransactionId = () => {
-  return customAlphabet(CUSTOM_ALPHABET, 12);
+  return customAlphabet(CUSTOM_ALPHABET, 12)();
 };
 
 export const generateOTPCode = () => {
-  return customAlphabet(CUSTOM_ALPHABET, 6);
+  return customAlphabet(CUSTOM_ALPHABET, 6)();
 };
 
 export const generateAuthJWTToken = user => {
