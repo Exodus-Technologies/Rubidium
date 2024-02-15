@@ -1,7 +1,5 @@
 'use strict';
 
-export const NUM_OF_PROXIES = 1;
-
 export const STATES = [
   'AL',
   'AK',

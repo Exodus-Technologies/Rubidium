@@ -3,6 +3,8 @@
 import formidable from 'formidable';
 import { StatusCodes } from 'http-status-codes';
 import {
+  abortMultipartUpload,
+  completeMultipartUpload,
   copyThumbnailObject,
   copyVideoObject,
   createThumbnailS3Bucket,
@@ -13,6 +15,7 @@ import {
   doesThumbnailS3BucketExist,
   doesVideoObjectExist,
   doesVideoS3BucketExist,
+  getCreateMultipartUploadId,
   getThumbnailDistributionURI,
   getVideoDistributionURI,
   uploadVideoArchiveToS3Location
@@ -87,6 +90,29 @@ exports.getPayloadFromFormRequest = async req => {
       logger.info('Form is finished processing.');
     });
   });
+};
+
+exports.initiateUpload = async body => {
+  const payload = { ...body, fileName: removeSpaces(body.fileName) };
+  try {
+    const uploadId = await getCreateMultipartUploadId(payload);
+    if (uploadId) {
+      return [
+        StatusCodes.CREATED,
+        { message: 'Upload Id created with success', uploadId }
+      ];
+    } else {
+      return badRequest('Unable to create upload Id for multipart upload.');
+    }
+  } catch (err) {
+    logger.error(
+      `Error creating upload Id for multipart upload for file: ${payload.fileName}: `,
+      err
+    );
+    return internalServerErrorRequest(
+      'Error creating upload Id for multipart upload'
+    );
+  }
 };
 
 exports.uploadVideo = async archive => {
@@ -188,7 +214,31 @@ exports.uploadVideo = async archive => {
   }
 };
 
-exports.manualUpload = async upload => {
+exports.completeUpload = async body => {
+  const payload = { ...body, fileName: removeSpaces(body.fileName) };
+  try {
+    const completed = await completeMultipartUpload(payload);
+    if (completed) {
+      return [
+        StatusCodes.OK,
+        { message: 'Multipart Upload completed with success', completed }
+      ];
+    } else {
+      return badRequest(
+        `Unable to complete multipart upload for: ${payload.fileName} .`
+      );
+    }
+  } catch (err) {
+    logger.error(
+      `Error completing multipart upload for file: ${payload.fileName}: `,
+      err
+    );
+    await abortMultipartUpload(payload);
+    return internalServerErrorRequest('Error completing multipart upload.');
+  }
+};
+
+exports.createVideoMetadata = async upload => {
   try {
     const { title, description, categories, duration, isAvailableForSale } =
       upload;
@@ -212,7 +262,10 @@ exports.manualUpload = async upload => {
     if (video) {
       return [
         StatusCodes.OK,
-        { message: 'Metadata for manual upload to s3 with success', video }
+        {
+          message: 'Metadata for manual upload created to s3 with success',
+          video
+        }
       ];
     } else {
       return badRequest('Unable to save metadata for manual update.');

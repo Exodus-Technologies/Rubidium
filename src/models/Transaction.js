@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 
 //TOKEN SCHEMA
 //  ============================================
@@ -40,6 +40,6 @@ transactionSchema.set('autoCreate', !isProductionEnvironment());
 /**
  * Create Transaction model out of transactionSchema
  */
-const Transaction = mongoose.model('Transaction', transactionSchema);
+const Transaction = model('Transaction', transactionSchema);
 
 export default Transaction;

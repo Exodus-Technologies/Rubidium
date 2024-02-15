@@ -2,9 +2,13 @@
 
 import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
+import config from '../config';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
+const { sources } = config;
+const { expiryTime: expires } = sources.database;
+
 const autoIncrement = mongooseSequence(mongoose);
 
 //TOKEN SCHEMA
@@ -28,7 +32,7 @@ const optCodeSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 900 // this is the expiry time in seconds (15 minutes)
+    expires // this is the expiry time in seconds (15 minutes)
   }
 });
 
@@ -45,6 +49,6 @@ optCodeSchema.plugin(autoIncrement, { inc_field: 'optCodeId' });
 /**
  * Create Code model out of optCodeSchema
  */
-const Code = mongoose.model('Code', optCodeSchema);
+const Code = model('Code', optCodeSchema);
 
 export default Code;

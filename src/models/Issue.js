@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
 import { isProductionEnvironment } from '../utilities/boolean';
@@ -13,16 +13,45 @@ import { createIssueSubId } from '../utilities/strings';
 //  ============================================
 const issueSchema = new Schema(
   {
-    subId: { type: String, default: createIssueSubId() },
-    title: { type: String, required: true },
-    url: { type: String, required: true },
-    description: { type: String, required: true },
-    totalViews: { type: Number, default: 0 },
-    issueOrder: { type: Number },
-    key: { type: String, required: true },
-    paid: { type: Boolean, default: true },
-    price: { type: Number, default: 5.99 },
-    coverImage: { type: String }
+    subId: {
+      type: String,
+      default: createIssueSubId()
+    },
+    title: {
+      type: String,
+      required: true,
+      index: true
+    },
+    url: {
+      type: String,
+      required: true
+    },
+    description: {
+      type: String,
+      required: true
+    },
+    totalViews: {
+      type: Number,
+      default: 0
+    },
+    issueOrder: {
+      type: Number
+    },
+    key: {
+      type: String,
+      required: true
+    },
+    paid: {
+      type: Boolean,
+      default: true
+    },
+    price: {
+      type: Number,
+      default: 5.99
+    },
+    coverImage: {
+      type: String
+    }
   },
   { timestamps: true }
 );
@@ -40,6 +69,6 @@ issueSchema.plugin(autoIncrement, { inc_field: 'issueId' });
 /**
  * Create model of Issue to access
  */
-const Issue = mongoose.model('Issue', issueSchema);
+const Issue = model('Issue', issueSchema);
 
 export default Issue;

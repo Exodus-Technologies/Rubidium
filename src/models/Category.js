@@ -4,14 +4,18 @@ import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
 //CATEGORY SCHEMA
 //  ============================================
 const categorySchema = new Schema(
   {
-    name: { type: String, required: true }
+    name: {
+      type: String,
+      required: true,
+      index: true
+    }
   },
   { timestamps: true }
 );
@@ -29,6 +33,6 @@ categorySchema.plugin(autoIncrement, { inc_field: 'categoryId' });
 /**
  * Create Category model out of categorySchema
  */
-const Category = mongoose.model('Category', categorySchema);
+const Category = model('Category', categorySchema);
 
 export default Category;
