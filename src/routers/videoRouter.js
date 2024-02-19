@@ -2,7 +2,7 @@ import express from 'express';
 import { VideoController } from '../controllers';
 import { validateToken, validationHandler } from '../middlewares';
 import {
-  completeUploadBodyValidation,
+  createPresignedUrlsBodyValidation,
   createVideoMetadataBodyValidation,
   initiateUploadBodyValidation,
   videoIdBodyUpdateValidation,
@@ -24,9 +24,16 @@ router.post('/sheen-service/uploadVideo', VideoController.uploadVideo);
 
 router.post(
   '/sheen-service/completeUpload',
-  completeUploadBodyValidation,
+  createPresignedUrlsBodyValidation,
   validationHandler,
-  VideoController.completeUpload
+  VideoController.createPresignedUrls
+);
+
+router.post(
+  '/sheen-service/createPresignedUrls',
+  createPresignedUrlsBodyValidation,
+  validationHandler,
+  VideoController.createPresignedUrls
 );
 
 router.post(

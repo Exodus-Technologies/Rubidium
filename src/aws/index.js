@@ -7,9 +7,10 @@ import {
   HeadObjectCommand,
   ListBucketsCommand,
   PutObjectCommand,
-  S3
+  S3Client
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { createReadStream } from 'fs';
 import { getVideoDurationInSeconds } from 'get-video-duration';
 import { PassThrough } from 'stream';
@@ -27,6 +28,7 @@ const { aws } = config.sources;
 const { region, signatureVersion, s3 } = aws;
 const {
   s3AccessKeyId,
+  expiresIn,
   s3SecretAccessKey,
   s3VideoBucketName,
   s3ThumbnailBucketName,
@@ -39,7 +41,7 @@ const {
 } = s3;
 
 // Create S3 service object
-const s3Client = new S3({
+const s3Client = new S3Client({
   region,
   signatureVersion,
   credentials: {
@@ -77,6 +79,27 @@ const getS3ThumbnailParams = (key = '') => {
     params.Key = getThumbnailObjectKey(key);
   }
   return params;
+};
+
+export const createVideoPresignedUrl = key => {
+  return getSignedUrl(
+    s3Client,
+    new PutObjectCommand({
+      ...getS3VideoParams(key),
+      ContentType: 'video/mp4'
+    }),
+    {
+      expiresIn
+    }
+  );
+};
+
+export const createThumbnailPresignedUrl = key => {
+  return getSignedUrl(
+    s3Client,
+    new PutObjectCommand(getS3ThumbnailParams(key)),
+    { expiresIn }
+  );
 };
 
 export const createVideoS3Bucket = () => {
@@ -357,20 +380,7 @@ export const uploadThumbnailToS3 = (buffer, key) => {
 
     try {
       // Upload the file to S3
-      const upload = new Upload({
-        client: s3Client,
-        partSize: 1024 * 1024 * 5, // optional size of each part, in bytes, at least 5MB (64MB)
-        queueSize: 5, // optional concurrency configuration
-        params
-      });
-
-      // Monitor the upload progress
-      upload.on('httpUploadProgress', progress => {
-        logger.info(`Progress on video upload: ${JSON.stringify(progress)}`);
-      });
-
-      // Handle the upload completion
-      await upload.done();
+      await s3Client.send(new PutObjectCommand(params));
       resolve();
     } catch (err) {
       logger.error(err);

@@ -42,6 +42,22 @@ exports.completeUpload = async (req, res, next) => {
   }
 };
 
+exports.createPresignedUrls = async (req, res, next) => {
+  try {
+    const { fileName } = req.body;
+    const [statusCode, response] = await VideoService.createPresignedUrls(
+      fileName
+    );
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error(
+      `Error with creating presigned urls for upload for file to s3: `,
+      err
+    );
+    next(err);
+  }
+};
+
 exports.createVideoMetadata = async (req, res, next) => {
   try {
     const { body } = req;
