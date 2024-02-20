@@ -2,6 +2,7 @@ import express from 'express';
 import { VideoController } from '../controllers';
 import { rateLimiter, validateToken, validationHandler } from '../middlewares';
 import {
+  completeUploadBodyValidation,
   createPresignedUrlsBodyValidation,
   createVideoMetadataBodyValidation,
   initiateUploadBodyValidation,
