@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { AuthController, UserController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   changePasswordValidation,
   loginValidation,
@@ -14,36 +14,33 @@ import { userCreationValidation } from '../validations/users';
 const { Router } = express;
 const router = Router();
 
-router.post(
-  '/sheen-service/login',
-  loginValidation,
-  validationHandler,
-  AuthController.login
-);
+router.use(rateLimiter);
+
+router.post('/login', loginValidation, validationHandler, AuthController.login);
 
 router.post(
-  '/sheen-service/signUp',
+  '/signUp',
   userCreationValidation,
   validationHandler,
   UserController.createUser
 );
 
 router.post(
-  '/sheen-service/requestPasswordReset',
+  '/requestPasswordReset',
   passwordRequestResetBodyValidation,
   validationHandler,
   AuthController.requestPasswordReset
 );
 
 router.post(
-  '/sheen-service/verifyOTP',
+  '/verifyOTP',
   otpBodyValidation,
   validationHandler,
   AuthController.verifyOTP
 );
 
 router.put(
-  '/sheen-service/changePassword',
+  '/changePassword',
   changePasswordValidation,
   validationHandler,
   AuthController.changePassword

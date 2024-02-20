@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { BroadcastController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   broadCastIdParamValidation,
   broadcastQueryValidation
@@ -11,20 +11,19 @@ import {
 const { Router } = express;
 const router = Router();
 
-router.get(
-  '/sheen-service/getActiveBroadcast',
-  BroadcastController.getActiveBroadcast
-);
+router.use(rateLimiter);
+
+router.get('/getActiveBroadcast', BroadcastController.getActiveBroadcast);
 
 router.get(
-  '/sheen-service/getBroadcasts',
+  '/getBroadcasts',
   broadcastQueryValidation,
   validationHandler,
   BroadcastController.getBroadcasts
 );
 
 router.delete(
-  '/sheen-service/deleteBroadcast/:broadcastId',
+  '/deleteBroadcast/:broadcastId',
   broadCastIdParamValidation,
   validationHandler,
   BroadcastController.deleteBroadcast

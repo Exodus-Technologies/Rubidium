@@ -11,13 +11,13 @@ const { version } = require('../../package.json');
 
 const router = Router();
 
-router.get('/sheen-service/', apiCache(), (_, res) => {
+router.get('/', apiCache(), (_, res) => {
   res
     .status(StatusCodes.OK)
     .send({ message: 'Welcome to Rubidium Service Manager Service!' });
 });
 
-router.get('/sheen-service/probeCheck', (_, res) => {
+router.get('/probeCheck', (_, res) => {
   res.status(StatusCodes.OK).send({
     uptime: fancyTimeFormat(process.uptime()),
     date: new Date(),
@@ -26,9 +26,9 @@ router.get('/sheen-service/probeCheck', (_, res) => {
   });
 });
 
-router.get('/sheen-service/ip', validateToken, (req, res) => res.send(req.ip));
+router.get('/ip', validateToken, (req, res) => res.send(req.ip));
 
-router.get('/sheen-service/getConfiguration', validateToken, (_, res) => {
+router.get('/getConfiguration', validateToken, (_, res) => {
   res.status(StatusCodes.OK).send(config);
 });
 

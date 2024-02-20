@@ -1,5 +1,7 @@
 'use strict';
 
+export const BASE_URL = '/sheen-service';
+
 export const STATES = [
   'AL',
   'AK',
@@ -62,7 +64,7 @@ export const STATES = [
   'WY'
 ];
 
-export const windowMs = 10 * 60 * 1000; // 15 minutes
+export const WINDOW_MS = 10 * 60 * 1000; // 15 minutes
 
 export const TOKEN_EXPIRY = 60;
 

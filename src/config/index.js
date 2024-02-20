@@ -9,7 +9,7 @@ const config = {
   NODE_ENV: process.env.NODE_ENV,
   HOST: process.env.HOST,
   PORT: process.env.PORT,
-  numOfProxies: +process.env.NUM_OF_PROXIES,
+  trustProxy: +process.env.TRUST_PROXY,
   CMS: process.env.CMS_HOST,
   HASH_SALT: +process.env.HASH_SALT,
   jwtSecret: process.env.JWT_SECRET,
@@ -26,6 +26,7 @@ const config = {
         s3VideoBucketName: process.env.S3_VIDEO_BUCKET_NAME,
         s3IssueBucketName: process.env.S3_ISSUE_BUCKET_NAME,
         s3CoverImageBucketName: process.env.S3_COVERIMAGE_BUCKET_NAME,
+        expiresIn: +process.env.PRESIGNED_URL_EXPIRES_IN,
         videoDistributionURI:
           process.env.AWS_CLOUDFRONT_VIDEOS_DISTRIBUTION_URI,
         thumbnailDistributionURI:

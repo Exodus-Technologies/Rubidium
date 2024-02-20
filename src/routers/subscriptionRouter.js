@@ -1,6 +1,6 @@
 import express from 'express';
 import { SubscriptionController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   subscriptionIdParamValidation,
   subscriptionPostBodyValidation,
@@ -14,57 +14,59 @@ const { Router } = express;
 
 const router = Router();
 
+router.use(rateLimiter);
+
 router.get(
-  '/sheen-service/getSubscriptions',
+  '/getSubscriptions',
   subscriptionQueryValidation,
   validationHandler,
   SubscriptionController.getSubscriptions
 );
 
 router.get(
-  '/sheen-service/getUserSubscriptions/:userId',
+  '/getUserSubscriptions/:userId',
   userIdParamValidation,
   validationHandler,
   SubscriptionController.getUserSubscriptions
 );
 
 router.get(
-  '/sheen-service/getSubscription/:subscriptionId',
+  '/getSubscription/:subscriptionId',
   subscriptionIdParamValidation,
   validationHandler,
   SubscriptionController.getSubscription
 );
 
 router.get(
-  '/sheen-service/getSubscriptionStatus',
+  '/getSubscriptionStatus',
   subscriptionStatusQueryValidation,
   validationHandler,
   SubscriptionController.getSubscriptionStatus
 );
 
 router.post(
-  '/sheen-service/createSubscription',
+  '/createSubscription',
   subscriptionPostBodyValidation,
   validationHandler,
   SubscriptionController.createSubscription
 );
 
 router.put(
-  '/sheen-service/updateSubscription/:subscriptionId',
+  '/updateSubscription/:subscriptionId',
   subscriptionUpdateBodyValidation,
   validationHandler,
   SubscriptionController.updateSubscription
 );
 
 router.delete(
-  '/sheen-service/deleteSubscription/:subscriptionId',
+  '/deleteSubscription/:subscriptionId',
   subscriptionIdParamValidation,
   validationHandler,
   SubscriptionController.deleteSubscription
 );
 
 router.delete(
-  '/sheen-service/deleteSubscriptions/:userId',
+  '/deleteSubscriptions/:userId',
   userIdParamValidation,
   validationHandler,
   SubscriptionController.deleteSubscriptions

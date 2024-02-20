@@ -13,6 +13,6 @@ const swaggerDocument = YAML.load(
   path.resolve(process.cwd(), 'src', 'swagger', 'swagger.yaml')
 );
 
-router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+router.use('/documetation', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 export default router;

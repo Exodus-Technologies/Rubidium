@@ -2,7 +2,7 @@
 
 import rateLimit from 'express-rate-limit';
 import { StatusCodes } from 'http-status-codes';
-import { windowMs } from '../constants';
+import { WINDOW_MS } from '../constants';
 import logger from '../logger';
 import { getCache, setCache } from '../queries/cache';
 import { getUserByEmail } from '../queries/users';
@@ -31,7 +31,7 @@ const errorHandler = (err, req, res, next) => {
 };
 
 const rateLimiter = rateLimit({
-  windowMs,
+  windowMs: WINDOW_MS,
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,

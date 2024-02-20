@@ -9,8 +9,9 @@ import noCache from 'nocache';
 import responseTime from 'response-time';
 
 import config from './config';
+import { BASE_URL } from './constants';
 import logger from './logger';
-import { errorHandler, rateLimiter, requestResponse } from './middlewares';
+import { errorHandler, requestResponse } from './middlewares';
 import {
   appRouter,
   authRouter,
@@ -23,13 +24,13 @@ import {
   videoRouter
 } from './routers';
 
-const { numOfProxies } = config;
+const { trustProxy } = config;
 
 // Create the Express application object
 const server = express();
 
 // specify a single subnet
-server.set('trust proxy', numOfProxies);
+server.set('trust proxy', trustProxy);
 
 //Cors middleware
 server.use(cors());
@@ -73,43 +74,43 @@ server.use(requestResponse);
 logger.info('Loaded request/response middleware.');
 
 //Swagger middleware
-server.use(swaggerRouter);
+server.use(BASE_URL, swaggerRouter);
 logger.info('Loaded swagger documentation routes middleware.');
 
 //App middleware
-server.use(appRouter);
+server.use(BASE_URL, appRouter);
 logger.info('Loaded server routes middleware.');
 
 //Auth middleware
-server.use(rateLimiter, authRouter);
+server.use(BASE_URL, authRouter);
 logger.info('Loaded auth routes middleware.');
 
 //User middleware
-server.use(rateLimiter, userRouter);
+server.use(BASE_URL, userRouter);
 logger.info('Loaded user routes middleware.');
 
 //Subscription middleware
-server.use(rateLimiter, subscriptionRouter);
+server.use(BASE_URL, subscriptionRouter);
 logger.info('Loaded subscription routes middleware.');
 
-//Bambuser middleware
-// server.use(rateLimiter, bambuserRouter);
+// Bambuser middleware
+// server.use(bambuserRouter);
 // logger.info('Loaded bambuser routes middleware.');
 
 //Broadcasts middleware
-// server.use(rateLimiter, broadcastRouter);
+// server.use(broadcastRouter);
 // logger.info('Loaded broadcast routes middleware.');
 
 //Category middleware
-server.use(rateLimiter, categoryRouter);
+server.use(BASE_URL, categoryRouter);
 logger.info('Loaded category routes middleware.');
 
 //Video middleware
-server.use(rateLimiter, videoRouter);
+server.use(BASE_URL, videoRouter);
 logger.info('Loaded video routes middleware.');
 
 //Issue middleware
-server.use(rateLimiter, issueRouter);
+server.use(BASE_URL, issueRouter);
 logger.info('Loaded issue routes middleware.');
 
 server.use(notFoundRouter);

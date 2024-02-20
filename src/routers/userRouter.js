@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { UserController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   userCreationValidation,
   userIdParamValidation,
@@ -13,36 +13,38 @@ import {
 const { Router } = express;
 const router = Router();
 
+router.use(rateLimiter);
+
 router.get(
-  '/sheen-service/getUsers',
+  '/getUsers',
   userQueryValidation,
   validationHandler,
   UserController.getUsers
 );
 
 router.get(
-  '/sheen-service/getUser/:userId',
+  '/getUser/:userId',
   userIdParamValidation,
   validationHandler,
   UserController.getUser
 );
 
 router.post(
-  '/sheen-service/createUser',
+  '/createUser',
   userCreationValidation,
   validationHandler,
   UserController.createUser
 );
 
 router.put(
-  '/sheen-service/updateUser/:userId',
+  '/updateUser/:userId',
   userUpdateValidation,
   validationHandler,
   UserController.updateUser
 );
 
 router.delete(
-  '/sheen-service/deleteUser/:userId',
+  '/deleteUser/:userId',
   userIdParamValidation,
   validationHandler,
   UserController.deleteUser

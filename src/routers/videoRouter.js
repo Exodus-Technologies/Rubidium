@@ -1,8 +1,9 @@
 import express from 'express';
 import { VideoController } from '../controllers';
-import { validateToken, validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   completeUploadBodyValidation,
+  createPresignedUrlsBodyValidation,
   createVideoMetadataBodyValidation,
   initiateUploadBodyValidation,
   videoIdBodyUpdateValidation,
@@ -13,57 +14,65 @@ import {
 const { Router } = express;
 const router = Router();
 
+router.use(rateLimiter);
+
 router.post(
-  '/sheen-service/initiateUpload',
+  '/initiateUpload',
   initiateUploadBodyValidation,
   validationHandler,
   VideoController.initiateUpload
 );
 
-router.post('/sheen-service/uploadVideo', VideoController.uploadVideo);
+router.post('/uploadVideo', VideoController.uploadVideo);
 
 router.post(
-  '/sheen-service/completeUpload',
+  '/completeUpload',
   completeUploadBodyValidation,
   validationHandler,
   VideoController.completeUpload
 );
 
 router.post(
-  '/sheen-service/createVideoMetadata',
-  validateToken,
+  '/sheen-service/createPresignedUrls',
+  createPresignedUrlsBodyValidation,
+  validationHandler,
+  VideoController.createPresignedUrls
+);
+
+router.post(
+  '/createVideoMetadata',
   createVideoMetadataBodyValidation,
   validationHandler,
   VideoController.createVideoMetadata
 );
 
-router.get('/sheen-service/getTotal', VideoController.getTotal);
+router.get('/getTotal', VideoController.getTotal);
 
 router.get(
-  '/sheen-service/getVideos',
+  '/getVideos',
   videoQueryValidation,
   validationHandler,
   VideoController.getVideos
 );
 
 router.get(
-  '/sheen-service/getVideo/:videoId',
+  '/getVideo/:videoId',
   videoIdParamValidation,
   validationHandler,
   VideoController.getVideo
 );
 
-router.put('/sheen-service/updateVideo', VideoController.updateVideo);
+router.put('/updateVideo', VideoController.updateVideo);
 
 router.put(
-  '/sheen-service/updateViews',
+  '/updateViews',
   videoIdBodyUpdateValidation,
   validationHandler,
   VideoController.updateViews
 );
 
 router.delete(
-  '/sheen-service/deleteVideo/:videoId',
+  '/deleteVideo/:videoId',
   videoIdParamValidation,
   validationHandler,
   VideoController.deleteVideoById

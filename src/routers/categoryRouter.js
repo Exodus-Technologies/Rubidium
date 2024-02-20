@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { CategoryController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   categoryIdParamValidation,
   categoryPostValidation,
@@ -13,36 +13,38 @@ import {
 const { Router } = express;
 const router = Router();
 
+router.use(rateLimiter);
+
 router.get(
-  '/sheen-service/getCategories',
+  '/getCategories',
   categoryQueryValidation,
   validationHandler,
   CategoryController.getCategories
 );
 
 router.get(
-  '/sheen-service/getCategory/:categoryId',
+  '/getCategory/:categoryId',
   categoryIdParamValidation,
   validationHandler,
   CategoryController.getCategory
 );
 
 router.post(
-  '/sheen-service/createCategory',
+  '/createCategory',
   categoryPostValidation,
   validationHandler,
   CategoryController.createCategory
 );
 
 router.put(
-  '/sheen-service/updateCategory/:categoryId',
+  '/updateCategory/:categoryId',
   categoryUpdateValidation,
   validationHandler,
   CategoryController.updateCategory
 );
 
 router.delete(
-  '/sheen-service/deleteCategory/:categoryId',
+  '/deleteCategory/:categoryId',
   categoryIdParamValidation,
   validationHandler,
   CategoryController.deleteCategoryById
