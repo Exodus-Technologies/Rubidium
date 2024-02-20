@@ -9,7 +9,7 @@ const config = {
   NODE_ENV: process.env.NODE_ENV,
   HOST: process.env.HOST,
   PORT: process.env.PORT,
-  numOfProxies: +process.env.NUM_OF_PROXIES,
+  trustProxy: +process.env.TRUST_PROXY,
   CMS: process.env.CMS_HOST,
   HASH_SALT: +process.env.HASH_SALT,
   jwtSecret: process.env.JWT_SECRET,
