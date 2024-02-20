@@ -24,7 +24,7 @@ router.post(
 
 router.post('/uploadVideo', VideoController.uploadVideo);
 
-router.post
+router.post(
   '/completeUpload',
   completeUploadBodyValidation,
   validationHandler,
