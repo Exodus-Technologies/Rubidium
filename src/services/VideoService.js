@@ -7,7 +7,9 @@ import {
   completeMultipartUpload,
   copyThumbnailObject,
   copyVideoObject,
+  createThumbnailPresignedUrl,
   createThumbnailS3Bucket,
+  createVideoPresignedUrl,
   createVideoS3Bucket,
   deleteThumbnailByKey,
   deleteVideoByKey,
@@ -238,6 +240,31 @@ exports.completeUpload = async body => {
   }
 };
 
+exports.createPresignedUrls = async fileName => {
+  const key = removeSpaces(fileName);
+  try {
+    const thumbnailPresignedUrl = await createThumbnailPresignedUrl(key);
+    const videoPresignedUrl = await createVideoPresignedUrl(key);
+    if (thumbnailPresignedUrl && videoPresignedUrl) {
+      return [
+        StatusCodes.CREATED,
+        {
+          message: 'Presigned urls created for file upload to s3 with success',
+          thumbnailPresignedUrl,
+          videoPresignedUrl
+        }
+      ];
+    } else {
+      return badRequest('Unable to create presigned urls for file upload.');
+    }
+  } catch (err) {
+    logger.error(`Error creating presigned urls for file upload: `, err);
+    return internalServerErrorRequest(
+      'Error creating presigned urls for file upload.'
+    );
+  }
+};
+
 exports.createVideoMetadata = async upload => {
   try {
     const { title, description, categories, duration, isAvailableForSale } =
@@ -261,7 +288,7 @@ exports.createVideoMetadata = async upload => {
     const video = await createVideo(body);
     if (video) {
       return [
-        StatusCodes.OK,
+        StatusCodes.CREATED,
         {
           message: 'Metadata for manual upload created to s3 with success',
           video

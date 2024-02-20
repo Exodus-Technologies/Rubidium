@@ -26,6 +26,7 @@ const config = {
         s3VideoBucketName: process.env.S3_VIDEO_BUCKET_NAME,
         s3IssueBucketName: process.env.S3_ISSUE_BUCKET_NAME,
         s3CoverImageBucketName: process.env.S3_COVERIMAGE_BUCKET_NAME,
+        expiresIn: +process.env.PRESIGNED_URL_EXPIRES_IN,
         videoDistributionURI:
           process.env.AWS_CLOUDFRONT_VIDEOS_DISTRIBUTION_URI,
         thumbnailDistributionURI:

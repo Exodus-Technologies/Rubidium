@@ -1,8 +1,9 @@
 import express from 'express';
 import { VideoController } from '../controllers';
-import { rateLimiter, validateToken, validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   completeUploadBodyValidation,
+  createPresignedUrlsBodyValidation,
   createVideoMetadataBodyValidation,
   initiateUploadBodyValidation,
   videoIdBodyUpdateValidation,
@@ -32,8 +33,14 @@ router.post(
 );
 
 router.post(
+  '/sheen-service/createPresignedUrls',
+  createPresignedUrlsBodyValidation,
+  validationHandler,
+  VideoController.createPresignedUrls
+);
+
+router.post(
   '/createVideoMetadata',
-  validateToken,
   createVideoMetadataBodyValidation,
   validationHandler,
   VideoController.createVideoMetadata

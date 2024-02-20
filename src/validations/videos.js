@@ -77,6 +77,12 @@ const initiateUploadBodyValidation = [
     .withMessage('Must provide a file type for initate multipart upload.')
 ];
 
+const createPresignedUrlsBodyValidation = [
+  body('fileName')
+    .isString()
+    .withMessage('Must provide a file name for initate multipart upload.')
+];
+
 const completeUploadBodyValidation = [
   body('fileName')
     .isString()
@@ -94,6 +100,7 @@ const completeUploadBodyValidation = [
 
 export {
   completeUploadBodyValidation,
+  createPresignedUrlsBodyValidation,
   createVideoMetadataBodyValidation,
   initiateUploadBodyValidation,
   videoIdBodyUpdateValidation,
