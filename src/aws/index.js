@@ -197,10 +197,8 @@ export const doesThumbnailS3BucketExist = () => {
 export const doesVideoObjectExist = key => {
   return new Promise(async (resolve, reject) => {
     try {
-      const s3Object = await s3Client.send(
-        new HeadObjectCommand(getS3VideoParams(key))
-      );
-      resolve(s3Object);
+      await s3Client.send(new HeadObjectCommand(getS3VideoParams(key)));
+      resolve(true);
     } catch (err) {
       logger.error(err);
       const { requestId, cfId, extendedRequestId } = err.$metadata;
@@ -210,7 +208,7 @@ export const doesVideoObjectExist = key => {
         cfId,
         extendedRequestId
       });
-      reject(err);
+      reject(false);
     }
   });
 };
@@ -218,10 +216,8 @@ export const doesVideoObjectExist = key => {
 export const doesThumbnailObjectExist = key => {
   return new Promise(async (resolve, reject) => {
     try {
-      const s3Object = await s3Client.send(
-        new HeadObjectCommand(getS3ThumbnailParams(key))
-      );
-      resolve(s3Object);
+      await s3Client.send(new HeadObjectCommand(getS3ThumbnailParams(key)));
+      resolve(true);
     } catch (err) {
       logger.error(err);
       const { requestId, cfId, extendedRequestId } = err.$metadata;
@@ -231,7 +227,7 @@ export const doesThumbnailObjectExist = key => {
         cfId,
         extendedRequestId
       });
-      reject(err);
+      reject(false);
     }
   });
 };
@@ -536,10 +532,8 @@ export const doesCoverImageS3BucketExist = () => {
 export const doesIssueObjectExist = key => {
   return new Promise(async (resolve, reject) => {
     try {
-      const s3Object = await s3Client.send(
-        new HeadObjectCommand(getS3IssueParams(key))
-      );
-      resolve(s3Object);
+      await s3Client.send(new HeadObjectCommand(getS3IssueParams(key)));
+      resolve(true);
     } catch (err) {
       logger.error(err);
       const { requestId, cfId, extendedRequestId } = err.$metadata;
@@ -549,7 +543,7 @@ export const doesIssueObjectExist = key => {
         cfId,
         extendedRequestId
       });
-      reject(err);
+      reject(false);
     }
   });
 };
@@ -557,10 +551,8 @@ export const doesIssueObjectExist = key => {
 export const doesCoverImageObjectExist = key => {
   return new Promise(async (resolve, reject) => {
     try {
-      const s3Object = await s3Client.send(
-        new HeadObjectCommand(getS3CoverImageParams(key))
-      );
-      resolve(s3Object);
+      await s3Client.send(new HeadObjectCommand(getS3CoverImageParams(key)));
+      resolve(true);
     } catch (err) {
       logger.error(err);
       const { requestId, cfId, extendedRequestId } = err.$metadata;
@@ -570,7 +562,7 @@ export const doesCoverImageObjectExist = key => {
         cfId,
         extendedRequestId
       });
-      reject(err);
+      reject(false);
     }
   });
 };

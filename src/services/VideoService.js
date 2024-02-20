@@ -288,7 +288,7 @@ exports.createVideoMetadata = async upload => {
     const video = await createVideo(body);
     if (video) {
       return [
-        StatusCodes.OK,
+        StatusCodes.CREATED,
         {
           message: 'Metadata for manual upload created to s3 with success',
           video
