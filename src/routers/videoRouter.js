@@ -1,6 +1,6 @@
 import express from 'express';
 import { VideoController } from '../controllers';
-import { rateLimiter, validateToken, validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   completeUploadBodyValidation,
   createPresignedUrlsBodyValidation,
@@ -29,7 +29,7 @@ router.post(
   '/completeUpload',
   completeUploadBodyValidation,
   validationHandler,
-  VideoController.createPresignedUrls
+  VideoController.completeUpload
 );
 
 router.post(
@@ -41,7 +41,6 @@ router.post(
 
 router.post(
   '/createVideoMetadata',
-  validateToken,
   createVideoMetadataBodyValidation,
   validationHandler,
   VideoController.createVideoMetadata
