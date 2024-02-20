@@ -1,5 +1,7 @@
 'use strict';
 
+export const BASE_URL = '/sheen-service';
+
 export const STATES = [
   'AL',
   'AK',

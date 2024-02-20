@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { IssueController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   issueIdBodyValidation,
   issueIdParamValidation,
@@ -13,40 +13,39 @@ const { Router } = express;
 
 const router = Router();
 
+router.use(rateLimiter);
+
 router.get(
-  '/sheen-service/getIssues',
+  '/getIssues',
   issueQueryValidation,
   validationHandler,
   IssueController.getIssues
 );
 
-router.get('/sheen-service/getTotal', IssueController.getTotal);
+router.get('/getTotal', IssueController.getTotal);
+
+router.get('/getNextIssueOrder', IssueController.getNextIssueOrder);
 
 router.get(
-  '/sheen-service/getNextIssueOrder',
-  IssueController.getNextIssueOrder
-);
-
-router.get(
-  '/sheen-service/getIssue/:issueId',
+  '/getIssue/:issueId',
   issueIdParamValidation,
   validationHandler,
   IssueController.getIssueById
 );
 
-router.post('/sheen-service/createIssue', IssueController.createIssue);
+router.post('/createIssue', IssueController.createIssue);
 
-router.put('/sheen-service/updateIssue', IssueController.updateIssue);
+router.put('/updateIssue', IssueController.updateIssue);
 
 router.put(
-  '/sheen-service/updateViews',
+  '/updateViews',
   issueIdBodyValidation,
   validationHandler,
   IssueController.updateViews
 );
 
 router.delete(
-  '/sheen-service/deleteIssue/:issueId',
+  '/deleteIssue/:issueId',
   issueIdParamValidation,
   validationHandler,
   IssueController.deleteIssueById

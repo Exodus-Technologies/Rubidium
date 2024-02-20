@@ -23,7 +23,10 @@ const categoryQueryValidation = [
 ];
 
 const categoryPostValidation = [
-  body('name').isString().withMessage('Must provide a category name.')
+  body('name').isString().withMessage('Must provide a category name.'),
+  body('description')
+    .isString()
+    .withMessage('Must provide a category description.')
 ];
 
 const categoryIdParamValidation = [
