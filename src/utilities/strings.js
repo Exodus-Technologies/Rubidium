@@ -17,3 +17,7 @@ export const createIssueSubId = () => {
 export const removeSpaces = str => {
   return str.replace(/\s+/g, '');
 };
+
+export const removeSpecialCharacters = str => {
+  return str.replace(/[^a-zA-Z ]/g, '');
+};

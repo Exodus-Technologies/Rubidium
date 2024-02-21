@@ -20,6 +20,7 @@ const permissionQueryValidation = [
 
 const permissionPostValidation = [
   body('name').isString().withMessage('Must provide a permission name.'),
+  body('value').isString().withMessage('Must provide a value for the role.'),
   body('description')
     .isString()
     .withMessage('Must provide a permission description.')
@@ -39,6 +40,10 @@ const permissionUpdateValidation = [
     .isString()
     .optional()
     .withMessage('Must provide a permission name.'),
+  body('value')
+    .isString()
+    .optional()
+    .withMessage('Must provide a value for the role.'),
   body('description')
     .isString()
     .optional()

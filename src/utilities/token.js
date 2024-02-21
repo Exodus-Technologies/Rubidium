@@ -22,15 +22,15 @@ export const generateAuthJWTToken = user => {
   const expirationTime = moment().add(TOKEN_EXPIRY, 'minutes').valueOf() / 1000;
   const payload = { isAdmin, email, userId };
   try {
-    const token = sign(
+    return sign(
       {
         exp: Math.ceil(expirationTime),
         data: payload
       },
       jwtSecret
     );
-    return token;
   } catch {
+    console.error(err);
     return undefined;
   }
 };

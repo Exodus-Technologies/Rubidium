@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { RoleController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   roleIdParamValidation,
   rolePostValidation,
@@ -12,6 +12,8 @@ import {
 
 const { Router } = express;
 const router = Router();
+
+router.use(rateLimiter);
 
 router.get(
   '/sheen-service/getRoles',

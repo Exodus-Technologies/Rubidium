@@ -74,12 +74,12 @@ export const createPermission = async payload => {
   }
 };
 
-export const updatePermission = async (permissionId, name) => {
+export const updatePermission = async (permissionId, payload) => {
   try {
     const { Permission } = models;
     const filter = { permissionId };
     const options = { new: true };
-    const update = { name };
+    const update = { ...payload };
     const permission = await Permission.findOneAndUpdate(
       filter,
       update,

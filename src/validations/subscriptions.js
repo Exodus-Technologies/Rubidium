@@ -58,7 +58,7 @@ const subscriptionPostBodyValidation = [
   body('userId').isNumeric().withMessage('Must provide a valid userId.'),
   body('email')
     .isString()
-    .matches(/\S+@\S+\.\S+/)
+    .isEmail()
     .withMessage('Must provide a existing and valid email.'),
   body('username')
     .isString()
