@@ -18,6 +18,8 @@ import {
   categoryRouter,
   issueRouter,
   notFoundRouter,
+  permissionRouter,
+  roleRouter,
   subscriptionRouter,
   swaggerRouter,
   userRouter,
@@ -80,6 +82,14 @@ logger.info('Loaded swagger documentation routes middleware.');
 //App middleware
 server.use(BASE_URL, appRouter);
 logger.info('Loaded server routes middleware.');
+
+//Permission middleware
+server.use(rateLimiter, permissionRouter);
+logger.info('Loaded permission routes middleware.');
+
+//Permission middleware
+server.use(rateLimiter, roleRouter);
+logger.info('Loaded role routes middleware.');
 
 //Auth middleware
 server.use(BASE_URL, authRouter);

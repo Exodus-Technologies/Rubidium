@@ -4,7 +4,10 @@
  * https://github.com/validatorjs/validator.js#validators
  */
 import { body } from 'express-validator';
-import { STRONG_PASSWORD_VALIDATIONS } from '../constants';
+import {
+  PASSWORD_VALIDATION_MESSAGE,
+  STRONG_PASSWORD_VALIDATIONS_REGEX
+} from '../constants';
 
 const loginValidation = [
   body('email')
@@ -12,11 +15,7 @@ const loginValidation = [
     .isEmail()
     .matches(/\S+@\S+\.\S+/)
     .withMessage('Must provide a existing and valid email.'),
-  body('password')
-    .isString()
-    .withMessage(
-      'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
-    )
+  body('password').isString().withMessage(PASSWORD_VALIDATION_MESSAGE)
 ];
 
 const changePasswordValidation = [
@@ -28,11 +27,8 @@ const changePasswordValidation = [
   body('token').isString().withMessage('Must provide a token.'),
   body('password')
     .isString()
-    .isLength({ min: 8 })
-    .isStrongPassword(STRONG_PASSWORD_VALIDATIONS)
-    .withMessage(
-      'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
-    )
+    .matches(STRONG_PASSWORD_VALIDATIONS_REGEX)
+    .withMessage(PASSWORD_VALIDATION_MESSAGE)
 ];
 
 const passwordRequestResetBodyValidation = [
