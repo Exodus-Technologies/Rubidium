@@ -140,6 +140,20 @@ export const updateUser = async (userId, payload) => {
   }
 };
 
+export const updateLastLogin = async userId => {
+  const { User } = models;
+  try {
+    const filter = { userId };
+    const update = { lastLoggedIn: new Date() };
+    const options = { new: true };
+    const user = await User.findOneAndUpdate(filter, update, options);
+    return [null, user];
+  } catch (err) {
+    console.log(err);
+    return [new Error('Unable to update user last login details.')];
+  }
+};
+
 export const deleteUserById = async userId => {
   try {
     const { User } = models;
