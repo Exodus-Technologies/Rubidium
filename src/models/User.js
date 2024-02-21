@@ -36,7 +36,17 @@ const userSchema = new Schema(
     isAdmin: {
       type: Boolean,
       default: false
-    }
+    },
+    lastLoggedIn: {
+      type: Date,
+      default: Date.now()
+    },
+    role: [
+      {
+        type: Schema.ObjectId,
+        ref: 'Role'
+      }
+    ]
   },
   { timestamps: true }
 );
@@ -59,8 +69,8 @@ userSchema.pre('save', function (next) {
 });
 
 userSchema.pre('findOneAndUpdate', async function (next) {
+  const user = this;
   try {
-    const user = this;
     //Hash password only if the password has been changed or is new
     if (user._update.password) {
       const salt = bcrypt.genSaltSync(HASH_SALT);

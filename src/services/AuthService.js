@@ -13,7 +13,7 @@ import {
   verifyOTPCode
 } from '../queries/code';
 import { saveTransaction } from '../queries/transactions';
-import { getUserByEmail } from '../queries/users';
+import { getUserByEmail, updateLastLogin } from '../queries/users';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
 import { NotificationService } from '../services';
 import {
@@ -33,8 +33,13 @@ exports.validateLogin = async (email, password) => {
     if (user) {
       const validPassword = user.getIsValidPassword(password);
       if (validPassword) {
-        const { email, fullName, city, state, isAdmin, userId } = user;
+        const [error, updatedUser] = await updateLastLogin(user.userId);
+        if (error) {
+          return badRequest(error.message);
+        }
         const token = generateAuthJWTToken(user);
+        const { email, fullName, city, state, isAdmin, userId, lastLoggedIn } =
+          updatedUser;
         return [
           StatusCodes.OK,
           {
@@ -45,7 +50,8 @@ exports.validateLogin = async (email, password) => {
               city,
               state,
               userId,
-              isAdmin
+              isAdmin,
+              lastLoggedIn
             },
             token
           }

@@ -68,9 +68,10 @@ const validateToken = async (req, res, next) => {
   if (isDevelopmentEnvironment()) return next();
   const authorizationHeader = req.headers['authorization'];
 
-  const [statusCode, response] = unauthorizedRequest('Access token is missing');
-
   if (!authorizationHeader) {
+    const [statusCode, response] = unauthorizedRequest(
+      'Access token is missing'
+    );
     return res.status(statusCode).send(response);
   }
 

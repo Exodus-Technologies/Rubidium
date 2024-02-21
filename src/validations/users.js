@@ -5,7 +5,11 @@
  */
 import { body, param, query } from 'express-validator';
 
-import { STATES, STRONG_PASSWORD_VALIDATIONS } from '../constants';
+import {
+  PASSWORD_VALIDATION_MESSAGE,
+  STATES,
+  STRONG_PASSWORD_VALIDATIONS_REGEX
+} from '../constants';
 
 const userQueryValidation = [
   query('page')
@@ -34,14 +38,16 @@ const userCreationValidation = [
     .withMessage('Must provide a existing and valid email.'),
   body('password')
     .isString()
-    .isLength({ min: 8 })
-    .isStrongPassword(STRONG_PASSWORD_VALIDATIONS)
-    .withMessage(
-      'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
-    ),
+    .matches(STRONG_PASSWORD_VALIDATIONS_REGEX)
+    .withMessage(PASSWORD_VALIDATION_MESSAGE),
   body('fullName')
     .isString()
     .withMessage('Must provide your first and last name.'),
+  body('roles')
+    .isArray()
+    .notEmpty()
+    .withMessage('Must provide a list of roles for user.')
+    .optional(),
   body('dob').isString().optional(),
   body('city')
     .isString()
@@ -71,15 +77,17 @@ const userUpdateValidation = [
     .optional(),
   body('password')
     .isString()
-    .isLength({ min: 8 })
-    .isStrongPassword(STRONG_PASSWORD_VALIDATIONS)
-    .withMessage(
-      'Please enter a password at least 8 character and contain at least one uppercase, least one lower case, and at least one special character.'
-    )
+    .matches(STRONG_PASSWORD_VALIDATIONS_REGEX)
+    .withMessage(PASSWORD_VALIDATION_MESSAGE)
     .optional(),
   body('fullName')
     .isString()
     .withMessage('Must provide your first and last name.')
+    .optional(),
+  body('roles')
+    .isArray()
+    .notEmpty()
+    .withMessage('Must provide a list of roles for user.')
     .optional(),
   body('city')
     .isString()
