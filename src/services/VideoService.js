@@ -41,7 +41,7 @@ import {
 import { badRequest, internalServerErrorRequest } from '../response-codes';
 import { stringToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
-import { removeSpaces } from '../utilities/strings';
+import { removeSpaces, removeSpecialCharacters } from '../utilities/strings';
 import { fancyTimeFormat } from '../utilities/time';
 
 exports.getPayloadFromFormRequest = async req => {
@@ -59,7 +59,7 @@ exports.getPayloadFromFormRequest = async req => {
       const file = {
         ...fields,
         isAvailableForSale: stringToBoolean(fields.isAvailableForSale),
-        key: removeSpaces(fields.title)
+        key: removeSpaces(removeSpecialCharacters(fields.title))
       };
       if (!isEmpty(files)) {
         const {
@@ -270,7 +270,7 @@ exports.createVideoMetadata = async upload => {
     const { title, description, categories, duration, isAvailableForSale } =
       upload;
 
-    const key = removeSpaces(title);
+    const key = removeSpaces(removeSpecialCharacters(title));
 
     const body = {
       title,
@@ -387,7 +387,7 @@ exports.updateVideo = async archive => {
     const video = await getVideoById(videoId);
 
     if (video) {
-      const newKey = removeSpaces(title);
+      const newKey = removeSpaces(removeSpecialCharacters(title));
       if (newKey !== video.key) {
         await copyVideoObject(video.key, newKey);
         await copyThumbnailObject(video.key, newKey);
