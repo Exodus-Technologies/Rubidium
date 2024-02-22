@@ -46,10 +46,10 @@ exports.createPermission = async (req, res, next) => {
 exports.updatePermission = async (req, res, next) => {
   try {
     const { permissionId } = req.params;
-    const { name } = req.body;
+    const { body } = req;
     const [statusCode, response] = await PermissionService.updatePermission(
       permissionId,
-      name
+      body
     );
     res.status(statusCode).send(response);
   } catch (err) {

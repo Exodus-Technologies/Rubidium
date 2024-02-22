@@ -1,6 +1,7 @@
 'use strict';
 
 import formidable from 'formidable';
+import getVideoDurationInSeconds from 'get-video-duration';
 import { StatusCodes } from 'http-status-codes';
 import {
   abortMultipartUpload,
@@ -41,7 +42,7 @@ import {
 import { badRequest, internalServerErrorRequest } from '../response-codes';
 import { stringToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
-import { removeSpaces } from '../utilities/strings';
+import { removeSpaces, removeSpecialCharacters } from '../utilities/strings';
 import { fancyTimeFormat } from '../utilities/time';
 
 exports.getPayloadFromFormRequest = async req => {
@@ -59,7 +60,7 @@ exports.getPayloadFromFormRequest = async req => {
       const file = {
         ...fields,
         isAvailableForSale: stringToBoolean(fields.isAvailableForSale),
-        key: removeSpaces(fields.title)
+        key: removeSpaces(removeSpecialCharacters(fields.title))
       };
       if (!isEmpty(files)) {
         const {
@@ -267,10 +268,13 @@ exports.createPresignedUrls = async fileName => {
 
 exports.createVideoMetadata = async upload => {
   try {
-    const { title, description, categories, duration, isAvailableForSale } =
-      upload;
+    const { title, description, categories, isAvailableForSale } = upload;
 
-    const key = removeSpaces(title);
+    const key = removeSpaces(removeSpecialCharacters(title));
+
+    const url = getVideoDistributionURI(key);
+
+    const duration = await getVideoDurationInSeconds(url);
 
     const body = {
       title,
@@ -280,7 +284,7 @@ exports.createVideoMetadata = async upload => {
         categories: categories.split(',').map(item => item.trim())
       }),
       duration,
-      url: getVideoDistributionURI(key),
+      url,
       thumbnail: getThumbnailDistributionURI(key),
       isAvailableForSale
     };
@@ -387,7 +391,7 @@ exports.updateVideo = async archive => {
     const video = await getVideoById(videoId);
 
     if (video) {
-      const newKey = removeSpaces(title);
+      const newKey = removeSpaces(removeSpecialCharacters(title));
       if (newKey !== video.key) {
         await copyVideoObject(video.key, newKey);
         await copyThumbnailObject(video.key, newKey);

@@ -74,12 +74,12 @@ export const createRole = async payload => {
   }
 };
 
-export const updateRole = async (roleId, name) => {
+export const updateRole = async (roleId, payload) => {
   try {
     const { Role } = models;
     const filter = { roleId };
     const options = { new: true };
-    const update = { name };
+    const update = { ...payload };
     const role = await Role.findOneAndUpdate(filter, update, options);
     return [null, role];
   } catch (err) {

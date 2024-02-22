@@ -64,9 +64,9 @@ exports.createPermission = async payload => {
   }
 };
 
-exports.updatePermission = async (permissionId, name) => {
+exports.updatePermission = async (permissionId, payload) => {
   try {
-    const [error, permission] = await updatePermission(permissionId, name);
+    const [error, permission] = await updatePermission(permissionId, payload);
     if (permission) {
       return [
         StatusCodes.OK,

@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { PermissionController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import { rateLimiter, validationHandler } from '../middlewares';
 import {
   permissionIdParamValidation,
   permissionPostValidation,
@@ -12,6 +12,8 @@ import {
 
 const { Router } = express;
 const router = Router();
+
+router.use(rateLimiter);
 
 router.get(
   '/sheen-service/getPermissions',

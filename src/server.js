@@ -84,11 +84,11 @@ server.use(BASE_URL, appRouter);
 logger.info('Loaded server routes middleware.');
 
 //Permission middleware
-server.use(rateLimiter, permissionRouter);
+server.use(permissionRouter);
 logger.info('Loaded permission routes middleware.');
 
 //Permission middleware
-server.use(rateLimiter, roleRouter);
+server.use(roleRouter);
 logger.info('Loaded role routes middleware.');
 
 //Auth middleware

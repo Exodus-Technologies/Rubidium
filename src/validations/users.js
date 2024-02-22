@@ -34,7 +34,6 @@ const userCreationValidation = [
   body('email')
     .isString()
     .isEmail()
-    .matches(/\S+@\S+\.\S+/)
     .withMessage('Must provide a existing and valid email.'),
   body('password')
     .isString()
@@ -72,7 +71,6 @@ const userUpdateValidation = [
   body('email')
     .isString()
     .isEmail()
-    .matches(/\S+@\S+\.\S+/)
     .withMessage('Must provide a existing and valid email.')
     .optional(),
   body('password')

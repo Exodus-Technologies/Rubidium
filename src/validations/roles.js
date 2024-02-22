@@ -23,6 +23,7 @@ const rolePostValidation = [
   body('description')
     .isString()
     .withMessage('Must provide a role description.'),
+  body('value').isString().withMessage('Must provide a value for the role.'),
   body('permissions')
     .isArray()
     .notEmpty()
@@ -36,6 +37,10 @@ const roleIdParamValidation = [
 const roleUpdateValidation = [
   param('roleId').isString().withMessage('Must provide a existing role id.'),
   body('name').isString().optional().withMessage('Must provide a role name.'),
+  body('value')
+    .isString()
+    .optional()
+    .withMessage('Must provide a value for the role.'),
   body('description')
     .isString()
     .optional()
