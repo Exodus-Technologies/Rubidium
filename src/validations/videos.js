@@ -59,9 +59,6 @@ const createVideoMetadataBodyValidation = [
   body('categories')
     .isString()
     .withMessage('Must provide categories for manual upload.'),
-  body('duration')
-    .isString()
-    .withMessage('Must provide video duration for manual upload.'),
   body('isAvailableForSale')
     .isBoolean()
     .optional()
