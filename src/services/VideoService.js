@@ -1,6 +1,7 @@
 'use strict';
 
 import formidable from 'formidable';
+import getVideoDurationInSeconds from 'get-video-duration';
 import { StatusCodes } from 'http-status-codes';
 import {
   abortMultipartUpload,
@@ -267,10 +268,13 @@ exports.createPresignedUrls = async fileName => {
 
 exports.createVideoMetadata = async upload => {
   try {
-    const { title, description, categories, duration, isAvailableForSale } =
-      upload;
+    const { title, description, categories, isAvailableForSale } = upload;
 
     const key = removeSpaces(removeSpecialCharacters(title));
+
+    const url = getVideoDistributionURI(key);
+
+    const duration = await getVideoDurationInSeconds(url);
 
     const body = {
       title,
@@ -280,7 +284,7 @@ exports.createVideoMetadata = async upload => {
         categories: categories.split(',').map(item => item.trim())
       }),
       duration,
-      url: getVideoDistributionURI(key),
+      url,
       thumbnail: getThumbnailDistributionURI(key),
       isAvailableForSale
     };
