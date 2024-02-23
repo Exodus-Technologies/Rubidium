@@ -49,7 +49,7 @@ const videoSchema = new Schema(
     },
     isAvailableForSale: {
       type: Boolean,
-      default: false
+      default: true
     },
     duration: {
       type: String

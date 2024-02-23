@@ -33,17 +33,17 @@ router.post(
 );
 
 router.post(
-  '/sheen-service/createPresignedUrls',
+  '/createPresignedUrls',
   createPresignedUrlsBodyValidation,
   validationHandler,
   VideoController.createPresignedUrls
 );
 
 router.post(
-  '/createVideoMetadata',
+  '/createVideo',
   createVideoMetadataBodyValidation,
   validationHandler,
-  VideoController.createVideoMetadata
+  VideoController.createVideo
 );
 
 router.get('/getTotal', VideoController.getTotal);
