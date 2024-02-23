@@ -16,35 +16,35 @@ const router = Router();
 router.use(rateLimiter);
 
 router.get(
-  '/sheen-service/getRoles',
+  '/getRoles',
   roleQueryValidation,
   validationHandler,
   RoleController.getRoles
 );
 
 router.get(
-  '/sheen-service/getRole/:roleId',
+  '/getRole/:roleId',
   roleIdParamValidation,
   validationHandler,
   RoleController.getRole
 );
 
 router.post(
-  '/sheen-service/createRole',
+  '/createRole',
   rolePostValidation,
   validationHandler,
   RoleController.createRole
 );
 
 router.put(
-  '/sheen-service/updateRole/:roleId',
+  '/updateRole/:roleId',
   roleUpdateValidation,
   validationHandler,
   RoleController.updateRole
 );
 
 router.delete(
-  '/sheen-service/deleteRole/:roleId',
+  '/deleteRole/:roleId',
   roleIdParamValidation,
   validationHandler,
   RoleController.deleteRole
