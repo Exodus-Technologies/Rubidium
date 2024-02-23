@@ -58,10 +58,10 @@ exports.createPresignedUrls = async (req, res, next) => {
   }
 };
 
-exports.createVideoMetadata = async (req, res, next) => {
+exports.createVideo = async (req, res, next) => {
   try {
     const { body } = req;
-    const [statusCode, payload] = await VideoService.createVideoMetadata(body);
+    const [statusCode, payload] = await VideoService.createVideo(body);
     res.status(statusCode).send(payload);
   } catch (err) {
     logger.error(`Error with manual uploading file to s3: `, err);

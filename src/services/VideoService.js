@@ -266,7 +266,7 @@ exports.createPresignedUrls = async fileName => {
   }
 };
 
-exports.createVideoMetadata = async upload => {
+exports.createVideo = async upload => {
   try {
     const { title, description, categories, isAvailableForSale } = upload;
 
@@ -283,7 +283,7 @@ exports.createVideoMetadata = async upload => {
       ...(categories && {
         categories: categories.split(',').map(item => item.trim())
       }),
-      duration,
+      duration: fancyTimeFormat(duration),
       url,
       thumbnail: getThumbnailDistributionURI(key),
       isAvailableForSale
@@ -294,16 +294,16 @@ exports.createVideoMetadata = async upload => {
       return [
         StatusCodes.CREATED,
         {
-          message: 'Metadata for manual upload created to s3 with success',
+          message: 'Video created with success.',
           video
         }
       ];
     } else {
-      return badRequest('Unable to save metadata for manual update.');
+      return badRequest('Unable to create video.');
     }
   } catch (err) {
-    logger.error(`Error manually uploading video to s3: `, err);
-    return internalServerErrorRequest('Error manually uploading video to s3.');
+    logger.error(`Error creating video: `, err);
+    return internalServerErrorRequest('Error creating video.');
   }
 };
 
