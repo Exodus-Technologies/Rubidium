@@ -4,6 +4,10 @@ import formidable from 'formidable';
 import getVideoDurationInSeconds from 'get-video-duration';
 import { StatusCodes } from 'http-status-codes';
 import {
+  getThumbnailDistributionURI,
+  getVideoDistributionURI
+} from '../aws/cloudFront';
+import {
   abortMultipartUpload,
   completeMultipartUpload,
   copyThumbnailObject,
@@ -19,10 +23,8 @@ import {
   doesVideoObjectExist,
   doesVideoS3BucketExist,
   getCreateMultipartUploadId,
-  getThumbnailDistributionURI,
-  getVideoDistributionURI,
   uploadVideoArchiveToS3Location
-} from '../aws';
+} from '../aws/s3';
 import {
   MAX_FILE_SIZE_VIDEO,
   THUMBNAIL_MIME_TYPE,

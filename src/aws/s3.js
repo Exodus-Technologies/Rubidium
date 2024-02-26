@@ -14,6 +14,12 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { createReadStream } from 'fs';
 import { getVideoDurationInSeconds } from 'get-video-duration';
 import { PassThrough } from 'stream';
+import {
+  getCoverImageDistributionURI,
+  getIssueDistributionURI,
+  getThumbnailDistributionURI,
+  getVideoDistributionURI
+} from '../aws/cloudFront';
 import config from '../config';
 import {
   DEFAULT_COVERIMAGE_FILE_EXTENTION,
@@ -33,11 +39,7 @@ const {
   s3VideoBucketName,
   s3ThumbnailBucketName,
   s3IssueBucketName,
-  s3CoverImageBucketName,
-  videoDistributionURI,
-  thumbnailDistributionURI,
-  issueDistributionURI,
-  coverImageDistributionURI
+  s3CoverImageBucketName
 } = s3;
 
 // Create S3 service object
@@ -120,14 +122,6 @@ export const createVideoS3Bucket = () => {
       reject(err);
     }
   });
-};
-
-export const getVideoDistributionURI = key => {
-  return `${videoDistributionURI}/${getVideoObjectKey(key)}`;
-};
-
-export const getThumbnailDistributionURI = key => {
-  return `${thumbnailDistributionURI}/${getThumbnailObjectKey(key)}`;
 };
 
 export const createThumbnailS3Bucket = () => {
@@ -611,14 +605,6 @@ export const copyCoverImageObject = (oldKey, newKey) => {
       reject(err);
     }
   });
-};
-
-export const getIssueDistributionURI = key => {
-  return `${issueDistributionURI}/${getIssueObjectKey(key)}`;
-};
-
-export const getCoverImageDistributionURI = key => {
-  return `${coverImageDistributionURI}/${getCoverImageObjectKey(key)}`;
 };
 
 export const deleteIssueByKey = key => {

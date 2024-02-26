@@ -3,6 +3,10 @@
 import formidable from 'formidable';
 import { StatusCodes } from 'http-status-codes';
 import {
+  getCoverImageDistributionURI,
+  getIssueDistributionURI
+} from '../aws/cloudFront';
+import {
   copyCoverImageObject,
   copyIssueObject,
   createCoverImageS3Bucket,
@@ -13,10 +17,8 @@ import {
   doesCoverImageS3BucketExist,
   doesIssueObjectExist,
   doesIssueS3BucketExist,
-  getCoverImageDistributionURI,
-  getIssueDistributionURI,
   uploadPdfArchiveToS3Location
-} from '../aws';
+} from '../aws/s3';
 import {
   COVERIMAGE_MIME_TYPES,
   ISSUE_MIME_TYPES,
