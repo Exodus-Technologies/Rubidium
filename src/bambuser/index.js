@@ -3,10 +3,9 @@
 import moment from 'moment';
 import {
   getThumbnailDistributionURI,
-  getVideoDistributionURI,
-  uploadThumbnailToS3,
-  uploadVideoToS3
-} from '../aws';
+  getVideoDistributionURI
+} from '../aws/cloudFront';
+import { uploadThumbnailToS3, uploadVideoToS3 } from '../aws/s3';
 import config from '../config';
 import {
   BAMBUSER_API_TIMEOUT,

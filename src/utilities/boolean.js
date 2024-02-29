@@ -1,6 +1,6 @@
 'use strict';
 
-export const stringToBoolean = str => {
+export const convertArgToBoolean = str => {
   switch (str.toLowerCase().trim()) {
     case 'true':
     case 'yes':

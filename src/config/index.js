@@ -1,7 +1,7 @@
 'use strict';
 
 import { configDotenv } from 'dotenv';
-import { stringToBoolean } from '../utilities/boolean';
+import { convertArgToBoolean } from '../utilities/boolean';
 
 configDotenv();
 
@@ -13,20 +13,12 @@ const config = {
   CMS: process.env.CMS_HOST,
   HASH_SALT: +process.env.HASH_SALT,
   jwtSecret: process.env.JWT_SECRET,
-  purgeSubscriptions: stringToBoolean(process.env.PURGE_SUBSCRIPTIONS),
+  purgeSubscriptions: convertArgToBoolean(process.env.PURGE_SUBSCRIPTIONS),
   sources: {
     aws: {
       region: process.env.AWS_REGION,
       signatureVersion: process.env.AWS_SIGNATURE_VERSION,
-      s3: {
-        s3AccessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
-        s3SecretAccessKey: process.env.S3_AWS_SECRET_ACCESS_KEY,
-        s3SignatureVersion: process.env.S3_SIGNATURE_VERSION,
-        s3ThumbnailBucketName: process.env.S3_THUMBNAIL_BUCKET_NAME,
-        s3VideoBucketName: process.env.S3_VIDEO_BUCKET_NAME,
-        s3IssueBucketName: process.env.S3_ISSUE_BUCKET_NAME,
-        s3CoverImageBucketName: process.env.S3_COVERIMAGE_BUCKET_NAME,
-        expiresIn: +process.env.PRESIGNED_URL_EXPIRES_IN,
+      cloudFront: {
         videoDistributionURI:
           process.env.AWS_CLOUDFRONT_VIDEOS_DISTRIBUTION_URI,
         thumbnailDistributionURI:
@@ -35,6 +27,14 @@ const config = {
           process.env.AWS_CLOUDFRONT_ISSUES_DISTRIBUTION_URI,
         coverImageDistributionURI:
           process.env.AWS_CLOUDFRONT_COVERIMAGES_DISTRIBUTION_URI
+      },
+      s3: {
+        s3AccessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
+        s3SecretAccessKey: process.env.S3_AWS_SECRET_ACCESS_KEY,
+        s3ThumbnailBucketName: process.env.S3_THUMBNAIL_BUCKET_NAME,
+        s3VideoBucketName: process.env.S3_VIDEO_BUCKET_NAME,
+        s3IssueBucketName: process.env.S3_ISSUE_BUCKET_NAME,
+        s3CoverImageBucketName: process.env.S3_COVERIMAGE_BUCKET_NAME
       },
       cloudWatch: {
         logGroupName: process.env.CLOUDWATCH_LOG_GROUP,

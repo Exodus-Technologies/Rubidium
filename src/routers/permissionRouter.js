@@ -16,35 +16,35 @@ const router = Router();
 router.use(rateLimiter);
 
 router.get(
-  '/sheen-service/getPermissions',
+  '/getPermissions',
   permissionQueryValidation,
   validationHandler,
   PermissionController.getPermissions
 );
 
 router.get(
-  '/sheen-service/getPermission/:permissionId',
+  '/getPermission/:permissionId',
   permissionIdParamValidation,
   validationHandler,
   PermissionController.getPermission
 );
 
 router.post(
-  '/sheen-service/createPermission',
+  '/createPermission',
   permissionPostValidation,
   validationHandler,
   PermissionController.createPermission
 );
 
 router.put(
-  '/sheen-service/updatePermission/:permissionId',
+  '/updatePermission/:permissionId',
   permissionUpdateValidation,
   validationHandler,
   PermissionController.updatePermission
 );
 
 router.delete(
-  '/sheen-service/deletePermission/:permissionId',
+  '/deletePermission/:permissionId',
   permissionIdParamValidation,
   validationHandler,
   PermissionController.deletePermissionById

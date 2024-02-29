@@ -3,6 +3,10 @@
 import formidable from 'formidable';
 import { StatusCodes } from 'http-status-codes';
 import {
+  getCoverImageDistributionURI,
+  getIssueDistributionURI
+} from '../aws/cloudFront';
+import {
   copyCoverImageObject,
   copyIssueObject,
   createCoverImageS3Bucket,
@@ -13,10 +17,8 @@ import {
   doesCoverImageS3BucketExist,
   doesIssueObjectExist,
   doesIssueS3BucketExist,
-  getCoverImageDistributionURI,
-  getIssueDistributionURI,
   uploadPdfArchiveToS3Location
-} from '../aws';
+} from '../aws/s3';
 import {
   COVERIMAGE_MIME_TYPES,
   ISSUE_MIME_TYPES,
@@ -35,7 +37,6 @@ import {
   updateIssueViews
 } from '../queries/issues';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
-import { stringToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
 
@@ -49,8 +50,7 @@ exports.getPayloadFromFormRequest = async req => {
       if (isEmpty(fields)) reject('Form is empty.');
       const file = {
         ...fields,
-        key: removeSpaces(fields.title),
-        paid: stringToBoolean(fields.paid)
+        key: removeSpaces(fields.title)
       };
       if (!isEmpty(files)) {
         const {

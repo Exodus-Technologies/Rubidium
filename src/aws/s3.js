@@ -10,10 +10,15 @@ import {
   S3Client
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { createReadStream } from 'fs';
 import { getVideoDurationInSeconds } from 'get-video-duration';
 import { PassThrough } from 'stream';
+import {
+  getCoverImageDistributionURI,
+  getIssueDistributionURI,
+  getThumbnailDistributionURI,
+  getVideoDistributionURI
+} from '../aws/cloudFront';
 import config from '../config';
 import {
   DEFAULT_COVERIMAGE_FILE_EXTENTION,
@@ -33,11 +38,7 @@ const {
   s3VideoBucketName,
   s3ThumbnailBucketName,
   s3IssueBucketName,
-  s3CoverImageBucketName,
-  videoDistributionURI,
-  thumbnailDistributionURI,
-  issueDistributionURI,
-  coverImageDistributionURI
+  s3CoverImageBucketName
 } = s3;
 
 // Create S3 service object
@@ -53,11 +54,11 @@ const s3Client = new S3Client({
 /**
  * Video helper functions
  */
-const getVideoObjectKey = key => {
+export const getVideoObjectKey = key => {
   return `${key}.${DEFAULT_VIDEO_FILE_EXTENTION}`;
 };
 
-const getThumbnailObjectKey = key => {
+export const getThumbnailObjectKey = key => {
   return `${key}.${DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
 };
 
@@ -81,27 +82,6 @@ const getS3ThumbnailParams = (key = '') => {
   return params;
 };
 
-export const createVideoPresignedUrl = key => {
-  return getSignedUrl(
-    s3Client,
-    new PutObjectCommand({
-      ...getS3VideoParams(key),
-      ContentType: 'video/mp4'
-    }),
-    {
-      expiresIn
-    }
-  );
-};
-
-export const createThumbnailPresignedUrl = key => {
-  return getSignedUrl(
-    s3Client,
-    new PutObjectCommand(getS3ThumbnailParams(key)),
-    { expiresIn }
-  );
-};
-
 export const createVideoS3Bucket = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -120,14 +100,6 @@ export const createVideoS3Bucket = () => {
       reject(err);
     }
   });
-};
-
-export const getVideoDistributionURI = key => {
-  return `${videoDistributionURI}/${getVideoObjectKey(key)}`;
-};
-
-export const getThumbnailDistributionURI = key => {
-  return `${thumbnailDistributionURI}/${getThumbnailObjectKey(key)}`;
 };
 
 export const createThumbnailS3Bucket = () => {
@@ -417,11 +389,11 @@ export const uploadVideoArchiveToS3Location = async archive => {
 /**
  * Issue helper functions
  */
-const getIssueObjectKey = key => {
+export const getIssueObjectKey = key => {
   return `${key}.${DEFAULT_PDF_FILE_EXTENTION}`;
 };
 
-const getCoverImageObjectKey = key => {
+export const getCoverImageObjectKey = key => {
   return `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
 };
 
@@ -611,14 +583,6 @@ export const copyCoverImageObject = (oldKey, newKey) => {
       reject(err);
     }
   });
-};
-
-export const getIssueDistributionURI = key => {
-  return `${issueDistributionURI}/${getIssueObjectKey(key)}`;
-};
-
-export const getCoverImageDistributionURI = key => {
-  return `${coverImageDistributionURI}/${getCoverImageObjectKey(key)}`;
 };
 
 export const deleteIssueByKey = key => {

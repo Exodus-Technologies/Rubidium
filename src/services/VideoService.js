@@ -4,6 +4,10 @@ import formidable from 'formidable';
 import getVideoDurationInSeconds from 'get-video-duration';
 import { StatusCodes } from 'http-status-codes';
 import {
+  getThumbnailDistributionURI,
+  getVideoDistributionURI
+} from '../aws/cloudFront';
+import {
   abortMultipartUpload,
   completeMultipartUpload,
   copyThumbnailObject,
@@ -19,10 +23,8 @@ import {
   doesVideoObjectExist,
   doesVideoS3BucketExist,
   getCreateMultipartUploadId,
-  getThumbnailDistributionURI,
-  getVideoDistributionURI,
   uploadVideoArchiveToS3Location
-} from '../aws';
+} from '../aws/s3';
 import {
   MAX_FILE_SIZE_VIDEO,
   THUMBNAIL_MIME_TYPE,
@@ -40,7 +42,7 @@ import {
   updateVideoViews
 } from '../queries/videos';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
-import { stringToBoolean } from '../utilities/boolean';
+import { convertArgToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces, removeSpecialCharacters } from '../utilities/strings';
 import { fancyTimeFormat } from '../utilities/time';
@@ -59,7 +61,7 @@ exports.getPayloadFromFormRequest = async req => {
       if (isEmpty(fields)) reject('Form is empty.');
       const file = {
         ...fields,
-        isAvailableForSale: stringToBoolean(fields.isAvailableForSale),
+        isAvailableForSale: convertArgToBoolean(fields.isAvailableForSale),
         key: removeSpaces(removeSpecialCharacters(fields.title))
       };
       if (!isEmpty(files)) {
