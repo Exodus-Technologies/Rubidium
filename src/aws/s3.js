@@ -10,7 +10,6 @@ import {
   S3Client
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { createReadStream } from 'fs';
 import { getVideoDurationInSeconds } from 'get-video-duration';
 import { PassThrough } from 'stream';
@@ -55,11 +54,11 @@ const s3Client = new S3Client({
 /**
  * Video helper functions
  */
-const getVideoObjectKey = key => {
+export const getVideoObjectKey = key => {
   return `${key}.${DEFAULT_VIDEO_FILE_EXTENTION}`;
 };
 
-const getThumbnailObjectKey = key => {
+export const getThumbnailObjectKey = key => {
   return `${key}.${DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
 };
 
@@ -81,27 +80,6 @@ const getS3ThumbnailParams = (key = '') => {
     params.Key = getThumbnailObjectKey(key);
   }
   return params;
-};
-
-export const createVideoPresignedUrl = key => {
-  return getSignedUrl(
-    s3Client,
-    new PutObjectCommand({
-      ...getS3VideoParams(key),
-      ContentType: 'video/mp4'
-    }),
-    {
-      expiresIn
-    }
-  );
-};
-
-export const createThumbnailPresignedUrl = key => {
-  return getSignedUrl(
-    s3Client,
-    new PutObjectCommand(getS3ThumbnailParams(key)),
-    { expiresIn }
-  );
 };
 
 export const createVideoS3Bucket = () => {

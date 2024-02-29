@@ -2,7 +2,7 @@
 
 import logger from '../logger';
 import models from '../models';
-import { stringToBoolean } from '../utilities/boolean';
+import { convertArgToBoolean } from '../utilities/boolean';
 
 export const getUsers = async query => {
   try {
@@ -101,7 +101,7 @@ export const createUser = async payload => {
     if (user) {
       return [new Error('User with email already exists.')];
     }
-    const body = { ...payload, isAdmin: stringToBoolean(isAdmin) };
+    const body = { ...payload, isAdmin: convertArgToBoolean(isAdmin) };
     const newUser = new User(body);
     const createdUser = await newUser.save();
     return [null, createdUser];
@@ -120,7 +120,7 @@ export const updateUser = async (userId, payload) => {
     }
     const filter = { userId };
     const options = { new: true };
-    const update = { ...payload, isAdmin: stringToBoolean(isAdmin) };
+    const update = { ...payload, isAdmin: convertArgToBoolean(isAdmin) };
     const updatedUser = await User.findOneAndUpdate(filter, update, options);
     if (updatedUser) {
       const { email, fullName, city, state, isAdmin } = updatedUser;

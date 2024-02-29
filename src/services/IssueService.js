@@ -37,7 +37,7 @@ import {
   updateIssueViews
 } from '../queries/issues';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
-import { stringToBoolean } from '../utilities/boolean';
+import { convertArgToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
 
@@ -52,7 +52,7 @@ exports.getPayloadFromFormRequest = async req => {
       const file = {
         ...fields,
         key: removeSpaces(fields.title),
-        paid: stringToBoolean(fields.paid)
+        paid: convertArgToBoolean(fields.paid)
       };
       if (!isEmpty(files)) {
         const {
