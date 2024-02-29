@@ -389,11 +389,11 @@ export const uploadVideoArchiveToS3Location = async archive => {
 /**
  * Issue helper functions
  */
-const getIssueObjectKey = key => {
+export const getIssueObjectKey = key => {
   return `${key}.${DEFAULT_PDF_FILE_EXTENTION}`;
 };
 
-const getCoverImageObjectKey = key => {
+export const getCoverImageObjectKey = key => {
   return `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
 };
 

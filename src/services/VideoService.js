@@ -42,7 +42,7 @@ import {
   updateVideoViews
 } from '../queries/videos';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
-import { stringToBoolean } from '../utilities/boolean';
+import { convertArgToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces, removeSpecialCharacters } from '../utilities/strings';
 import { fancyTimeFormat } from '../utilities/time';
@@ -61,7 +61,7 @@ exports.getPayloadFromFormRequest = async req => {
       if (isEmpty(fields)) reject('Form is empty.');
       const file = {
         ...fields,
-        isAvailableForSale: stringToBoolean(fields.isAvailableForSale),
+        isAvailableForSale: convertArgToBoolean(fields.isAvailableForSale),
         key: removeSpaces(removeSpecialCharacters(fields.title))
       };
       if (!isEmpty(files)) {

@@ -37,7 +37,6 @@ import {
   updateIssueViews
 } from '../queries/issues';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
-import { convertArgToBoolean } from '../utilities/boolean';
 import { isEmpty } from '../utilities/objects';
 import { removeSpaces } from '../utilities/strings';
 
@@ -51,8 +50,7 @@ exports.getPayloadFromFormRequest = async req => {
       if (isEmpty(fields)) reject('Form is empty.');
       const file = {
         ...fields,
-        key: removeSpaces(fields.title),
-        paid: convertArgToBoolean(fields.paid)
+        key: removeSpaces(fields.title)
       };
       if (!isEmpty(files)) {
         const {
