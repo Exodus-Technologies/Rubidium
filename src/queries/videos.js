@@ -67,7 +67,7 @@ export const getVideoByTitle = async title => {
   }
 };
 
-export const getVideoById = async videoId => {
+export const getVideo = async videoId => {
   try {
     const { Video } = models;
     const video = await Video.findOne({ videoId });
@@ -114,7 +114,7 @@ export const updateVideoViews = async videoId => {
   }
 };
 
-export const deleteVideoById = async videoId => {
+export const deleteVideo = async videoId => {
   try {
     const { Video } = models;
     const deletedVideo = await Video.deleteOne({ videoId });

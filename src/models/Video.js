@@ -29,6 +29,9 @@ const videoSchema = new Schema(
       type: String,
       required: true
     },
+    videoKey: {
+      type: String
+    },
     description: {
       type: String
     },
@@ -40,16 +43,14 @@ const videoSchema = new Schema(
       type: String,
       default: AUTHOR
     },
-    key: {
-      type: String,
-      required: true
-    },
     thumbnail: {
       type: String
     },
+    thumbnailKey: {
+      type: String
+    },
     isAvailableForSale: {
-      type: Boolean,
-      default: true
+      type: Boolean
     },
     duration: {
       type: String

@@ -49,7 +49,7 @@ const videoIdParamValidation = [
   param('videoId').isString().withMessage('Must provide a existing video id.')
 ];
 
-const createVideoMetadataBodyValidation = [
+const uploadVideoBodyValidation = [
   body('title')
     .isString()
     .withMessage('Must provide a title for manual upload.'),
@@ -59,47 +59,57 @@ const createVideoMetadataBodyValidation = [
   body('categories')
     .isString()
     .withMessage('Must provide categories for manual upload.'),
+  body('url').isString().withMessage('Must provide the video url for upload.'),
+  body('videoKey')
+    .isString()
+    .withMessage('Must provide the video key for s3 location.'),
+  body('thumbnail')
+    .isString()
+    .withMessage('Must provide thumbnail for manual upload.'),
+  body('thumbnailKey')
+    .isString()
+    .withMessage('Must provide the thumbnail key for s3 location.'),
   body('isAvailableForSale')
-    .isBoolean()
+    .isString()
+    .withMessage('Must provide a value if the asset is for sale.')
+];
+
+const updateVideoBodyValidation = [
+  ...videoIdParamValidation,
+  body('title')
+    .isString()
+    .withMessage('Must provide a title for manual upload.')
+    .optional(),
+  body('description')
+    .isString()
+    .withMessage('Must provide a description for manual upload.')
+    .optional(),
+  body('categories')
+    .isString()
+    .withMessage('Must provide categories for manual upload.')
+    .optional(),
+  body('url').isString().withMessage('Must provide the video url for upload.'),
+  body('videoKey')
+    .isString()
+    .withMessage('Must provide the video key for s3 location.')
+    .optional(),
+  body('thumbnail')
+    .isString()
+    .withMessage('Must provide thumbnail for manual upload.'),
+  body('thumbnailKey')
+    .isString()
+    .withMessage('Must provide the thumbnail key for s3 location.')
+    .optional(),
+  body('isAvailableForSale')
+    .isString()
     .optional()
-    .withMessage('Must provide a boolean value if the asset is for sale.')
-];
-
-const initiateUploadBodyValidation = [
-  body('fileName')
-    .isString()
-    .withMessage('Must provide a file name for initate multipart upload.'),
-  body('fileType')
-    .isString()
-    .withMessage('Must provide a file type for initate multipart upload.')
-];
-
-const createPresignedUrlsBodyValidation = [
-  body('fileName')
-    .isString()
-    .withMessage('Must provide a file name for initate multipart upload.')
-];
-
-const completeUploadBodyValidation = [
-  body('fileName')
-    .isString()
-    .withMessage('Must provide a file name for completed multipart upload.'),
-  body('uploadId')
-    .isString()
-    .withMessage('Must provide a upload Id for completed multipart upload.'),
-  body('parts')
-    .isArray()
-    .notEmpty()
-    .withMessage(
-      'Must provide a parts array name for completed multipart upload.'
-    )
+    .withMessage('Must provide a value if the asset is for sale.')
+    .optional()
 ];
 
 export {
-  completeUploadBodyValidation,
-  createPresignedUrlsBodyValidation,
-  createVideoMetadataBodyValidation,
-  initiateUploadBodyValidation,
+  updateVideoBodyValidation,
+  uploadVideoBodyValidation,
   videoIdBodyUpdateValidation,
   videoIdParamValidation,
   videoQueryValidation
