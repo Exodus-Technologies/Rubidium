@@ -1,11 +1,10 @@
 import express from 'express';
 import { VideoController } from '../controllers';
 import { rateLimiter, validationHandler } from '../middlewares';
+import { isProductionEnvironment } from '../utilities/boolean';
 import {
-  completeUploadBodyValidation,
-  createPresignedUrlsBodyValidation,
-  createVideoMetadataBodyValidation,
-  initiateUploadBodyValidation,
+  updateVideoBodyValidation,
+  uploadVideoBodyValidation,
   videoIdBodyUpdateValidation,
   videoIdParamValidation,
   videoQueryValidation
@@ -14,37 +13,9 @@ import {
 const { Router } = express;
 const router = Router();
 
-router.use(rateLimiter);
-
-router.post(
-  '/initiateUpload',
-  initiateUploadBodyValidation,
-  validationHandler,
-  VideoController.initiateUpload
-);
-
-router.post('/uploadVideo', VideoController.uploadVideo);
-
-router.post(
-  '/completeUpload',
-  completeUploadBodyValidation,
-  validationHandler,
-  VideoController.completeUpload
-);
-
-router.post(
-  '/createPresignedUrls',
-  createPresignedUrlsBodyValidation,
-  validationHandler,
-  VideoController.createPresignedUrls
-);
-
-router.post(
-  '/createVideo',
-  createVideoMetadataBodyValidation,
-  validationHandler,
-  VideoController.createVideo
-);
+if (isProductionEnvironment()) {
+  router.use(rateLimiter);
+}
 
 router.get('/getTotal', VideoController.getTotal);
 
@@ -62,7 +33,26 @@ router.get(
   VideoController.getVideo
 );
 
-router.put('/updateVideo', VideoController.updateVideo);
+router.post(
+  '/uploadVideo',
+  uploadVideoBodyValidation,
+  validationHandler,
+  VideoController.uploadVideo
+);
+
+router.post(
+  '/createVideoMeta',
+  uploadVideoBodyValidation,
+  validationHandler,
+  VideoController.createVideoMeta
+);
+
+router.put(
+  '/updateVideo/:videoId',
+  updateVideoBodyValidation,
+  validationHandler,
+  VideoController.updateVideo
+);
 
 router.put(
   '/updateViews',
@@ -75,7 +65,7 @@ router.delete(
   '/deleteVideo/:videoId',
   videoIdParamValidation,
   validationHandler,
-  VideoController.deleteVideoById
+  VideoController.deleteVideo
 );
 
 export default router;

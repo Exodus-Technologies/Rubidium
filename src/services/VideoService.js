@@ -1,41 +1,19 @@
 'use strict';
 
-import formidable from 'formidable';
 import getVideoDurationInSeconds from 'get-video-duration';
 import { StatusCodes } from 'http-status-codes';
 import {
-  getThumbnailDistributionURI,
-  getVideoDistributionURI
-} from '../aws/cloudFront';
-import {
-  abortMultipartUpload,
-  completeMultipartUpload,
   copyThumbnailObject,
   copyVideoObject,
-  createThumbnailPresignedUrl,
-  createThumbnailS3Bucket,
-  createVideoPresignedUrl,
-  createVideoS3Bucket,
   deleteThumbnailByKey,
-  deleteVideoByKey,
-  doesThumbnailObjectExist,
-  doesThumbnailS3BucketExist,
-  doesVideoObjectExist,
-  doesVideoS3BucketExist,
-  getCreateMultipartUploadId,
-  uploadVideoArchiveToS3Location
+  deleteVideoByKey
 } from '../aws/s3';
-import {
-  MAX_FILE_SIZE_VIDEO,
-  THUMBNAIL_MIME_TYPE,
-  VIDEO_MIME_TYPE
-} from '../constants';
 import logger from '../logger';
 import {
   createVideo,
-  deleteVideoById,
+  deleteVideo,
   getTotal,
-  getVideoById,
+  getVideo,
   getVideoByTitle,
   getVideos,
   updateVideo,
@@ -43,271 +21,7 @@ import {
 } from '../queries/videos';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
 import { convertArgToBoolean } from '../utilities/boolean';
-import { isEmpty } from '../utilities/objects';
-import { removeSpaces, removeSpecialCharacters } from '../utilities/strings';
 import { fancyTimeFormat } from '../utilities/time';
-
-exports.getPayloadFromFormRequest = async req => {
-  const form = formidable({
-    multiples: true,
-    maxFileSize: MAX_FILE_SIZE_VIDEO
-  });
-
-  return new Promise((resolve, reject) => {
-    form.parse(req, (err, fields, files) => {
-      if (err) {
-        reject(err);
-      }
-      if (isEmpty(fields)) reject('Form is empty.');
-      const file = {
-        ...fields,
-        isAvailableForSale: convertArgToBoolean(fields.isAvailableForSale),
-        key: removeSpaces(removeSpecialCharacters(fields.title))
-      };
-      if (!isEmpty(files)) {
-        const {
-          filepath: videoPath,
-          mimetype: videoType,
-          size: videoSize
-        } = files['file'];
-        const {
-          filepath: thumbnailPath,
-          mimetype: thumbnailType,
-          size: thumbnailSize
-        } = files['thumbnail'];
-        resolve({
-          ...file,
-          videoPath,
-          videoType,
-          thumbnailPath,
-          thumbnailType,
-          videoSize,
-          thumbnailSize
-        });
-      } else {
-        resolve(file);
-      }
-    });
-    form.on('error', err => {
-      logger.info('Error on form parse: ', err);
-    });
-    form.on('end', () => {
-      logger.info('Form is finished processing.');
-    });
-  });
-};
-
-exports.initiateUpload = async body => {
-  const payload = { ...body, fileName: removeSpaces(body.fileName) };
-  try {
-    const uploadId = await getCreateMultipartUploadId(payload);
-    if (uploadId) {
-      return [
-        StatusCodes.CREATED,
-        { message: 'Upload Id created with success', uploadId }
-      ];
-    } else {
-      return badRequest('Unable to create upload Id for multipart upload.');
-    }
-  } catch (err) {
-    logger.error(
-      `Error creating upload Id for multipart upload for file: ${payload.fileName}: `,
-      err
-    );
-    return internalServerErrorRequest(
-      'Error creating upload Id for multipart upload'
-    );
-  }
-};
-
-exports.uploadVideo = async archive => {
-  try {
-    const {
-      title,
-      description,
-      videoPath,
-      videoType,
-      videoSize,
-      thumbnailPath,
-      thumbnailType,
-      thumbnailSize,
-      key,
-      categories,
-      isAvailableForSale
-    } = archive;
-    if (!title) {
-      return badRequest('Must have file title associated with file upload.');
-    }
-    if (!description) {
-      return badRequest(
-        'Must have file description associated with file upload.'
-      );
-    }
-    if (!categories) {
-      return badRequest('Video categories must be provided.');
-    }
-
-    if (categories && typeof categories !== 'string') {
-      return badRequest(
-        'Video categories if provided must be a comma seperated string.'
-      );
-    }
-
-    if (!videoPath) {
-      return badRequest('Video must be provided to upload.');
-    }
-    if (videoPath && videoType !== VIDEO_MIME_TYPE) {
-      return badRequest('Video must be a file with a mp4 extention.');
-    }
-    if (videoPath && videoSize < 0) {
-      return badRequest('Video must be a file with actual content inside.');
-    }
-
-    if (!thumbnailPath) {
-      return badRequest('Thumbnail must be provided to upload.');
-    }
-    if (thumbnailPath && thumbnailType !== THUMBNAIL_MIME_TYPE) {
-      return badRequest(
-        'Thumbnail must be a file with a image type extention like .jpg or .jpeg.'
-      );
-    }
-    if (thumbnailPath && thumbnailSize <= 0) {
-      return badRequest('Thumbnail must be a file with content inside.');
-    }
-
-    const video = await getVideoByTitle(title);
-
-    if (video) {
-      return badRequest(`Please provide another title for the video.`);
-    } else {
-      const isVideoBucketAvaiable = await doesVideoS3BucketExist();
-      const isThumbnailBucketAvaiable = await doesThumbnailS3BucketExist();
-      if (!isVideoBucketAvaiable && !isThumbnailBucketAvaiable) {
-        await createVideoS3Bucket();
-        await createThumbnailS3Bucket();
-      } else {
-        const { thumbNailLocation, videoLocation, duration } =
-          await uploadVideoArchiveToS3Location(archive);
-
-        const body = {
-          title,
-          description,
-          key,
-          ...(categories && {
-            categories: categories.split(',').map(item => item.trim())
-          }),
-          duration: fancyTimeFormat(duration),
-          url: videoLocation,
-          thumbnail: thumbNailLocation,
-          isAvailableForSale
-        };
-
-        const video = await createVideo(body);
-        if (video) {
-          return [
-            StatusCodes.CREATED,
-            { message: 'Video uploaded to s3 with success', video }
-          ];
-        } else {
-          return badRequest('Unable to save video with metadata.');
-        }
-      }
-    }
-  } catch (err) {
-    logger.error(`Error uploading video to s3: `, err);
-    return internalServerErrorRequest('Error uploading video to s3.');
-  }
-};
-
-exports.completeUpload = async body => {
-  const payload = { ...body, fileName: removeSpaces(body.fileName) };
-  try {
-    const completed = await completeMultipartUpload(payload);
-    if (completed) {
-      return [
-        StatusCodes.OK,
-        { message: 'Multipart Upload completed with success', completed }
-      ];
-    } else {
-      return badRequest(
-        `Unable to complete multipart upload for: ${payload.fileName} .`
-      );
-    }
-  } catch (err) {
-    logger.error(
-      `Error completing multipart upload for file: ${payload.fileName}: `,
-      err
-    );
-    await abortMultipartUpload(payload);
-    return internalServerErrorRequest('Error completing multipart upload.');
-  }
-};
-
-exports.createPresignedUrls = async fileName => {
-  const key = removeSpaces(fileName);
-  try {
-    const thumbnailPresignedUrl = await createThumbnailPresignedUrl(key);
-    const videoPresignedUrl = await createVideoPresignedUrl(key);
-    if (thumbnailPresignedUrl && videoPresignedUrl) {
-      return [
-        StatusCodes.CREATED,
-        {
-          message: 'Presigned urls created for file upload to s3 with success',
-          thumbnailPresignedUrl,
-          videoPresignedUrl
-        }
-      ];
-    } else {
-      return badRequest('Unable to create presigned urls for file upload.');
-    }
-  } catch (err) {
-    logger.error(`Error creating presigned urls for file upload: `, err);
-    return internalServerErrorRequest(
-      'Error creating presigned urls for file upload.'
-    );
-  }
-};
-
-exports.createVideo = async upload => {
-  try {
-    const { title, description, categories, isAvailableForSale } = upload;
-
-    const key = removeSpaces(removeSpecialCharacters(title));
-
-    const url = getVideoDistributionURI(key);
-
-    const duration = await getVideoDurationInSeconds(url);
-
-    const body = {
-      title,
-      description,
-      key,
-      ...(categories && {
-        categories: categories.split(',').map(item => item.trim())
-      }),
-      duration: fancyTimeFormat(duration),
-      url,
-      thumbnail: getThumbnailDistributionURI(key),
-      isAvailableForSale
-    };
-
-    const video = await createVideo(body);
-    if (video) {
-      return [
-        StatusCodes.CREATED,
-        {
-          message: 'Video created with success.',
-          video
-        }
-      ];
-    } else {
-      return badRequest('Unable to create video.');
-    }
-  } catch (err) {
-    logger.error(`Error creating video: `, err);
-    return internalServerErrorRequest('Error creating video.');
-  }
-};
 
 exports.getVideos = async query => {
   try {
@@ -328,7 +42,7 @@ exports.getVideos = async query => {
 
 exports.getVideo = async videoId => {
   try {
-    const video = await getVideoById(videoId);
+    const video = await getVideo(videoId);
     if (video) {
       return [
         StatusCodes.OK,
@@ -340,6 +54,114 @@ exports.getVideo = async videoId => {
   } catch (err) {
     logger.error('Error getting video by id ', err);
     return internalServerErrorRequest('Error getting video by id.');
+  }
+};
+
+exports.getTotal = async () => {
+  try {
+    const total = await getTotal();
+    if (total) {
+      return [
+        StatusCodes.OK,
+        {
+          message: 'Successful fetch for get total video with query params.',
+          videoCount: total
+        }
+      ];
+    }
+    return badRequest(`No video total found with selected query params.`);
+  } catch (err) {
+    logger.error('Error getting total for all videos: ', err);
+    return internalServerErrorRequest('Error getting total for all videos.');
+  }
+};
+
+exports.uploadVideo = async archive => {
+  try {
+    const {
+      title,
+      description,
+      url,
+      videoKey,
+      thumbnail,
+      thumbnailKey,
+      categories,
+      isAvailableForSale
+    } = archive;
+
+    const video = await getVideoByTitle(title);
+
+    if (video) {
+      return badRequest(`Please provide another title for the video.`);
+    } else {
+      const duration = await getVideoDurationInSeconds(url);
+
+      const body = {
+        title,
+        description,
+        url,
+        videoKey,
+        ...(categories && {
+          categories: categories.split(',').map(item => item.trim())
+        }),
+        duration: fancyTimeFormat(duration),
+        thumbnail,
+        thumbnailKey,
+        isAvailableForSale: convertArgToBoolean(isAvailableForSale)
+      };
+
+      const video = await createVideo(body);
+      if (video) {
+        return [
+          StatusCodes.CREATED,
+          { message: 'Video uploaded to s3 with success', video }
+        ];
+      } else {
+        return badRequest('Unable to save video with metadata.');
+      }
+    }
+  } catch (err) {
+    logger.error(`Error uploading video to s3: `, err);
+    return internalServerErrorRequest('Error uploading video to s3.');
+  }
+};
+
+exports.createVideoMeta = async archive => {
+  try {
+    const {
+      title,
+      description,
+      url,
+      videoKey,
+      thumbnail,
+      thumbnailKey,
+      categories,
+      isAvailableForSale
+    } = archive;
+
+    const duration = await getVideoDurationInSeconds(url);
+
+    const body = {
+      title,
+      description,
+      url,
+      videoKey,
+      ...(categories && {
+        categories: categories.split(',').map(item => item.trim())
+      }),
+      duration: fancyTimeFormat(duration),
+      thumbnail,
+      thumbnailKey,
+      isAvailableForSale: convertArgToBoolean(isAvailableForSale)
+    };
+
+    return [
+      StatusCodes.CREATED,
+      { message: 'Video metadata created with success', body }
+    ];
+  } catch (err) {
+    logger.error(`Error uploading video to s3: `, err);
+    return internalServerErrorRequest('Error uploading video to s3.');
   }
 };
 
@@ -363,164 +185,53 @@ exports.updateViews = async videoId => {
   }
 };
 
-exports.updateVideo = async archive => {
+exports.updateVideo = async (videoId, payload) => {
   try {
     const {
-      videoId,
       title,
       description,
-      videoPath,
-      videoType,
-      videoSize,
-      thumbnailPath,
-      thumbnailType,
-      thumbnailSize,
+      url,
+      videoKey,
+      thumbnail,
+      thumbnailKey,
       categories,
-      status,
       isAvailableForSale
-    } = archive;
-    if (!videoId) {
-      return badRequest('Video identifier must be provided.');
-    }
-    if (isAvailableForSale && typeof isAvailableForSale !== 'boolean') {
-      return badRequest('isAvailableForSale flag must be a boolean.');
-    }
-    if (categories && typeof categories !== 'string') {
-      return badRequest(
-        'Video categories if provided must be a comma sperated string.'
-      );
-    }
-    const video = await getVideoById(videoId);
+    } = payload;
+
+    const video = await getVideo(videoId);
 
     if (video) {
-      const newKey = removeSpaces(removeSpecialCharacters(title));
-      if (newKey !== video.key) {
-        await copyVideoObject(video.key, newKey);
+      if (videoKey !== video.videoKey) {
+        await copyVideoObject(video.videoKey, videoKey);
+      }
+      if (thumbnailKey !== video.thumbnailKey) {
         await copyThumbnailObject(video.key, newKey);
-        const body = {
-          title,
-          videoId,
-          description,
-          key: newKey,
-          ...(categories && {
-            categories: categories.split(',').map(item => item.trim())
-          }),
-          url: getVideoDistributionURI(newKey),
-          thumbnail: getThumbnailDistributionURI(newKey),
-          status,
-          isAvailableForSale
-        };
-        await updateVideo(body);
-        deleteVideoByKey(video.key);
-        deleteThumbnailByKey(video.key);
-        return [
-          StatusCodes.OK,
-          {
-            message: 'Video updated to s3 with success',
-            video: {
-              ...body
-            }
-          }
-        ];
       }
-      if (videoPath && videoSize > 0) {
-        if (videoType !== VIDEO_MIME_TYPE) {
-          return badRequest('File must be a file with a mp4 extention.');
-        }
-        const isVideoBucketAvaiable = await doesVideoS3BucketExist();
-        if (isVideoBucketAvaiable) {
-          const s3Object = await doesVideoObjectExist(newKey);
-          if (s3Object) {
-            await deleteVideoByKey(newKey);
+
+      const body = {
+        title,
+        videoId,
+        description,
+        key: newKey,
+        ...(categories && {
+          categories: categories.split(',').map(item => item.trim())
+        }),
+        url,
+        thumbnail,
+        isAvailableForSale
+      };
+      await updateVideo(body);
+      deleteVideoByKey(video.videoKey);
+      deleteThumbnailByKey(video.thumbnailKey);
+      return [
+        StatusCodes.OK,
+        {
+          message: 'Video updated to s3 with success',
+          video: {
+            ...body
           }
-          const { videoLocation, duration } =
-            await uploadVideoArchiveToS3Location(archive);
-          const body = {
-            title,
-            videoId,
-            description,
-            key: newKey,
-            duration: fancyTimeFormat(duration),
-            ...(categories && {
-              categories: categories.split(',').map(item => item.trim())
-            }),
-            url: videoLocation,
-            status,
-            isAvailableForSale
-          };
-          await updateVideo(body);
-          return [
-            StatusCodes.OK,
-            {
-              message: 'Video updated and uploaded to s3 with success',
-              video: {
-                ...body
-              }
-            }
-          ];
         }
-      } else if (thumbnailPath && thumbnailSize > 0) {
-        if (thumbnailType !== THUMBNAIL_MIME_TYPE) {
-          return badRequest('File must be a file with a jpeg extention.');
-        }
-        const isThumbnailBucketAvaiable = await doesThumbnailS3BucketExist();
-        if (isThumbnailBucketAvaiable) {
-          const s3Object = await doesThumbnailObjectExist(newKey);
-          if (s3Object) {
-            await deleteThumbnailByKey(newKey);
-          }
-          const { thumbNailLocation } = await uploadVideoArchiveToS3Location(
-            archive
-          );
-          const body = {
-            title,
-            videoId,
-            description,
-            key: newKey,
-            ...(categories && {
-              categories: categories.split(',').map(item => item.trim())
-            }),
-            thumbnail: thumbNailLocation,
-            status,
-            isAvailableForSale
-          };
-          await updateVideo(body);
-          return [
-            StatusCodes.OK,
-            {
-              message:
-                'Video thumbnail updated and uploaded to s3 with success',
-              video: {
-                ...body
-              }
-            }
-          ];
-        }
-      } else {
-        const body = {
-          title,
-          videoId,
-          description,
-          key: newKey,
-          ...(categories && {
-            categories: categories.split(',').map(item => item.trim())
-          }),
-          url: getVideoDistributionURI(newKey),
-          thumbnail: getThumbnailDistributionURI(newKey),
-          status,
-          isAvailableForSale
-        };
-        await updateVideo(body);
-        return [
-          StatusCodes.OK,
-          {
-            message: 'Video updated with success.',
-            video: {
-              ...body
-            }
-          }
-        ];
-      }
+      ];
     } else {
       return badRequest(`No video was found to update by videoId provided.`);
     }
@@ -530,14 +241,14 @@ exports.updateVideo = async archive => {
   }
 };
 
-exports.deleteVideoById = async videoId => {
+exports.deleteVideo = async videoId => {
   try {
-    const video = await getVideoById(videoId);
+    const video = await getVideo(videoId);
     if (video) {
-      const { key } = video;
-      deleteVideoByKey(key);
-      deleteThumbnailByKey(key);
-      const [error, deletedVideo] = await deleteVideoById(videoId);
+      const { videoKey, thumbnailKey } = video;
+      deleteVideoByKey(videoKey);
+      deleteThumbnailByKey(thumbnailKey);
+      const [error, deletedVideo] = await deleteVideo(videoId);
       if (deletedVideo) {
         return [StatusCodes.NO_CONTENT];
       }
@@ -547,24 +258,5 @@ exports.deleteVideoById = async videoId => {
   } catch (err) {
     logger.error('Error deleting video by id: ', err);
     return internalServerErrorRequest('Error deleting video by id.');
-  }
-};
-
-exports.getTotal = async () => {
-  try {
-    const total = await getTotal();
-    if (total) {
-      return [
-        StatusCodes.OK,
-        {
-          message: 'Successful fetch for get total video with query params.',
-          videoCount: total
-        }
-      ];
-    }
-    return badRequest(`No video total found with selected query params.`);
-  } catch (err) {
-    logger.error('Error getting total for all videos: ', err);
-    return internalServerErrorRequest('Error getting total for all videos.');
   }
 };

@@ -33,7 +33,6 @@ const { aws } = config.sources;
 const { region, signatureVersion, s3 } = aws;
 const {
   s3AccessKeyId,
-  expiresIn,
   s3SecretAccessKey,
   s3VideoBucketName,
   s3ThumbnailBucketName,

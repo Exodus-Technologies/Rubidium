@@ -1,6 +1,7 @@
 import express from 'express';
 import { SubscriptionController } from '../controllers';
 import { rateLimiter, validationHandler } from '../middlewares';
+import { isProductionEnvironment } from '../utilities/boolean';
 import {
   subscriptionIdParamValidation,
   subscriptionPostBodyValidation,
@@ -14,7 +15,9 @@ const { Router } = express;
 
 const router = Router();
 
-router.use(rateLimiter);
+if (isProductionEnvironment()) {
+  router.use(rateLimiter);
+}
 
 router.get(
   '/getSubscriptions',

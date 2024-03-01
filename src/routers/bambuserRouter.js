@@ -1,12 +1,15 @@
 import express from 'express';
 import { BambuserController } from '../controllers';
 import { rateLimiter, validationHandler } from '../middlewares';
+import { isProductionEnvironment } from '../utilities/boolean';
 import { appIdQueryValidation } from '../validations/broadcasts';
 
 const { Router } = express;
 const router = Router();
 
-router.use(rateLimiter);
+if (isProductionEnvironment()) {
+  router.use(rateLimiter);
+}
 
 router.get(
   '/getApplicationId',
