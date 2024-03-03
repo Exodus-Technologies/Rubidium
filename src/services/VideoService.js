@@ -3,6 +3,10 @@
 import getVideoDurationInSeconds from 'get-video-duration';
 import { StatusCodes } from 'http-status-codes';
 import {
+  getThumbnailDistributionURI,
+  getVideoDistributionURI
+} from '../aws/cloudFront';
+import {
   copyThumbnailObject,
   copyVideoObject,
   deleteThumbnailByKey,
@@ -99,14 +103,14 @@ exports.uploadVideo = async archive => {
       const body = {
         title,
         description,
-        url,
         videoKey,
         ...(categories && {
           categories: categories.split(',').map(item => item.trim())
         }),
-        duration: fancyTimeFormat(duration),
-        thumbnail,
+        url: getVideoDistributionURI(videoKey) || url,
         thumbnailKey,
+        duration: fancyTimeFormat(duration),
+        thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail,
         isAvailableForSale: convertArgToBoolean(isAvailableForSale)
       };
 
@@ -144,14 +148,14 @@ exports.createVideoMeta = async archive => {
     const body = {
       title,
       description,
-      url,
       videoKey,
       ...(categories && {
         categories: categories.split(',').map(item => item.trim())
       }),
-      duration: fancyTimeFormat(duration),
-      thumbnail,
+      url: getVideoDistributionURI(videoKey) || url,
       thumbnailKey,
+      duration: fancyTimeFormat(duration),
+      thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail,
       isAvailableForSale: convertArgToBoolean(isAvailableForSale)
     };
 
@@ -205,20 +209,24 @@ exports.updateVideo = async (videoId, payload) => {
         await copyVideoObject(video.videoKey, videoKey);
       }
       if (thumbnailKey !== video.thumbnailKey) {
-        await copyThumbnailObject(video.key, newKey);
+        await copyThumbnailObject(video.thumbnailKey, thumbnailKey);
       }
+
+      const duration = await getVideoDurationInSeconds(url);
 
       const body = {
         title,
         videoId,
         description,
-        key: newKey,
+        videoKey,
         ...(categories && {
           categories: categories.split(',').map(item => item.trim())
         }),
-        url,
-        thumbnail,
-        isAvailableForSale
+        url: getVideoDistributionURI(videoKey) || url,
+        thumbnailKey,
+        duration: fancyTimeFormat(duration),
+        thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail,
+        isAvailableForSale: convertArgToBoolean(isAvailableForSale)
       };
       await updateVideo(body);
       deleteVideoByKey(video.videoKey);
