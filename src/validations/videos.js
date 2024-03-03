@@ -88,21 +88,24 @@ const updateVideoBodyValidation = [
     .isString()
     .withMessage('Must provide categories for manual upload.')
     .optional(),
-  body('url').isString().withMessage('Must provide the video url for upload.'),
+  body('url')
+    .isString()
+    .withMessage('Must provide the video url for upload.')
+    .optional(),
   body('videoKey')
     .isString()
     .withMessage('Must provide the video key for s3 location.')
     .optional(),
   body('thumbnail')
     .isString()
-    .withMessage('Must provide thumbnail for manual upload.'),
+    .withMessage('Must provide thumbnail for manual upload.')
+    .optional(),
   body('thumbnailKey')
     .isString()
     .withMessage('Must provide the thumbnail key for s3 location.')
     .optional(),
   body('isAvailableForSale')
     .isString()
-    .optional()
     .withMessage('Must provide a value if the asset is for sale.')
     .optional()
 ];

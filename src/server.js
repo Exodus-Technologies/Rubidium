@@ -44,7 +44,6 @@ server.use(
     xPoweredBy: false
   })
 );
-logger.info('Loaded helmet middleware.');
 
 //Reducing fingerprinting
 server.disable('x-powered-by');
