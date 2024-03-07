@@ -48,7 +48,7 @@ router.post(
 );
 
 router.put(
-  '/updateVideo/:videoId',
+  '/updateVideo',
   updateVideoBodyValidation,
   validationHandler,
   VideoController.updateVideo
