@@ -61,7 +61,7 @@ export const getCategoryByName = async name => {
 export const createCategory = async payload => {
   try {
     const { Category } = models;
-    const category = await getCategoryByName(payload.name);
+    const category = await Category.findOne({ name: payload.name });
     if (category) {
       return [new Error('category with name already exists.')];
     }

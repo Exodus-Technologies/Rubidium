@@ -75,11 +75,6 @@ export const getUserById = async userId => {
 };
 
 export const getUserByEmail = async email => {
-  const opts = {
-    __v: 0,
-    createdAt: 0,
-    updatedAt: 0
-  };
   try {
     const { User } = models;
     const user = await User.findOne({ email }, opts);
@@ -97,7 +92,7 @@ export const createUser = async payload => {
   try {
     const { User } = models;
     const { email, isAdmin } = payload;
-    const user = await getUserByEmail(email);
+    const user = await User.findOne({ email });
     if (user) {
       return [new Error('User with email already exists.')];
     }
@@ -114,7 +109,7 @@ export const updateUser = async (userId, payload) => {
   try {
     const { User } = models;
     const { email, isAdmin } = payload;
-    const user = await getUserByEmail(email);
+    const user = await User.findOne({ email });
     if (user) {
       return [new Error('Unable to change email. Email already in use.')];
     }
