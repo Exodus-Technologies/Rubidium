@@ -39,13 +39,7 @@ const userSchema = new Schema(
     lastLoggedIn: {
       type: Date,
       default: Date.now()
-    },
-    role: [
-      {
-        type: Schema.ObjectId,
-        ref: 'Role'
-      }
-    ]
+    }
   },
   { timestamps: true }
 );

@@ -61,7 +61,7 @@ export const getRoleByName = async name => {
 export const createRole = async payload => {
   try {
     const { Role } = models;
-    const role = await getRoleByName(payload.name);
+    const role = await Role.findOne({ name: payload.name });
     if (role) {
       return [new Error('Role with name already exists.')];
     }
