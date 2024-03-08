@@ -28,6 +28,7 @@ import logger from '../logger';
 import {
   createIssue,
   deleteIssueById,
+  getExistingIssueOrders,
   getIssueById,
   getIssueByTitle,
   getIssues,
@@ -117,6 +118,46 @@ exports.getIssueById = async issueId => {
   } catch (err) {
     logger.error('Error getting issue by id ', err);
     return internalServerErrorRequest('Error getting issue by id.');
+  }
+};
+
+exports.getTotal = async () => {
+  try {
+    const issues = await getTotal();
+    if (issues) {
+      return [
+        StatusCodes.OK,
+        {
+          message: 'Successful fetch for get total video with query params.',
+          total_issue: issues
+        }
+      ];
+    }
+    return badRequest(`Unable to get total number of issues.`);
+  } catch (err) {
+    logger.error('Error getting all issues: ', err);
+    return internalServerErrorRequest('Error getting issues.');
+  }
+};
+
+exports.getNextIssueOrder = async () => {
+  try {
+    const nextIssueOrder = await getNextIssueOrder();
+    if (nextIssueOrder) {
+      return [
+        StatusCodes.OK,
+        {
+          message: 'Successful fetch of next issue order number.',
+          nextIssueOrder
+        }
+      ];
+    }
+    return badRequest(`Unable to compute next largest issue order number.`);
+  } catch (err) {
+    logger.error('Error computing next largest issue order number: ', err);
+    return internalServerErrorRequest(
+      'Error computing next largest issue order number.'
+    );
   }
 };
 
@@ -213,8 +254,10 @@ exports.updateIssue = async archive => {
 
     const issue = await getIssueById(issueId);
 
+    const existingIssueOrders = await getExistingIssueOrders();
+
     if (issue) {
-      if (issue.issueOrder === issueOrder) {
+      if (existingIssueOrders.includes(+issueOrder)) {
         return badRequest(
           'Issue order number provided already in use. Please provide another issue order number.'
         );
@@ -381,45 +424,5 @@ exports.deleteIssueById = async issueId => {
   } catch (err) {
     logger.error('Error deleting issue by id: ', err);
     return internalServerErrorRequest('Error deleting issue by id.');
-  }
-};
-
-exports.getTotal = async () => {
-  try {
-    const issues = await getTotal();
-    if (issues) {
-      return [
-        StatusCodes.OK,
-        {
-          message: 'Successful fetch for get total video with query params.',
-          total_issue: issues
-        }
-      ];
-    }
-    return badRequest(`Unable to get total number of issues.`);
-  } catch (err) {
-    logger.error('Error getting all issues: ', err);
-    return internalServerErrorRequest('Error getting issues.');
-  }
-};
-
-exports.getNextIssueOrder = async () => {
-  try {
-    const nextIssueOrder = await getNextIssueOrder();
-    if (nextIssueOrder) {
-      return [
-        StatusCodes.OK,
-        {
-          message: 'Successful fetch of next issue order number.',
-          nextIssueOrder
-        }
-      ];
-    }
-    return badRequest(`Unable to compute next largest issue order number.`);
-  } catch (err) {
-    logger.error('Error computing next largest issue order number: ', err);
-    return internalServerErrorRequest(
-      'Error computing next largest issue order number.'
-    );
   }
 };

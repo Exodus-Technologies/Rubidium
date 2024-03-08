@@ -131,6 +131,16 @@ export const deleteIssueById = async issueId => {
   }
 };
 
+export const getExistingIssueOrders = async () => {
+  try {
+    const { Issue } = models;
+    const issues = await Issue.find({});
+    return issues.map(issue => issue.issueOrder);
+  } catch (err) {
+    logger.error('Error getting issue issue order data from db: ', err);
+  }
+};
+
 export const getNextIssueOrder = async () => {
   try {
     const { Issue } = models;

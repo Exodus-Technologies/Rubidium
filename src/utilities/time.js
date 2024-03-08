@@ -1,5 +1,6 @@
 'use strict';
 
+import moment from 'moment';
 import { DEFAULT_TIME_FORMAT } from '../constants';
 
 export const fancyTimeFormat = duration => {
