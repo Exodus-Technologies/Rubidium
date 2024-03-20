@@ -1,7 +1,7 @@
 'use strict';
 
 export const convertArgToBoolean = arg => {
-  switch (arg.toLowerCase().trim()) {
+  switch (arg) {
     case 'true':
     case 'yes':
     case '1':
@@ -17,7 +17,7 @@ export const convertArgToBoolean = arg => {
       return false;
 
     default:
-      return JSON.parse(arg);
+      return !!arg;
   }
 };
 
