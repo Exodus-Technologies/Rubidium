@@ -90,6 +90,7 @@ exports.uploadVideo = async archive => {
       thumbnail,
       thumbnailKey,
       categories,
+      duration,
       isAvailableForSale
     } = archive;
 
@@ -98,8 +99,6 @@ exports.uploadVideo = async archive => {
     if (video) {
       return badRequest(`Please provide another title for the video.`);
     } else {
-      const duration = await getVideoDurationInSeconds(url);
-
       const body = {
         title,
         description,

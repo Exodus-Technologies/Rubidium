@@ -60,6 +60,9 @@ const uploadVideoBodyValidation = [
     .isString()
     .withMessage('Must provide categories for manual upload.'),
   body('url').isString().withMessage('Must provide the video url for upload.'),
+  body('duration')
+    .isString()
+    .withMessage('Must provide the duration of the video upload.'),
   body('videoKey')
     .isString()
     .withMessage('Must provide the video key for s3 location.'),
@@ -91,6 +94,10 @@ const updateVideoBodyValidation = [
   body('url')
     .isString()
     .withMessage('Must provide the video url for upload.')
+    .optional(),
+  body('duration')
+    .isString()
+    .withMessage('Must provide the duration of the video upload.')
     .optional(),
   body('videoKey')
     .isString()
