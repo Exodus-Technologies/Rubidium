@@ -1,6 +1,5 @@
 'use strict';
 
-import getVideoDurationInSeconds from 'get-video-duration';
 import { StatusCodes } from 'http-status-codes';
 import {
   getThumbnailDistributionURI,
@@ -25,7 +24,6 @@ import {
 } from '../queries/videos';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
 import { convertArgToBoolean } from '../utilities/boolean';
-import { fancyTimeFormat } from '../utilities/time';
 
 exports.getVideos = async query => {
   try {
@@ -108,7 +106,7 @@ exports.uploadVideo = async archive => {
         }),
         url: getVideoDistributionURI(videoKey) || url,
         thumbnailKey,
-        duration: fancyTimeFormat(duration),
+        duration,
         thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail,
         isAvailableForSale: convertArgToBoolean(isAvailableForSale)
       };
@@ -139,10 +137,9 @@ exports.createVideoMeta = async archive => {
       thumbnail,
       thumbnailKey,
       categories,
+      duration,
       isAvailableForSale
     } = archive;
-
-    const duration = await getVideoDurationInSeconds(url);
 
     const body = {
       title,
@@ -153,7 +150,7 @@ exports.createVideoMeta = async archive => {
       }),
       url: getVideoDistributionURI(videoKey) || url,
       thumbnailKey,
-      duration: fancyTimeFormat(duration),
+      duration,
       thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail,
       isAvailableForSale: convertArgToBoolean(isAvailableForSale)
     };
@@ -198,6 +195,7 @@ exports.updateVideo = async (videoId, payload) => {
       thumbnail,
       thumbnailKey,
       categories,
+      duration,
       isAvailableForSale
     } = payload;
 
@@ -211,8 +209,6 @@ exports.updateVideo = async (videoId, payload) => {
         await copyThumbnailObject(video.thumbnailKey, thumbnailKey);
       }
 
-      const duration = await getVideoDurationInSeconds(url);
-
       const body = {
         title,
         videoId,
@@ -223,7 +219,7 @@ exports.updateVideo = async (videoId, payload) => {
         }),
         url: getVideoDistributionURI(videoKey) || url,
         thumbnailKey,
-        duration: fancyTimeFormat(duration),
+        duration,
         thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail,
         isAvailableForSale: convertArgToBoolean(isAvailableForSale)
       };
