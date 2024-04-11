@@ -3,7 +3,7 @@
 import Mailgen from 'mailgen';
 import config from '../config';
 
-const { CMS } = config;
+const { CMS_HOST } = config;
 
 const mailGenerator = new Mailgen({
   theme: 'default',
@@ -26,7 +26,7 @@ export const generateOTPCodeHtml = (user, otpCode) => {
           color: '#22BC66',
           text: isAdmin ? 'Verify OTP' : otpCode,
           ...(isAdmin && {
-            link: `${CMS}/verifyOTP?otpCode=${otpCode}&email=${email}`
+            link: `${CMS_HOST}/verifyOTP?otpCode=${otpCode}&email=${email}`
           })
         }
       }
@@ -50,11 +50,11 @@ export const generatePasswordResetHtml = user => {
       ...(isAdmin && {
         action: {
           instructions:
-            'To get started with Sheen Magazine CMS, Please, click the link below to log into CMS:',
+            'To get started with Sheen Magazine CMS_HOST, Please, click the link below to log into CMS_HOST:',
           button: {
             color: '#22BC66', // Optional action button color
             text: 'Login',
-            link: `${CMS}/login`
+            link: `${CMS_HOST}/login`
           }
         }
       })

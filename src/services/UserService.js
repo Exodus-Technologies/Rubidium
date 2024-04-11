@@ -89,11 +89,11 @@ exports.updateUser = async (userId, payload) => {
 };
 
 exports.deleteUser = async userId => {
-  const { purgeSubscriptions } = config;
+  const { PURGE_SUBSCRIPTIONS } = config;
   try {
     const [error, user] = await getUserById(userId);
     if (user) {
-      if (purgeSubscriptions) {
+      if (PURGE_SUBSCRIPTIONS) {
         const { email } = user;
         SubscriptionService.deleteSubscriptions(email);
       }

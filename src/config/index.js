@@ -9,11 +9,11 @@ const config = {
   NODE_ENV: process.env.NODE_ENV,
   HOST: process.env.HOST,
   PORT: process.env.PORT,
-  trustProxy: +process.env.TRUST_PROXY,
+  TRUST_PROXY: +process.env.TRUST_PROXY,
   CMS: process.env.CMS_HOST,
   HASH_SALT: +process.env.HASH_SALT,
-  jwtSecret: process.env.JWT_SECRET,
-  purgeSubscriptions: convertArgToBoolean(process.env.PURGE_SUBSCRIPTIONS),
+  JWT_SECRET: process.env.JWT_SECRET,
+  PURGE_SUBSCRIPTIONS: convertArgToBoolean(process.env.PURGE_SUBSCRIPTIONS),
   sources: {
     aws: {
       region: process.env.AWS_REGION,

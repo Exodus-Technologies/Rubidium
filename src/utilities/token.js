@@ -7,7 +7,7 @@ import config from '../config';
 import { CUSTOM_ALPHABET, TOKEN_EXPIRY } from '../constants';
 
 const { sign, verify } = jwt;
-const { jwtSecret } = config;
+const { JWT_SECRET } = config;
 
 export const generateTransactionId = () => {
   return customAlphabet(CUSTOM_ALPHABET, 12)();
@@ -27,7 +27,7 @@ export const generateAuthJWTToken = user => {
         exp: Math.ceil(expirationTime),
         data: payload
       },
-      jwtSecret
+      JWT_SECRET
     );
   } catch {
     console.error(err);
@@ -37,7 +37,7 @@ export const generateAuthJWTToken = user => {
 
 export const verifyJWTToken = token => {
   try {
-    const decoded = verify(token, jwtSecret);
+    const decoded = verify(token, JWT_SECRET);
     if (decoded) {
       return decoded;
     }
