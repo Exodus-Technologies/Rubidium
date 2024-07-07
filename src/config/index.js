@@ -42,17 +42,6 @@ const config = {
         cloudSecretAccessKey: process.env.CLOUDWATCH_AWS_SECRET_ACCESS_KEY
       }
     },
-    bambuser: {
-      apiKey: process.env.BAMBUSER_API_KEY,
-      daId: process.env.BAMBUSER_DAID,
-      daSecret: process.env.BAMBUSER_DASECRET,
-      broadcastURL: process.env.BAMBUSER_BROADCAST_URL,
-      platforms: {
-        ios: process.env.BAMBUSER_APP_KEY_IOS,
-        android: process.env.BAMBUSER_APP_KEY_ANDROID,
-        web: process.env.BAMBUSER_APP_KEY_WEB
-      }
-    },
     database: {
       clusterDomain: process.env.CLUSTER_DOMAIN,
       dbName: process.env.DB_NAME,
