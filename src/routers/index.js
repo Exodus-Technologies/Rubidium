@@ -2,8 +2,6 @@
 
 import appRouter from './appRouter';
 import authRouter from './authRouter';
-import bambuserRouter from './bambuserRouter';
-import broadcastRouter from './broadcastRouter';
 import categoryRouter from './categoryRouter';
 import issueRouter from './issueRouter';
 import notFoundRouter from './notFoundRouter';
@@ -17,8 +15,6 @@ import videoRouter from './videoRouter';
 export {
   appRouter,
   authRouter,
-  bambuserRouter,
-  broadcastRouter,
   categoryRouter,
   issueRouter,
   notFoundRouter,

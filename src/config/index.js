@@ -9,11 +9,11 @@ const config = {
   NODE_ENV: process.env.NODE_ENV,
   HOST: process.env.HOST,
   PORT: process.env.PORT,
-  trustProxy: +process.env.TRUST_PROXY,
+  TRUST_PROXY: +process.env.TRUST_PROXY,
   CMS: process.env.CMS_HOST,
   HASH_SALT: +process.env.HASH_SALT,
-  jwtSecret: process.env.JWT_SECRET,
-  purgeSubscriptions: convertArgToBoolean(process.env.PURGE_SUBSCRIPTIONS),
+  JWT_SECRET: process.env.JWT_SECRET,
+  PURGE_SUBSCRIPTIONS: convertArgToBoolean(process.env.PURGE_SUBSCRIPTIONS),
   sources: {
     aws: {
       region: process.env.AWS_REGION,
@@ -40,17 +40,6 @@ const config = {
         logGroupName: process.env.CLOUDWATCH_LOG_GROUP,
         cloudAccessKeyId: process.env.CLOUDWATCH_AWS_ACCESS_KEY_ID,
         cloudSecretAccessKey: process.env.CLOUDWATCH_AWS_SECRET_ACCESS_KEY
-      }
-    },
-    bambuser: {
-      apiKey: process.env.BAMBUSER_API_KEY,
-      daId: process.env.BAMBUSER_DAID,
-      daSecret: process.env.BAMBUSER_DASECRET,
-      broadcastURL: process.env.BAMBUSER_BROADCAST_URL,
-      platforms: {
-        ios: process.env.BAMBUSER_APP_KEY_IOS,
-        android: process.env.BAMBUSER_APP_KEY_ANDROID,
-        web: process.env.BAMBUSER_APP_KEY_WEB
       }
     },
     database: {

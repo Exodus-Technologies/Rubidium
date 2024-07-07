@@ -26,13 +26,13 @@ import {
   videoRouter
 } from './routers';
 
-const { trustProxy } = config;
+const { TRUST_PROXY } = config;
 
 // Create the Express application object
 const server = express();
 
 // specify a single subnet
-server.set('trust proxy', trustProxy);
+server.set('trust proxy', TRUST_PROXY);
 
 //Cors middleware
 server.use(cors());
@@ -101,14 +101,6 @@ logger.info('Loaded user routes middleware.');
 //Subscription middleware
 server.use(BASE_URL, subscriptionRouter);
 logger.info('Loaded subscription routes middleware.');
-
-// Bambuser middleware
-// server.use(bambuserRouter);
-// logger.info('Loaded bambuser routes middleware.');
-
-//Broadcasts middleware
-// server.use(broadcastRouter);
-// logger.info('Loaded broadcast routes middleware.');
 
 //Category middleware
 server.use(BASE_URL, categoryRouter);

@@ -9,15 +9,9 @@ import {
   PutObjectCommand,
   S3Client
 } from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
-import { createReadStream } from 'fs';
-import { getVideoDurationInSeconds } from 'get-video-duration';
-import { PassThrough } from 'stream';
 import {
   getCoverImageDistributionURI,
-  getIssueDistributionURI,
-  getThumbnailDistributionURI,
-  getVideoDistributionURI
+  getIssueDistributionURI
 } from '../aws/cloudFront';
 import config from '../config';
 import {
@@ -53,14 +47,6 @@ const s3Client = new S3Client({
 /**
  * Video helper functions
  */
-export const getVideoObjectKey = key => {
-  return `${key}.${DEFAULT_VIDEO_FILE_EXTENTION}`;
-};
-
-export const getThumbnailObjectKey = key => {
-  return `${key}.${DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
-};
-
 const getS3VideoParams = (key = '') => {
   const params = {
     Bucket: s3VideoBucketName
@@ -81,126 +67,12 @@ const getS3ThumbnailParams = (key = '') => {
   return params;
 };
 
-export const createVideoS3Bucket = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await s3Client.send(new CreateBucketCommand(getS3VideoParams()));
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'createVideoS3Bucket',
-        requestId,
-        cfId,
-        bucketName: s3VideoBucketName,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
+export const getVideoObjectKey = key => {
+  return `${key}.${DEFAULT_VIDEO_FILE_EXTENTION}`;
 };
 
-export const createThumbnailS3Bucket = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await s3Client.send(new CreateBucketCommand(getS3ThumbnailParams()));
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'createThumbnailS3Bucket',
-        requestId,
-        cfId,
-        bucketName: s3ThumbnailBucketName,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
-};
-
-export const doesVideoS3BucketExist = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { Buckets } = await s3Client.send(new ListBucketsCommand({}));
-      const bucket = Buckets.some(bucket => bucket.Name === s3VideoBucketName);
-      resolve(bucket);
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'doesVideoS3BucketExist',
-        requestId,
-        cfId,
-        bucketName: s3IssueBucketName,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
-};
-
-export const doesThumbnailS3BucketExist = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { Buckets } = await s3Client.send(new ListBucketsCommand({}));
-      const bucket = Buckets.some(
-        bucket => bucket.Name === s3ThumbnailBucketName
-      );
-      resolve(bucket);
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'doesThumbnailS3BucketExist',
-        requestId,
-        cfId,
-        bucketName: s3CoverImageBucketName,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
-};
-
-export const doesVideoObjectExist = key => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await s3Client.send(new HeadObjectCommand(getS3VideoParams(key)));
-      resolve(true);
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'doesVideoObjectExist',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      reject(false);
-    }
-  });
-};
-
-export const doesThumbnailObjectExist = key => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await s3Client.send(new HeadObjectCommand(getS3ThumbnailParams(key)));
-      resolve(true);
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'doesThumbnailObjectExist',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      reject(false);
-    }
-  });
+export const getThumbnailObjectKey = key => {
+  return `${key}.${DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
 };
 
 export const copyVideoObject = (oldKey, newKey) => {
@@ -287,115 +159,9 @@ export const deleteThumbnailByKey = key => {
   });
 };
 
-export const uploadVideoToS3 = (filePath, key) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const fileStream = createReadStream(filePath);
-
-      // Create a PassThrough stream to pipe the file stream through
-      const passThrough = new PassThrough();
-
-      // Pipe the file stream through the PassThrough stream
-      fileStream.pipe(passThrough);
-
-      // Set up the parameters for the S3 upload
-      const params = {
-        ...getS3VideoParams(key),
-        Body: passThrough
-      };
-
-      // Upload the file to S3
-      const upload = new Upload({
-        client: s3Client,
-        partSize: 1024 * 1024 * 5, // optional size of each part, in bytes, at least 5MB (5MB)
-        queueSize: 10, // optional concurrency configuration
-        params
-      });
-
-      // Monitor the upload progress
-      upload.on('httpUploadProgress', progress => {
-        logger.info(`Progress on video upload: ${JSON.stringify(progress)}`);
-      });
-
-      // Handle the upload completion
-      await upload.done();
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'uploadVideoToS3',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      logger.error(
-        `Error uploading video file to s3 bucket: ${s3VideoBucketName} `,
-        err
-      );
-      reject(err);
-    }
-  });
-};
-
-export const uploadThumbnailToS3 = (buffer, key) => {
-  return new Promise(async (resolve, reject) => {
-    const params = {
-      ...getS3ThumbnailParams(key),
-      Body: buffer
-    };
-
-    try {
-      // Upload the file to S3
-      await s3Client.send(new PutObjectCommand(params));
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'uploadThumbnailToS3',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      logger.error(
-        `Error uploading thumbnail file to s3 bucket: ${s3VideoBucketName} `,
-        err
-      );
-      reject(err);
-    }
-  });
-};
-
-export const uploadVideoArchiveToS3Location = async archive => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { videoPath, thumbnailPath, key } = archive;
-      const duration = await getVideoDurationInSeconds(videoPath);
-      const thumbnailFile = await getFileContentFromPath(thumbnailPath);
-      await uploadVideoToS3(videoPath, key);
-      await uploadThumbnailToS3(thumbnailFile, key);
-      const videoLocation = getVideoDistributionURI(key);
-      const thumbNailLocation = getThumbnailDistributionURI(key);
-      resolve({ thumbNailLocation, videoLocation, duration });
-    } catch (err) {
-      logger.error(`Error uploading video and thumbnail to s3 buckets`, err);
-      reject(err);
-    }
-  });
-};
-
 /**
  * Issue helper functions
  */
-export const getIssueObjectKey = key => {
-  return `${key}.${DEFAULT_PDF_FILE_EXTENTION}`;
-};
-
-export const getCoverImageObjectKey = key => {
-  return `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
-};
-
 const getS3IssueParams = (key = '') => {
   const params = {
     Bucket: s3IssueBucketName
@@ -414,6 +180,14 @@ const getS3CoverImageParams = (key = '') => {
     params.Key = getCoverImageObjectKey(key);
   }
   return params;
+};
+
+export const getIssueObjectKey = key => {
+  return `${key}.${DEFAULT_PDF_FILE_EXTENTION}`;
+};
+
+export const getCoverImageObjectKey = key => {
+  return `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
 };
 
 export const createIssueS3Bucket = () => {
