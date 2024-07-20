@@ -7,6 +7,25 @@ import generateDBUri from './queries';
 import server from './server';
 
 /**
+ * Convert server port to number
+ */
+const normalizePort = val => {
+  let port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+};
+
+/**
  * Connects to database
  */
 const initializeDBConnection = async () => {
@@ -26,7 +45,7 @@ const initializeDBConnection = async () => {
 const initializeServer = () => {
   const { PORT, HOST } = config;
   try {
-    server.listen(PORT, HOST);
+    server.listen(normalizePort(PORT), HOST);
     logger.info(`Server listening on port: ${PORT}`);
   } catch (err) {
     logger.error(`Server started with error: ${err}`);
@@ -34,6 +53,9 @@ const initializeServer = () => {
   }
 };
 
+/**
+ * Start web application
+ */
 const bootstrapApp = async () => {
   logger.info('Starting app...');
   await initializeDBConnection();
@@ -41,7 +63,7 @@ const bootstrapApp = async () => {
 };
 
 bootstrapApp().catch(err => {
-  logger.error(`Error starting application: ${err}`);
+  logger.error(`Error starting application: ${err.stack}`);
 });
 
 process
