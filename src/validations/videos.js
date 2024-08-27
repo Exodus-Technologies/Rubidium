@@ -67,7 +67,7 @@ const uploadVideoBodyValidation = [
 ];
 
 const updateVideoBodyValidation = [
-  ...videoIdParamValidation,
+  ...videoIdBodyUpdateValidation,
   body('title')
     .isString()
     .withMessage('Must provide a title for manual upload.')
