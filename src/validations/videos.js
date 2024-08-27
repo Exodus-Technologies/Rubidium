@@ -31,7 +31,7 @@ const videoQueryValidation = [
 ];
 
 const videoIdBodyUpdateValidation = [
-  body('videoId').isNumeric().withMessage('Must provide a existing video id.')
+  body('videoId').isString().withMessage('Must provide a existing video id.')
 ];
 
 const videoIdParamValidation = [
