@@ -185,7 +185,7 @@ exports.updateViews = async videoId => {
   }
 };
 
-exports.updateVideo = async (videoId, payload) => {
+exports.updateVideo = async payload => {
   try {
     const {
       title,
@@ -195,6 +195,7 @@ exports.updateVideo = async (videoId, payload) => {
       thumbnail,
       thumbnailKey,
       categories,
+      videoId,
       duration,
       isAvailableForSale
     } = payload;

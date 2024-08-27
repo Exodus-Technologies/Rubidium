@@ -59,12 +59,8 @@ exports.createVideoMeta = async (req, res, next) => {
 
 exports.updateVideo = async (req, res, next) => {
   try {
-    const { videoId } = req.params;
     const { body } = req;
-    const [statusCode, response] = await VideoService.updateVideo(
-      videoId,
-      body
-    );
+    const [statusCode, response] = await VideoService.updateVideo(body);
     res.status(statusCode).send(response);
   } catch (err) {
     logger.error(`Error with updating video: `, err);
