@@ -3,7 +3,6 @@ import { VideoController } from '../controllers';
 import { rateLimiter, validationHandler } from '../middlewares';
 import { isProductionEnvironment } from '../utilities/boolean';
 import {
-  updateVideoBodyValidation,
   uploadVideoBodyValidation,
   videoIdBodyUpdateValidation,
   videoIdParamValidation,
@@ -47,12 +46,7 @@ router.post(
   VideoController.createVideoMeta
 );
 
-router.put(
-  '/updateVideo',
-  updateVideoBodyValidation,
-  validationHandler,
-  VideoController.updateVideo
-);
+router.put('/updateVideo', VideoController.updateVideo);
 
 router.put(
   '/updateViews',

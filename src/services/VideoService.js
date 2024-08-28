@@ -1,5 +1,6 @@
 'use strict';
 
+import formidable from 'formidable';
 import { StatusCodes } from 'http-status-codes';
 import {
   getThumbnailDistributionURI,
@@ -24,6 +25,35 @@ import {
 } from '../queries/videos';
 import { badRequest, internalServerErrorRequest } from '../response-codes';
 import { convertArgToBoolean } from '../utilities/boolean';
+import { isEmpty } from '../utilities/objects';
+import { removeSpaces } from '../utilities/strings';
+
+exports.getPayloadFromRequest = async req => {
+  const form = formidable({
+    multiples: true
+  });
+
+  return new Promise((resolve, reject) => {
+    form.parse(req, (err, fields) => {
+      if (err) {
+        reject(err);
+      }
+      if (isEmpty(fields)) reject('Form is empty.');
+      const file = {
+        ...fields,
+        isAvailableForSale: convertArgToBoolean(fields.isAvailableForSale),
+        key: removeSpaces(fields.title)
+      };
+      resolve(file);
+    });
+    form.on('error', err => {
+      console.log('Error on form parse: ', err);
+    });
+    form.on('end', () => {
+      console.log('Form is finished processing.');
+    });
+  });
+};
 
 exports.getVideos = async query => {
   try {

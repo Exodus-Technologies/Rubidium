@@ -66,48 +66,7 @@ const uploadVideoBodyValidation = [
     .withMessage('Must provide a value if the asset is for sale.')
 ];
 
-const updateVideoBodyValidation = [
-  ...videoIdBodyUpdateValidation,
-  body('title')
-    .isString()
-    .withMessage('Must provide a title for manual upload.')
-    .optional(),
-  body('description')
-    .isString()
-    .withMessage('Must provide a description for manual upload.')
-    .optional(),
-  body('categories')
-    .isString()
-    .withMessage('Must provide categories for manual upload.')
-    .optional(),
-  body('url')
-    .isString()
-    .withMessage('Must provide the video url for upload.')
-    .optional(),
-  body('duration')
-    .isString()
-    .withMessage('Must provide the duration of the video upload.')
-    .optional(),
-  body('videoKey')
-    .isString()
-    .withMessage('Must provide the video key for s3 location.')
-    .optional(),
-  body('thumbnail')
-    .isString()
-    .withMessage('Must provide thumbnail for manual upload.')
-    .optional(),
-  body('thumbnailKey')
-    .isString()
-    .withMessage('Must provide the thumbnail key for s3 location.')
-    .optional(),
-  body('isAvailableForSale')
-    .isString()
-    .withMessage('Must provide a value if the asset is for sale.')
-    .optional()
-];
-
 export {
-  updateVideoBodyValidation,
   uploadVideoBodyValidation,
   videoIdBodyUpdateValidation,
   videoIdParamValidation,
