@@ -42,7 +42,8 @@ if (isProductionEnvironment()) {
       awsAccessKeyId: cloudAccessKeyId,
       awsSecretKey: cloudSecretAccessKey,
       awsRegion: region,
-      messageFormatter: ({ level, message }) => `[${level}]: ${message}`
+      messageFormatter: ({ level, message, meta }) =>
+        `[${level}]: ${message} ${meta ? JSON.stringify(meta) : ''}`
     }
   });
 }
