@@ -98,7 +98,7 @@ export const deletePermissionById = async permissionId => {
     if (deletedPermission.deletedCount > 0) {
       return [null, deletedPermission];
     }
-    return [new Error('Unable to find permission to delete details.')()];
+    return [new Error('Unable to find permission to delete details.')];
   } catch (err) {
     logger.error('Error deleting permission by id: ', err);
   }

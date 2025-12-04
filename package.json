@@ -4,7 +4,7 @@
   "description": "The monolithic repository for Sheen Magazine and all the services that supports the CMS and the Sheen Magazine Mobile Application.",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'Error: no test specified' && exit 1",
+    "test": "jest --runInBand --collectCoverage",
     "refresh": "rm -rf node_modules/ && npm i && npm dedupe",
     "prepare": "husky install",
     "format": "prettier --write .",
@@ -58,6 +58,8 @@
     "mocha": "^10.2.0",
     "nodemon": "^1.4.1",
     "prettier": "^2.5.1",
-    "prettier-plugin-organize-imports": "^3.2.4"
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "jest": "^29.6.0",
+    "babel-jest": "^29.6.0"
   }
 }

@@ -94,7 +94,7 @@ export const deleteCategoryById = async categoryId => {
     if (deletedCategory.deletedCount > 0) {
       return [null, deletedCategory];
     }
-    return [new Error('Unable to find category to delete details.')()];
+    return [new Error('Unable to find category to delete details.')];
   } catch (err) {
     logger.error('Error deleting category by id: ', err);
   }

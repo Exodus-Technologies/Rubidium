@@ -94,7 +94,7 @@ export const deleteRole = async roleId => {
     if (deletedRole.deletedCount > 0) {
       return [null, deletedRole];
     }
-    return [new Error('Unable to find role to delete details.')()];
+    return [new Error('Unable to find role to delete details.')];
   } catch (err) {
     logger.error('Error deleting role by id: ', err);
   }
