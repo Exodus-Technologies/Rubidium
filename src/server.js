@@ -16,12 +16,12 @@ import {
   appRouter,
   authRouter,
   categoryRouter,
+  docRouter,
   issueRouter,
   notFoundRouter,
   permissionRouter,
   roleRouter,
   subscriptionRouter,
-  swaggerRouter,
   userRouter,
   videoRouter
 } from './routers';
@@ -74,9 +74,9 @@ logger.info('Loaded error handler middleware.');
 server.use(requestResponse);
 logger.info('Loaded request/response middleware.');
 
-//Swagger middleware
-server.use(BASE_URL, swaggerRouter);
-logger.info('Loaded swagger documentation routes middleware.');
+//OpenAPI middleware
+server.use(docRouter);
+logger.info('Loaded openapi documentation routes middleware.');
 
 //App middleware
 server.use(BASE_URL, appRouter);
